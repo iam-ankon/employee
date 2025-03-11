@@ -9,7 +9,6 @@ export const api = axios.create({
 
 export const getCompanies = () => api.get('companies/');
 export const getCompanyById = (id) => api.get(`companies/${id}/`);
-
 export const getEmployees = () => api.get('employees/');
 export const getEmployeeById = (id) => api.get(`employees/${id}/`);
 export const updateEmployee = (id, data) => api.put(`employees/${id}/`, data);

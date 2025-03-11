@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const API_URL = "http://127.0.0.1:8000/api/employee/details/api/employee_termination/";
+const API_URL = "http://127.0.0.1:8000/api/employee/details/api/employees/";
 
 const EmployeeTermination = () => {
   const [employees, setEmployees] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -20,11 +21,14 @@ const EmployeeTermination = () => {
       console.error("Error fetching employees:", error);
     }
   };
-
-  const handleDelete = async (id) => {
+  const handleRowClick = (id) => {
+    navigate(`/employee/${id}`);
+  };
+  const handleDelete = async (employeeId) => {
     if (window.confirm("Are you sure you want to delete this employee?")) {
       try {
-        await axios.delete(`${API_URL}${id}/`);
+        await axios.delete(`${API_URL}${employeeId}/`);
+        await axios.delete(`http://127.0.0.1:8000/api/employee/details/api/employees/${employeeId}/`);
         fetchEmployees();
       } catch (error) {
         console.error("Error deleting employee:", error);
@@ -32,27 +36,84 @@ const EmployeeTermination = () => {
     }
   };
 
-  return (
-    <div className="container">
-      <h2>Employee Termination</h2>
-      <button className="btn add-btn" onClick={() => navigate("/add-termination")}>Add New Employee</button>
+  const filteredEmployees = employees.filter((employee) =>
+    employee.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    employee.employee_id.toString().includes(searchTerm)
+  );
 
-      {/* Employee List */}
-      <table className="employee-table">
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const styles = {
+    container: { padding: "20px" },
+    header: { display: "flex", justifyContent: "space-between", alignItems: "center" },
+    buttonContainer: {
+      display: "flex",
+      gap: "10px",
+      width: "fit-content",
+      marginTop: "10px"
+    },
+    searchInput: { padding: "8px", marginBottom: "10px", width: "250px" },
+    addButton: {
+      padding: "10px 15px",
+      backgroundColor: "#0078D4",
+      color: "#fff",
+      border: "none",
+      cursor: "pointer",
+      width: "auto"
+    },
+    printButton: {
+      padding: "10px 15px",
+      backgroundColor: "#28a745",
+      color: "#fff",
+      border: "none",
+      cursor: "pointer",
+      display: "flex",
+      alignItems: "center",
+      width: "auto"
+    },
+    printLogo: { width: "20px", height: "20px", marginRight: "8px" }, 
+    table: { width: "100%", borderCollapse: "collapse", marginTop: "10px" },
+    th: { backgroundColor: "#0078D4", color: "white", padding: "10px" },
+    td: { padding: "10px", borderBottom: "1px solid #ddd", cursor: "pointer" },
+    actionButton: { marginRight: "5px", padding: "5px 10px", cursor: "pointer" },
+    deleteButton: { backgroundColor: "#d9534f", color: "white", border: "none" }
+  };
+
+  return (
+    <div style={styles.container}>
+      <div style={styles.header}>
+        <h2>Employee Termination</h2>
+      </div>
+      <input
+        type="text"
+        placeholder="Search by Name or ID..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        style={styles.searchInput}
+      />
+      <div style={styles.buttonContainer}>
+        {/* <button style={styles.addButton} onClick={() => navigate("/add-termination")}>+ Add Employee</button> */}
+        <button style={styles.printButton} onClick={handlePrint}>
+          🖨️ Print List
+        </button>
+      </div>
+      <table style={styles.table}>
         <thead>
           <tr>
-            <th>Employee ID</th>
-            <th>Name</th>
-            <th>Designation</th>
-            <th>Department</th>
-            <th>Company</th>
-            <th>Salary</th>
-            <th>Actions</th>
+            <th style={styles.th}>Employee ID</th>
+            <th style={styles.th}>Name</th>
+            <th style={styles.th}>Designation</th>
+            <th style={styles.th}>Department</th>
+            <th style={styles.th}>Company</th>
+            <th style={styles.th}>Salary</th>
+            <th style={styles.th}>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {employees.map((employee) => (
-            <tr key={employee.id}>
+          {filteredEmployees.map((employee) => (
+            <tr key={employee.id} onClick={() => handleRowClick(employee.id)} style={styles.td}>
               <td>{employee.employee_id}</td>
               <td>{employee.name}</td>
               <td>{employee.designation}</td>
@@ -60,83 +121,29 @@ const EmployeeTermination = () => {
               <td>{employee.company_name}</td>
               <td>${employee.salary}</td>
               <td>
-                <button className="btn edit-btn" onClick={() => navigate(`/edit/${employee.id}`)}>Edit</button>
-                <button className="btn delete-btn" onClick={() => handleDelete(employee.id)}>Delete</button>
+                {/* <button
+                  style={styles.actionButton}
+                  onClick={() => navigate(`/edit/${employee.id}`)}
+                >
+                  Edit
+                </button> */}
+                <button
+                  style={{ ...styles.actionButton, ...styles.deleteButton }}
+                  onClick={() => handleDelete(employee.id)}
+                >
+                  Delete
+                </button>
+                <button
+                  style={styles.actionButton}
+                  onClick={() => navigate(`/attachments/${employee.id}`)}
+                >
+                  Attachments
+                </button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-
-      <style jsx>{`
-        .container {
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-          padding: 20px;
-          background-color: #f4f6f9;
-          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        h2 {
-          font-size: 28px;
-          color: #333;
-          margin-bottom: 20px;
-        }
-
-        .btn {
-          padding: 8px 16px;
-          margin: 5px;
-          font-size: 14px;
-          border: none;
-          border-radius: 4px;
-          cursor: pointer;
-        }
-
-        .add-btn {
-          background-color:rgba(19, 186, 50, 0.78);
-          color: white;
-        }
-
-        .edit-btn {
-          background-color: #ffa500;
-          color: white;
-        }
-
-        .delete-btn {
-          background-color: #d9534f;
-          color: white;
-        }
-
-        .employee-table {
-          width: 100%;
-          border-collapse: collapse;
-          margin-top: 20px;
-          background-color: white;
-          box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .employee-table th,
-        .employee-table td {
-          padding: 12px;
-          text-align: left;
-          border-bottom: 1px solid #ddd;
-        }
-
-        .employee-table th {
-          background-color: #0078d4;
-          color: white;
-        }
-
-        .employee-table tr:hover {
-          background-color: #f1f1f1;
-        }
-
-        .employee-table td button {
-          padding: 6px 12px;
-          margin-right: 5px;
-          border-radius: 4px;
-          font-size: 14px;
-        }
-      `}</style>
     </div>
   );
 };

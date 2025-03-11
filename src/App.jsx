@@ -27,6 +27,7 @@ import TADGroups from "./components/TADGroups";
 import EmployeeTermination from "./components/EmployeeTermination";
 import AddTermination from "./components/AddTermination";
 import EditEmployeeTermination from "./components/EditEmployeeTermination";
+import TerminationAttachment from "./components/TerminationAttachment"
 
 
 // Protected Route Component (Prevents Unauthorized Access)
@@ -77,6 +78,7 @@ const AppContent = () => {
           <Route path="/employee-termination" element={<ProtectedRoute><EmployeeTermination /></ProtectedRoute>} />
           <Route path="/add-termination" element={<ProtectedRoute><AddTermination /></ProtectedRoute>} />
           <Route path="/edit/:id" element={<EditEmployeeTermination />} />
+          <Route path="/attachments/:id" element={<TerminationAttachment />} />
         </Routes>
       </div>
     </>

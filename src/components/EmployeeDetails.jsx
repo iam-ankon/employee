@@ -109,6 +109,7 @@ const EmployeeDetails = () => {
             <th style={styles.th}>Name</th>
             <th style={styles.th}>Designation</th>
             <th style={styles.th}>Department</th>
+            <th style={styles.th}>Company</th>
             <th style={styles.th}>Salary</th>
             <th style={styles.th}>Actions</th>
           </tr>
@@ -120,6 +121,7 @@ const EmployeeDetails = () => {
               <td>{employee.name}</td>
               <td>{employee.designation}</td>
               <td>{employee.department}</td>
+              <td>{employee.company_name}</td>
               <td>{employee.salary}</td>
               <td>
                 <button
