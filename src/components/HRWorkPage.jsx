@@ -130,7 +130,7 @@ const HRWorkPage = () => {
           </div>
           <div className="card">
             <h3>Tad Groups</h3>
-            <p>Upload conpany names only.</p>
+            <p>Upload company names only.</p>
             <Link to="/tad-groups">Go to Tad Groups</Link>
           </div>
           <div className="card">

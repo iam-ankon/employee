@@ -21,24 +21,28 @@ const EmployeeTermination = () => {
       console.error("Error fetching employees:", error);
     }
   };
+
   const handleRowClick = (id) => {
     navigate(`/employee/${id}`);
   };
-  const handleDelete = async (employeeId) => {
+
+  const handleDelete = async (e, employeeId) => {
+    e.stopPropagation(); // Prevent row click event
+
     if (window.confirm("Are you sure you want to delete this employee?")) {
       try {
         await axios.delete(`${API_URL}${employeeId}/`);
-        await axios.delete(`http://127.0.0.1:8000/api/employee/details/api/employees/${employeeId}/`);
-        fetchEmployees();
+        setEmployees(employees.filter((employee) => employee.id !== employeeId));
       } catch (error) {
         console.error("Error deleting employee:", error);
       }
     }
   };
 
-  const filteredEmployees = employees.filter((employee) =>
-    employee.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    employee.employee_id.toString().includes(searchTerm)
+  const filteredEmployees = employees.filter(
+    (employee) =>
+      employee.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      employee.employee_id.toString().includes(searchTerm)
   );
 
   const handlePrint = () => {
@@ -48,21 +52,8 @@ const EmployeeTermination = () => {
   const styles = {
     container: { padding: "20px" },
     header: { display: "flex", justifyContent: "space-between", alignItems: "center" },
-    buttonContainer: {
-      display: "flex",
-      gap: "10px",
-      width: "fit-content",
-      marginTop: "10px"
-    },
+    buttonContainer: { display: "flex", gap: "10px", width: "fit-content", marginTop: "10px" },
     searchInput: { padding: "8px", marginBottom: "10px", width: "250px" },
-    addButton: {
-      padding: "10px 15px",
-      backgroundColor: "#0078D4",
-      color: "#fff",
-      border: "none",
-      cursor: "pointer",
-      width: "auto"
-    },
     printButton: {
       padding: "10px 15px",
       backgroundColor: "#28a745",
@@ -73,7 +64,6 @@ const EmployeeTermination = () => {
       alignItems: "center",
       width: "auto"
     },
-    printLogo: { width: "20px", height: "20px", marginRight: "8px" }, 
     table: { width: "100%", borderCollapse: "collapse", marginTop: "10px" },
     th: { backgroundColor: "#0078D4", color: "white", padding: "10px" },
     td: { padding: "10px", borderBottom: "1px solid #ddd", cursor: "pointer" },
@@ -94,7 +84,6 @@ const EmployeeTermination = () => {
         style={styles.searchInput}
       />
       <div style={styles.buttonContainer}>
-        {/* <button style={styles.addButton} onClick={() => navigate("/add-termination")}>+ Add Employee</button> */}
         <button style={styles.printButton} onClick={handlePrint}>
           🖨️ Print List
         </button>
@@ -119,25 +108,22 @@ const EmployeeTermination = () => {
               <td>{employee.designation}</td>
               <td>{employee.department}</td>
               <td>{employee.company_name}</td>
-              <td>${employee.salary}</td>
+              <td>{employee.salary}</td>
               <td>
-                {/* <button
+                <button
                   style={styles.actionButton}
-                  onClick={() => navigate(`/edit/${employee.id}`)}
-                >
-                  Edit
-                </button> */}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/attachments/${employee.id}`);
+                  }}>
+                  Attachment
+                </button>
+
                 <button
                   style={{ ...styles.actionButton, ...styles.deleteButton }}
-                  onClick={() => handleDelete(employee.id)}
+                  onClick={(e) => handleDelete(e, employee.id)}
                 >
                   Delete
-                </button>
-                <button
-                  style={styles.actionButton}
-                  onClick={() => navigate(`/attachments/${employee.id}`)}
-                >
-                  Attachments
                 </button>
               </td>
             </tr>

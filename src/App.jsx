@@ -76,8 +76,8 @@ const AppContent = () => {
           <Route path="/employee/:id/attachments" element={<EmployeeAttachments />} />
           <Route path="/tad-groups" element={<ProtectedRoute><TADGroups /></ProtectedRoute>} />
           <Route path="/employee-termination" element={<ProtectedRoute><EmployeeTermination /></ProtectedRoute>} />
-          <Route path="/add-termination" element={<ProtectedRoute><AddTermination /></ProtectedRoute>} />
-          <Route path="/edit/:id" element={<EditEmployeeTermination />} />
+          {/* <Route path="/add-termination" element={<ProtectedRoute><AddTermination /></ProtectedRoute>} /> */}
+          {/* <Route path="/edit/:id" element={<EditEmployeeTermination />} /> */}
           <Route path="/attachments/:id" element={<TerminationAttachment />} />
         </Routes>
       </div>
