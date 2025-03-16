@@ -7,7 +7,11 @@ const CVEdit = () => {
   const [cv, setCv] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
-    cv_file: "",
+    age: "",
+    reference: "",
+    email: "",
+    phone: "",
+    cv_file: null,
   });
 
   useEffect(() => {
@@ -17,7 +21,11 @@ const CVEdit = () => {
         setCv(response.data);
         setFormData({
           name: response.data.name,
-          cv_file: response.data.cv_file,
+          age: response.data.age || "",
+          reference: response.data.reference || "",
+          email: response.data.email || "",
+          phone: response.data.phone || "",
+          cv_file: null,
         });
       } catch (error) {
         console.error("Error fetching CV:", error);
@@ -36,24 +44,34 @@ const CVEdit = () => {
   };
 
   const handleFileChange = (e) => {
-    const { name, files } = e.target;
     setFormData({
       ...formData,
-      [name]: files[0], // Assuming you only want to upload one file
+      cv_file: e.target.files[0], // Store the selected file
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const formDataToSubmit = new FormData();
-      formDataToSubmit.append("name", formData.name);
-      formDataToSubmit.append("cv_file", formData.cv_file);
 
-      await axios.put(`http://127.0.0.1:8000/api/employee/details/api/CVAdd/${id}/`, formDataToSubmit);
+    const formDataToSubmit = new FormData();
+    formDataToSubmit.append("name", formData.name);
+    formDataToSubmit.append("age", formData.age);
+    formDataToSubmit.append("reference", formData.reference);
+    formDataToSubmit.append("email", formData.email);
+    formDataToSubmit.append("phone", formData.phone);
+    
+    if (formData.cv_file) {
+      formDataToSubmit.append("cv_file", formData.cv_file);
+    }
+
+    try {
+      await axios.put(`http://127.0.0.1:8000/api/employee/details/api/CVAdd/${id}/`, formDataToSubmit, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
       alert("CV updated successfully!");
     } catch (error) {
       console.error("Error updating CV:", error);
+      alert("Failed to update CV");
     }
   };
 
@@ -66,30 +84,40 @@ const CVEdit = () => {
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Name</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange} // Handling input change
-              className="form-control"
-            />
+            <input type="text" name="name" value={formData.name} onChange={handleChange} required className="form-control" />
           </div>
+
           <div className="form-group">
-            <label>CV File</label>
-            <input
-              type="file"
-              name="cv_file"
-              onChange={handleFileChange} // Handling file change
-              className="form-control"
-            />
+            <label>Age</label>
+            <input type="number" name="age" value={formData.age} onChange={handleChange} required className="form-control" />
           </div>
+
+          <div className="form-group">
+            <label>Reference</label>
+            <input type="text" name="reference" value={formData.reference} onChange={handleChange} className="form-control" />
+          </div>
+
+          <div className="form-group">
+            <label>Email</label>
+            <input type="email" name="email" value={formData.email} onChange={handleChange} required className="form-control" />
+          </div>
+
+          <div className="form-group">
+            <label>Phone</label>
+            <input type="text" name="phone" value={formData.phone} onChange={handleChange} required className="form-control" />
+          </div>
+
+          <div className="form-group">
+            <label>CV File (Leave empty to keep existing)</label>
+            <input type="file" name="cv_file" onChange={handleFileChange} className="form-control" />
+          </div>
+
           <button type="submit" className="btn-submit">Save</button>
         </form>
       </div>
 
       {/* CSS Styles */}
       <style jsx>{`
-        /* Container to center the form */
         .container {
           display: flex;
           justify-content: center;
@@ -98,7 +126,6 @@ const CVEdit = () => {
           background-color: #f7fafc;
         }
 
-        /* Styling the form container */
         .form-container {
           background-color: white;
           padding: 30px;

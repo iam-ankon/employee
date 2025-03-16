@@ -3,32 +3,49 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const CVAdd = () => {
-  const [name, setName] = useState("");
-  const [cvFile, setCvFile] = useState(null);
+  const [formData, setFormData] = useState({
+    name: "",
+    age: "",
+    reference: "",
+    email: "",
+    phone: "",
+    cvFile: null,
+  });
+
   const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleFileChange = (e) => {
+    setFormData({ ...formData, cvFile: e.target.files[0] });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (!cvFile) {
-      alert("Please select a file");
+
+    if (!formData.cvFile) {
+      alert("Please select a CV file");
       return;
     }
-    
-    const formData = new FormData();
-    formData.append("name", name);
-    formData.append("cv_file", cvFile);
-    
+
+    const uploadData = new FormData();
+    uploadData.append("name", formData.name);
+    uploadData.append("age", formData.age);
+    uploadData.append("reference", formData.reference);
+    uploadData.append("email", formData.email);
+    uploadData.append("phone", formData.phone);
+    uploadData.append("cv_file", formData.cvFile);
+
     try {
-      await axios.post("http://127.0.0.1:8000/api/employee/details/api/CVAdd/", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+      await axios.post("http://127.0.0.1:8000/api/employee/details/api/CVAdd/", uploadData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
-      
+
       alert("CV uploaded successfully");
-      setName("");
-      setCvFile(null);
+      setFormData({ name: "", age: "", reference: "", email: "", phone: "", cvFile: null });
     } catch (error) {
       console.error("Error uploading CV:", error);
       alert("Failed to upload CV");
@@ -42,25 +59,37 @@ const CVAdd = () => {
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Name:</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              className="input-field"
-            />
+            <input type="text" name="name" value={formData.name} onChange={handleChange} required className="input-field" />
           </div>
+
+          <div className="form-group">
+            <label>Age:</label>
+            <input type="number" name="age" value={formData.age} onChange={handleChange} required className="input-field" />
+          </div>
+
+          <div className="form-group">
+            <label>Reference:</label>
+            <input type="text" name="reference" value={formData.reference} onChange={handleChange} className="input-field" />
+          </div>
+
+          <div className="form-group">
+            <label>Email:</label>
+            <input type="email" name="email" value={formData.email} onChange={handleChange} required className="input-field" />
+          </div>
+
+          <div className="form-group">
+            <label>Phone:</label>
+            <input type="text" name="phone" value={formData.phone} onChange={handleChange} required className="input-field" />
+          </div>
+
           <div className="form-group">
             <label>CV File:</label>
-            <input
-              type="file"
-              onChange={(e) => setCvFile(e.target.files[0])}
-              required
-              className="input-field"
-            />
+            <input type="file" onChange={handleFileChange} required className="input-field" />
           </div>
+
           <button type="submit" className="submit-btn">Submit</button>
         </form>
+
         <button onClick={() => navigate("/cv-list")} className="view-btn">
           View All CVs
         </button>
@@ -93,7 +122,7 @@ const CVAdd = () => {
         }
 
         .form-group {
-          margin-bottom: 20px;
+          margin-bottom: 15px;
         }
 
         label {

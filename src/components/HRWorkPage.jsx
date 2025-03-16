@@ -126,7 +126,7 @@ const HRWorkPage = () => {
           <div className="card">
             <h3>Add CV</h3>
             <p>Upload CV files, enter applicant details, and submit candidate profiles.</p>
-            <Link to="/cv-add">Go to Add CV</Link>
+            <Link to="/cv-list">Go to Add CV</Link>
           </div>
           <div className="card">
             <h3>Tad Groups</h3>
@@ -145,11 +145,11 @@ const HRWorkPage = () => {
       <style jsx>{`
         /* Sidebar Styles */
         .sidebar {
-          background-color: #2d3748; /* Dark Gray for the sidebar */
-          color: white;
-          padding: 20px;
-          width: 250px;
-          height: 100vh;
+          // background-color: #2d3748; 
+          // color: white;
+          // padding: 20px;
+          // width: 250px;
+          // height: 100vh;
         }
 
         .sidebar h2 {

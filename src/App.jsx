@@ -25,9 +25,9 @@ import EditCVPage from "./components/EditCVPage";
 import EmployeeAttachments from "./components/EmployeeAttachments";
 import TADGroups from "./components/TADGroups";
 import EmployeeTermination from "./components/EmployeeTermination";
-import AddTermination from "./components/AddTermination";
-import EditEmployeeTermination from "./components/EditEmployeeTermination";
 import TerminationAttachment from "./components/TerminationAttachment"
+import CVDetail from "./components/CVDetail";
+import MailMdSir from "./components/MailMdSir";
 
 
 // Protected Route Component (Prevents Unauthorized Access)
@@ -79,6 +79,8 @@ const AppContent = () => {
           {/* <Route path="/add-termination" element={<ProtectedRoute><AddTermination /></ProtectedRoute>} /> */}
           {/* <Route path="/edit/:id" element={<EditEmployeeTermination />} /> */}
           <Route path="/attachments/:id" element={<TerminationAttachment />} />
+          <Route path="/cv-detail/:id" element={<CVDetail />} />
+          <Route path="/mailmdsir" element={<MailMdSir />} />
         </Routes>
       </div>
     </>
