@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";  // Added useNavigate
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { QRCodeCanvas } from "qrcode.react";
 
 const CVDetail = () => {
     const { id } = useParams();
     const [cvDetails, setCvDetails] = useState(null);
-    const qrCodeRef = useRef(null); 
+    const qrCodeRef = useRef(null);
     const navigate = useNavigate(); // Hook for navigation
 
     useEffect(() => {
@@ -55,7 +55,6 @@ const CVDetail = () => {
             console.error("No CV details available to send.");
         }
     };
-    
 
     const styles = {
         container: {
@@ -132,9 +131,15 @@ const CVDetail = () => {
                         </p>
                     </div>
 
+                    {/* QR Code section */}
                     <div style={styles.qrContainer}>
-                        <QRCodeCanvas ref={qrCodeRef} value={`${cvDetails.name}, ${cvDetails.email}, ${cvDetails.phone}`} size={200} />
+                        <QRCodeCanvas
+                            ref={qrCodeRef}
+                            value={`http://localhost:5173/interviews/${id}`} // Dynamic interview page URL
+                            size={200}
+                        />
                     </div>
+
 
                     <div style={styles.buttonContainer}>
                         <button

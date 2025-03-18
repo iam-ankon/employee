@@ -13,12 +13,12 @@ import AddEmployee from "./components/AddEmployee";
 import Interviews from "./components/Interviews";
 import HRWorkPage from './components/HRWorkPage';
 import DashboardPage from './components/DashboardPage';
-import CVManagement from "./components/CVManagement";
+import LetterSend from "./components/LetterSend";
 import CVAdd from "./components/CVAdd";
 import ITProvision from "./components/ITProvision";
 import AdminProvision from "./components/AdminProvision";
 import FinanceProvision from "./components/FinanceProvision";
-import AddCVPage from "./components/AddCVPage";
+import AddLetterPage from "./components/AddLetterPage";
 import CVList from "./components/CVList";
 import CVEdit from "./components/CVEdit";
 import EditCVPage from "./components/EditCVPage";
@@ -66,12 +66,12 @@ const AppContent = () => {
           <Route path="/interviews" element={<ProtectedRoute><Interviews /></ProtectedRoute>} />
           <Route path="/interviews/:id" element={<ProtectedRoute><Interviews /></ProtectedRoute>} />
           <Route path="/DashboardPage" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
-          <Route path="/cv-management" element={<CVManagement />} />
+          <Route path="/letter-send" element={<LetterSend />} />
           <Route path="/cv-add" element={<CVAdd />} />
           <Route path="/it-provision" element={<ITProvision />} />
           <Route path="/admin-provision" element={<AdminProvision />} />
           <Route path="/finance-provision" element={<FinanceProvision />} />
-          <Route path="/add-cv" element={<AddCVPage />} />
+          <Route path="/add-letter" element={<AddLetterPage />} />
           <Route path="/cv-list" element={<CVList />} />
           <Route path="/cv-edit/:id" element={<CVEdit />} />
           <Route path="/edit-cv/:cvId" element={<EditCVPage />} />

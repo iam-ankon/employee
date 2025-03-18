@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const InviteMail = () => {
-  const [description, setDescription] = useState(""); // Updated state
+  const [description, setDescription] = useState("");
   const [interviewDetails, setInterviewDetails] = useState({});
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -16,6 +17,7 @@ const InviteMail = () => {
   }, [location.state, navigate]);
 
   const handleSendMail = async () => {
+    setLoading(true);
     try {
       const response = await fetch("http://127.0.0.1:8000/api/employee/details/api/invitemail/", {
         method: "POST",
@@ -25,24 +27,24 @@ const InviteMail = () => {
         },
         credentials: "include",
         body: JSON.stringify({
-          description, // Send description instead of email
+          description,
           interview_details: interviewDetails,
         }),
       });
-  
+
       const result = await response.json();
       if (response.ok) {
         alert("Message sent successfully and saved!");
-        // Navigate to the tinterviewer page with interview_id
         navigate(`/interviews?interview_id=${interviewDetails.id}`, { replace: true });
       } else {
         alert(`Error sending message: ${result.error || "Unknown error"}`);
       }
     } catch (error) {
       alert("Error sending message");
+    } finally {
+      setLoading(false);
     }
   };
-  
 
   const getCSRFToken = () => {
     const name = "csrftoken";
@@ -66,7 +68,6 @@ const InviteMail = () => {
           <p><strong>Interview Date:</strong> {new Date(interviewDetails.interview_date).toLocaleString()}</p>
         </div>
 
-        {/* Replace Email Input with Description Textarea */}
         <div style={styles.inputContainer}>
           <label htmlFor="description" style={styles.label}>Message</label>
           <textarea
@@ -80,11 +81,14 @@ const InviteMail = () => {
 
         <button
           onClick={handleSendMail}
-          style={styles.button}
-          onMouseOver={(e) => (e.target.style.backgroundColor = styles.buttonHover.backgroundColor)}
-          onMouseOut={(e) => (e.target.style.backgroundColor = styles.button.backgroundColor)}
+          style={{
+            ...styles.button,
+            backgroundColor: loading ? "#ccc" : styles.button.backgroundColor,
+            cursor: loading ? "not-allowed" : "pointer",
+          }}
+          disabled={loading}
         >
-          Send Message
+          {loading ? "Sending..." : "Send Message"}
         </button>
       </div>
     </div>
@@ -92,6 +96,7 @@ const InviteMail = () => {
 };
 
 export default InviteMail;
+
 
 // Styles
 const styles = {

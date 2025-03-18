@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { useLocation,useNavigate  } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const API_URL = "http://127.0.0.1:8000/api/employee/details/api/interviews/";
 
@@ -57,6 +57,32 @@ const Interviews = () => {
       setFormData(location.state.interview);
     }
   }, [location]);
+
+  useEffect(() => {
+    const cvDetails = location.state;  // Get the CV details passed via location.state
+    if (cvDetails) {
+      // Pre-fill form with CV details
+      setFormData({
+        name: cvDetails.name || "",
+        age: cvDetails.age || "",
+        email: cvDetails.email || "",
+        phone: cvDetails.phone || "",
+        reference: cvDetails.reference || "",
+        interview_date: "",
+        interviewee_confirmed: false,
+        feedback_provided: false,
+        english_proficiency: false,
+        good_behaviour: false,
+        relevant_skills: false,
+        cultural_fit: false,
+        clarity_of_communication: false,
+        interview_questions: "",
+        interview_mark: "",
+        interview_result: "",
+        interview_notes: "",
+      });
+    }
+  }, [location.state]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -171,6 +197,15 @@ const Interviews = () => {
 
   const handleInviteMail = (selectedInterview) => {
     navigate('/invitemail', { state: selectedInterview });
+  };
+
+  const handleLetterSend = (selectedInterview) => {
+    navigate("/add-letter", {
+      state: {
+        name: selectedInterview.name,
+        email: selectedInterview.email
+      }
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -487,6 +522,9 @@ const Interviews = () => {
               </button>
               <button style={style.btnDelete} onClick={() => handleInviteMail(selectedInterview)}>
                 Invite for interview
+              </button>
+              <button style={{ ...style.button, ...style.buttonPrint }} onClick={() => handleLetterSend(selectedInterview)}>
+                Send Letters
               </button>
             </div>
 

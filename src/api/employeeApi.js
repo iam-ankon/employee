@@ -49,18 +49,18 @@ export const getAdminProvisionById = (id) => api.get(`admin_provisions/${id}/`);
 export const updateAdminProvision = (id, data) => api.put(`admin_provisions/${id}/`, data);
 export const addAdminProvision = (data) => api.post('admin_provisions/', data);
 export const deleteAdminProvision = (id) => api.delete(`admin_provisions/${id}/`);
-export const getCVManagement = () => api.get('cv_management/');
-export const getCVManagementById = (id) => api.get(`cv_management/${id}/`);
-export const updateCVManagement = (id, data) => api.put(`cv_management/${id}/`, data);
-export const addCVManagement = (data) => {
+export const getLetterSend = () => api.get('letter_send/');
+export const getLetterSendById = (id) => api.get(`letter_send/${id}/`);
+export const updateLetterSend = (id, data) => api.put(`letter_send/${id}/`, data);
+export const addLetterSend = (data) => {
   const formData = new FormData();
   formData.append('name', data.name);
   formData.append('email', data.email);
   formData.append('letter_file', data.letter_file);
   formData.append('letter_type', data.letter_type);
-  return api.post('cv_management/', formData);
+  return api.post('letter_send/', formData);
 };
-export const deleteCVManagement = (id) => api.delete(`cv_management/${id}/`);
+export const deleteLetterSend = (id) => api.delete(`letter_send/${id}/`);
 export const addAttendance = (data) => {
   console.log('Sending attendance data:', data); // Log the data being sent
   return api.post('attendance/', {

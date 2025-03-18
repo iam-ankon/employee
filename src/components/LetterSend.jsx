@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getCVManagement, deleteCVManagement } from "../api/employeeApi";
+import { getLetterSend, deleteLetterSend } from "../api/employeeApi";
 
-const CVManagement = () => {
+const LetterSend = () => {
   const [cvs, setCvs] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCVs = async () => {
-      const response = await getCVManagement();
+      const response = await getLetterSend();
       setCvs(response.data);
     };
     fetchCVs();
   }, []);
 
   const handleAddCV = () => {
-    navigate("/add-cv");
+    navigate("/add-letter");
   };
 
   const handleEditCV = (cvId) => {
@@ -26,7 +26,7 @@ const CVManagement = () => {
   const handleDeleteCV = async (cvId) => {
     if (window.confirm("Are you sure you want to delete this Letter?")) {
       try {
-        await deleteCVManagement(cvId);
+        await deleteLetterSend(cvId);
         setCvs(cvs.filter((cv) => cv.id !== cvId));
         alert("Letter deleted successfully!");
       } catch (error) {
@@ -273,4 +273,4 @@ const CVManagement = () => {
   );
 };
 
-export default CVManagement;
+export default LetterSend;

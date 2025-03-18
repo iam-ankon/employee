@@ -57,7 +57,7 @@ const HRWorkPage = () => {
             </Link>
           </li>
           <li>
-            <Link to="/cv-management" className="flex items-center py-2 hover:text-gray-300">
+            <Link to="/letter-send" className="flex items-center py-2 hover:text-gray-300">
               <img src="/path/to/cv-management-logo.png" alt="CV Management" className="mr-2 w-5 h-5" />
               CV Management
             </Link>
@@ -120,8 +120,8 @@ const HRWorkPage = () => {
           </div>
           <div className="card">
             <h3>Letter Send</h3>
-            <p>Manage CV submissions, review applications, and send offer letters.</p>
-            <Link to="/cv-management">Go to Letter Send</Link>
+            <p>Manage letter submissions, review applications, and send offer letters.</p>
+            <Link to="/letter-send">Go to Letter Send</Link>
           </div>
           <div className="card">
             <h3>Add CV</h3>

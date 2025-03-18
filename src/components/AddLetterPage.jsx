@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useLocation } from "react-router-dom";
 import axios from "axios"; // Import Axios for API requests
 
 const LETTER_CHOICES = [
@@ -8,15 +8,18 @@ const LETTER_CHOICES = [
   { value: "joining_report", label: "Joining Report" },
 ];
 
-const AddCVPage = () => {
+const AddLetterPage = () => {
+  const navigate = useNavigate();
+  const location = useLocation(); // Get the location state
+  const { name = "", email = "" } = location.state || {}; // Default to empty strings if undefined
+
   const [cvData, setCvData] = useState({
-    name: "",
-    email: "",
+    name: name,
+    email: email,
     letterFile: null,
     letterType: "",
   });
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   // Handles text input fields
   const handleInputChange = (e) => {
@@ -38,9 +41,9 @@ const AddCVPage = () => {
   };
 
   // API request function
-  const addCVManagement = async (formData) => {
+  const addLetterSend = async (formData) => {
     try {
-      const response = await axios.post("http://127.0.0.1:8000/api/employee/details/api/cv_management/", formData, {
+      const response = await axios.post("http://127.0.0.1:8000/api/employee/details/api/letter_send/", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -80,9 +83,9 @@ const AddCVPage = () => {
         console.log(`${key}:`, value);
       }
 
-      await addCVManagement(formData);
+      await addLetterSend(formData);
       alert("CV added successfully!");
-      navigate("/cv-management");
+      navigate("/letter-send");
     } catch (error) {
       console.error("Error adding CV:", error);
 
@@ -163,6 +166,14 @@ const AddCVPage = () => {
           >
             {loading ? "Adding..." : "Save"}
           </button>
+          <button
+            type="button"
+            className="view-btn"
+            onClick={() => navigate("/letter-send")}
+          >
+            View All Letters
+          </button>
+
         </form>
       </div>
 
@@ -239,4 +250,4 @@ const AddCVPage = () => {
   );
 };
 
-export default AddCVPage;
+export default AddLetterPage;

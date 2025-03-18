@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 const MailMdSir = () => {
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
   const [interviewDetails, setInterviewDetails] = useState({});
   const navigate = useNavigate();
   const location = useLocation();
@@ -16,6 +17,7 @@ const MailMdSir = () => {
   }, [location.state, navigate]);
 
   const handleSendMail = async () => {
+    setLoading(true);
     try {
       const response = await fetch("http://127.0.0.1:8000/api/employee/details/api/mdsir/", {
         method: "POST",
@@ -39,6 +41,8 @@ const MailMdSir = () => {
       }
     } catch (error) {
       alert("Error sending email");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -89,11 +93,20 @@ const MailMdSir = () => {
 
         <button
           onClick={handleSendMail}
-          style={styles.button}
-          onMouseOver={(e) => (e.target.style.backgroundColor = styles.buttonHover.backgroundColor)}
-          onMouseOut={(e) => (e.target.style.backgroundColor = styles.button.backgroundColor)}
+          style={{
+            ...styles.button,
+            backgroundColor: loading ? "#ccc" : styles.button.backgroundColor, // Grey when loading
+            cursor: loading ? "not-allowed" : "pointer",
+          }}
+          onMouseOver={(e) => {
+            if (!loading) e.target.style.backgroundColor = styles.buttonHover.backgroundColor;
+          }}
+          onMouseOut={(e) => {
+            if (!loading) e.target.style.backgroundColor = styles.button.backgroundColor;
+          }}
+          disabled={loading}
         >
-          Send Email
+          {loading ? "Sending..." : "Send Email"}
         </button>
       </div>
     </div>

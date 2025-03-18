@@ -83,18 +83,12 @@ const Sidebar = () => {
 
       {/* Buttons Above the Blue Bar */}
       <div className="button-bar">
-        {/* Sidebar Toggle Button */}
-        <button ref={toggleBtnRef} onClick={toggleSidebar} className="menu-btn">
-          <FiMenu size={24} />
-        </button>
-
         {/* Logout Button with Logo */}
         <button
           ref={logoutBtnRef}
           onClick={handleLogout}
           className="logout-button"
         >
-          
           🚪 Logout
         </button>
       </div>
@@ -117,10 +111,17 @@ const Sidebar = () => {
           flex-direction: column;
           box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
           padding-top: 40px;
+          z-index: 1000; /* Set a high z-index to ensure it overlays other elements */
         }
 
         .sidebar.open {
           left: 0;
+        }
+
+        .main-content {
+          flex: 1;
+          padding: 30px;
+          z-index: 0; /* Lower z-index to make sure it's behind the sidebar */
         }
 
         .sidebar-header {
@@ -152,27 +153,20 @@ const Sidebar = () => {
           padding: 10px 12px;
           border-radius: 50%;
           cursor: pointer;
+          z-index: 1500; /* Ensure it's on top of sidebar and content */
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
 
-        .main-content {
-          flex: 1;
-          padding: 30px;
-        }
-
-        /* Sidebar Title (Dashboard Button) */
-        .sidebar-title {
-          background: none;
-          border: none;
-          color: white;
-          font-size: 1.5rem;
-          cursor: pointer;
-          padding: 10px 20px;
-          margin-top: 20px;
-          transition: background 0.3s ease;
-        }
-
-        .sidebar-title:hover {
-          background-color: rgba(255, 255, 255, 0.2);
+        .blue-bar {
+          position: fixed;
+          top: 0;  /* Adjust to cover everything under the buttons */
+          left: 0;
+          width: 100%;  /* Full screen width */
+          height: 70px;  /* Adjust to the height that fits the buttons */
+          background-color: #3182ce;
+          z-index: 5;  /* Ensure it's below the sidebar */
         }
 
         /* Logout Button Styles */
@@ -251,6 +245,24 @@ const Sidebar = () => {
             height: 70px;  /* Bar height remains the same */
           }
         }
+
+        /* Sidebar Title (Dashboard Button) */
+        .sidebar-title {
+          background: none;
+          border: none;
+          color: white;
+          font-size: 1.5rem;
+          cursor: pointer;
+          padding: 10px 20px;
+          margin-top: 20px;
+          transition: background 0.3s ease;
+        }
+
+        .sidebar-title:hover {
+          background-color: rgba(255, 255, 255, 0.2);
+        }
+
+
       `}</style>
     </div>
   );
