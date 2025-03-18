@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
-const MailMdSir = () => {
-  const [email, setEmail] = useState("");
+const InviteMail = () => {
+  const [description, setDescription] = useState(""); // Updated state
   const [interviewDetails, setInterviewDetails] = useState({});
   const navigate = useNavigate();
   const location = useLocation();
@@ -17,7 +17,7 @@ const MailMdSir = () => {
 
   const handleSendMail = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/employee/details/api/mdsir/", {
+      const response = await fetch("http://127.0.0.1:8000/api/employee/details/api/invitemail/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -25,22 +25,24 @@ const MailMdSir = () => {
         },
         credentials: "include",
         body: JSON.stringify({
-          email,
+          description, // Send description instead of email
           interview_details: interviewDetails,
         }),
       });
-
+  
       const result = await response.json();
       if (response.ok) {
-        alert("Email sent successfully and saved!");
+        alert("Message sent successfully and saved!");
+        // Navigate to the tinterviewer page with interview_id
         navigate(`/interviews?interview_id=${interviewDetails.id}`, { replace: true });
       } else {
-        alert(`Error sending email: ${result.error || "Unknown error"}`);
+        alert(`Error sending message: ${result.error || "Unknown error"}`);
       }
     } catch (error) {
-      alert("Error sending email");
+      alert("Error sending message");
     }
   };
+  
 
   const getCSRFToken = () => {
     const name = "csrftoken";
@@ -53,37 +55,26 @@ const MailMdSir = () => {
   return (
     <div style={styles.container}>
       <div style={styles.card}>
-        <h2 style={styles.heading}>Send Interview Details</h2>
+        <h2 style={styles.heading}>Send Invitation</h2>
 
         <div style={styles.detailsContainer}>
           <h3>Interview Details</h3>
           <p><strong>Name:</strong> {interviewDetails.name}</p>
-          <p><strong>Age:</strong> {interviewDetails.age}</p>
           <p><strong>Reference:</strong> {interviewDetails.reference}</p>
           <p><strong>Email:</strong> {interviewDetails.email}</p>
           <p><strong>Phone:</strong> {interviewDetails.phone}</p>
           <p><strong>Interview Date:</strong> {new Date(interviewDetails.interview_date).toLocaleString()}</p>
-          <p><strong>Interview Mark:</strong> {interviewDetails.interview_mark}</p>
-          <p><strong>Interview Result:</strong> {interviewDetails.interview_result}</p>
-          <p><strong>Interview Notes:</strong> {interviewDetails.interview_notes || "No notes available"}</p>
-          <p><strong>Feedback Provided:</strong> {interviewDetails.feedback_provided ? "Yes" : "No"}</p>
-          <p><strong>English Proficiency:</strong> {interviewDetails.english_proficiency ? "Yes" : "No"}</p>
-          <p><strong>Good Behavior:</strong> {interviewDetails.good_behaviour ? "Yes" : "No"}</p>
-          <p><strong>Relevant Skills:</strong> {interviewDetails.relevant_skills ? "Yes" : "No"}</p>
-          <p><strong>Cultural Fit:</strong> {interviewDetails.cultural_fit ? "Yes" : "No"}</p>
-          <p><strong>Clarity of Communication:</strong> {interviewDetails.clarity_of_communication ? "Yes" : "No"}</p>
-          <p><strong>Interview Questions:</strong> {interviewDetails.interview_questions || "No questions recorded"}</p>
         </div>
 
+        {/* Replace Email Input with Description Textarea */}
         <div style={styles.inputContainer}>
-          <label htmlFor="email" style={styles.label}>Recipient's Email</label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            style={styles.input}
-            placeholder="Enter recipient's email"
+          <label htmlFor="description" style={styles.label}>Message</label>
+          <textarea
+            id="description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            style={styles.textarea}
+            placeholder="Enter your invitation message here..."
           />
         </div>
 
@@ -93,14 +84,14 @@ const MailMdSir = () => {
           onMouseOver={(e) => (e.target.style.backgroundColor = styles.buttonHover.backgroundColor)}
           onMouseOut={(e) => (e.target.style.backgroundColor = styles.button.backgroundColor)}
         >
-          Send Email
+          Send Message
         </button>
       </div>
     </div>
   );
 };
 
-export default MailMdSir;
+export default InviteMail;
 
 // Styles
 const styles = {
@@ -144,13 +135,15 @@ const styles = {
     color: "#555",
     marginBottom: "5px",
   },
-  input: {
+  textarea: {
     width: "100%",
     padding: "10px",
     border: "1px solid #D1D1D1",
     borderRadius: "5px",
     fontSize: "14px",
     outline: "none",
+    minHeight: "100px",
+    resize: "vertical",
     transition: "border 0.3s",
   },
   button: {

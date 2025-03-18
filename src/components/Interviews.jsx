@@ -96,6 +96,24 @@ const Interviews = () => {
   }, [location]);
 
 
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const interviewId = params.get("interview_id");
+
+    if (interviewId) {
+      const foundInterview = interviews.find((intv) => intv.id.toString() === interviewId);
+      if (foundInterview) {
+        setSelectedInterview(foundInterview);
+      }
+    }
+  }, [location.search, interviews]);
+
+  const handleInterviewClick = (interview) => {
+    setSelectedInterview(interview);
+    navigate(`/interviews?interview_id=${interview.id}`, { replace: true });
+  };
+
+
   const [searchQuery, setSearchQuery] = useState("");
   const [toast, setToast] = useState(null);
   useEffect(() => {
@@ -149,6 +167,10 @@ const Interviews = () => {
 
   const handleSendMail = (selectedInterview) => {
     navigate('/mailmdsir', { state: selectedInterview });
+  };
+
+  const handleInviteMail = (selectedInterview) => {
+    navigate('/invitemail', { state: selectedInterview });
   };
 
   const handleSubmit = async (e) => {
@@ -415,7 +437,7 @@ const Interviews = () => {
               <li
                 key={interview.id}
                 style={style.interviewItem}
-                onClick={() => setSelectedInterview(interview)}
+                onClick={() => handleInterviewClick(interview)}
               >
                 {interview.name}
               </li>
@@ -462,6 +484,9 @@ const Interviews = () => {
               </button>
               <button style={style.btnDelete} onClick={() => handleSendMail(selectedInterview)}>
                 Sent Mail
+              </button>
+              <button style={style.btnDelete} onClick={() => handleInviteMail(selectedInterview)}>
+                Invite for interview
               </button>
             </div>
 

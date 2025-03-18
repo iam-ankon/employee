@@ -46,19 +46,6 @@ const CVDetail = () => {
         }
     };
 
-    // const handleSelectForInterview = () => {
-    //     // Pass the selected CV details to the Interview page via React Router's state
-    //     navigate("/interviews", {
-    //         state: {
-    //             name: cvDetails.name,
-    //             age: cvDetails.age,
-    //             email: cvDetails.email,
-    //             phone: cvDetails.phone,
-    //             reference: cvDetails.reference,
-    //         },
-    //     });
-    // };
-
     const handleSelectForInterview = () => {
         if (cvDetails) {
             navigate("/interviews", {

@@ -28,6 +28,7 @@ import EmployeeTermination from "./components/EmployeeTermination";
 import TerminationAttachment from "./components/TerminationAttachment"
 import CVDetail from "./components/CVDetail";
 import MailMdSir from "./components/MailMdSir";
+import InviteMail from "./components/InviteMail"
 
 
 // Protected Route Component (Prevents Unauthorized Access)
@@ -63,6 +64,7 @@ const AppContent = () => {
           <Route path="/email-logs" element={<ProtectedRoute><EmailLog /></ProtectedRoute>} />
           <Route path="/add-employee" element={<ProtectedRoute><AddEmployee /></ProtectedRoute>} />
           <Route path="/interviews" element={<ProtectedRoute><Interviews /></ProtectedRoute>} />
+          <Route path="/interviews/:id" element={<ProtectedRoute><Interviews /></ProtectedRoute>} />
           <Route path="/DashboardPage" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
           <Route path="/cv-management" element={<CVManagement />} />
           <Route path="/cv-add" element={<CVAdd />} />
@@ -81,6 +83,7 @@ const AppContent = () => {
           <Route path="/attachments/:id" element={<TerminationAttachment />} />
           <Route path="/cv-detail/:id" element={<CVDetail />} />
           <Route path="/mailmdsir" element={<MailMdSir />} />
+          <Route path="/invitemail" element={<InviteMail />} />
         </Routes>
       </div>
     </>
