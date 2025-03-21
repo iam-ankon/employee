@@ -135,7 +135,7 @@ const CVDetail = () => {
                     <div style={styles.qrContainer}>
                         <QRCodeCanvas
                             ref={qrCodeRef}
-                            value={`http://localhost:5173/interviews/${id}`} // Dynamic interview page URL
+                            value={`http://192.168.4.183:5173/interviews/${id}`} // Dynamic interview page URL
                             size={200}
                         />
                     </div>
