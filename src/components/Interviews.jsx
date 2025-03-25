@@ -9,46 +9,71 @@ const Interviews = () => {
   const navigate = useNavigate();
   const [interviews, setInterviews] = useState([]);
   const [selectedInterview, setSelectedInterview] = useState(null);
-  const { name, age, email, phone, reference } = location.state || {};
+  const { name, position_for, age, email, phone, reference } = location.state || {};
   const [formData, setFormData] = useState({
     name: name || '',
+    position_for: position_for || '',
     age: age || '',
     email: email || '',
     phone: phone || '',
     reference: reference || '',
+    place: "",
     interview_date: "",
-    interviewee_confirmed: false,
-    feedback_provided: false,
-    english_proficiency: false,
-    good_behaviour: false,
-    relevant_skills: false,
-    cultural_fit: false,
-    clarity_of_communication: false,
+    education: '',
+    job_knowledge: '',
+    work_experience: '',
+    communication: '',
+    personality: '',
+    potential: '',
+    general_knowledge: '',
+    assertiveness: '',
     interview_questions: "",
     interview_mark: "",
     interview_result: "",
-    interview_notes: ""
+    interview_notes: "",
+    current_remuneration: "",
+    expected_package: "",
+    notice_period_required: "",
+    recommendation: "",
+    immediate_recruitment: false || "",
+    on_hold: false || "",
+    no_good: false || "",
+    final_selection_remarks: "",
+
   });
   // Function to calculate the interview mark based on boolean fields
   const calculateInterviewMark = (formData) => {
     let score = 0;
-    const totalFields = 5; // Total number of boolean fields
 
-    // If the boolean field is true, add points
-    if (formData.english_proficiency) score += 20;
-    if (formData.good_behaviour) score += 20;
-    if (formData.relevant_skills) score += 20;
-    if (formData.cultural_fit) score += 20;
-    if (formData.clarity_of_communication) score += 20;
+    // Directly use the input values for each field, rather than adding fixed scores
+    if (formData.education) score += formData.education;
+    if (formData.job_knowledge) score += formData.job_knowledge;
+    if (formData.work_experience) score += formData.work_experience;
+    if (formData.communication) score += formData.communication;
+    if (formData.personality) score += formData.personality;
+    if (formData.potential) score += formData.potential;
+    if (formData.general_knowledge) score += formData.general_knowledge;
+    if (formData.assertiveness) score += formData.assertiveness;
 
     // Ensure the score is between 0 and 100
     const interviewMark = Math.min(Math.max(score, 0), 100);
 
     // Automatically set interview result based on the mark
-    const interviewResult = interviewMark >= 80 ? "Passed" : "Failed";
+    let interviewResult = '';
+    if (interviewMark <= 35) {
+      interviewResult = 'Poor';
+    } else if (interviewMark <= 60) {
+      interviewResult = 'Adequate';
+    } else if (interviewMark <= 85) {
+      interviewResult = 'Good';
+    } else {
+      interviewResult = 'Outstanding';
+    }
 
     return { interviewMark, interviewResult };
   };
+
+
 
   // Fetching interview data
   useEffect(() => {
@@ -64,48 +89,73 @@ const Interviews = () => {
       // Pre-fill form with CV details
       setFormData({
         name: cvDetails.name || "",
+        position_for: cvDetails.position_for || "",
         age: cvDetails.age || "",
         email: cvDetails.email || "",
         phone: cvDetails.phone || "",
         reference: cvDetails.reference || "",
+        place: "",
         interview_date: "",
-        interviewee_confirmed: false,
-        feedback_provided: false,
-        english_proficiency: false,
-        good_behaviour: false,
-        relevant_skills: false,
-        cultural_fit: false,
-        clarity_of_communication: false,
+        education: '',
+        job_knowledge: '',
+        work_experience: '',
+        communication: '',
+        personality: '',
+        potential: '',
+        general_knowledge: '',
+        assertiveness: '',
         interview_questions: "",
         interview_mark: "",
         interview_result: "",
         interview_notes: "",
+        current_remuneration: "",
+        expected_package: "",
+        notice_period_required: "",
+        recommendation: "",
+        immediate_recruitment: false || "",
+        on_hold: false || "",
+        no_good: false || "",
+        final_selection_remarks: "",
       });
     }
   }, [location.state]);
 
   const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    const newFormData = {
-      ...formData,
-      [name]: type === "checkbox" ? checked : value,
-    };
+    const { name, value } = e.target;
 
-    // If any boolean field is changed, recalculate the interview mark and result
-    if (
-      name === "english_proficiency" ||
-      name === "good_behaviour" ||
-      name === "relevant_skills" ||
-      name === "cultural_fit" ||
-      name === "clarity_of_communication"
-    ) {
-      const { interviewMark, interviewResult } = calculateInterviewMark(newFormData);
-      newFormData.interview_mark = interviewMark;
-      newFormData.interview_result = interviewResult;
-    }
+    setFormData((prev) => {
+      const updatedValue = isNaN(value) ? value : parseInt(value) || 0;
 
-    setFormData(newFormData);
+      const updatedFormData = {
+        ...prev,
+        [name]: updatedValue,
+      };
+
+      // List of integer fields that should trigger recalculation
+      const integerFields = [
+        "education",
+        "job_knowledge",
+        "work_experience",
+        "communication",
+        "personality",
+        "potential",
+        "general_knowledge",
+        "assertiveness",
+      ];
+
+      // If the field updated is in the integer fields list, recalculate the interview mark
+      if (integerFields.includes(name)) {
+        const { interviewMark, interviewResult } = calculateInterviewMark(updatedFormData);
+        updatedFormData.interview_mark = interviewMark;  // Set the calculated interview mark
+        updatedFormData.interview_result = interviewResult;  // Set the interview result (Poor, Adequate, etc.)
+      }
+
+      return updatedFormData;
+    });
   };
+
+
+
 
   useEffect(() => {
     if (location.state) {
@@ -113,6 +163,7 @@ const Interviews = () => {
       setFormData((prev) => ({
         ...prev,
         name: location.state.name || "",
+        position_for: location.state.position_for || "",
         age: location.state.age || "",
         email: location.state.email || "",
         phone: location.state.phone || "",
@@ -157,6 +208,7 @@ const Interviews = () => {
       console.log("Setting Form Data:", selectedInterview); // 🔍 Debugging
       setFormData({
         name: selectedInterview.name || "",
+        position_for: selectedInterview.position_for || "",
         age: selectedInterview.age || "",
         reference: selectedInterview.reference || "",
         email: selectedInterview.email || "",
@@ -164,17 +216,27 @@ const Interviews = () => {
         interview_date: selectedInterview.interview_date
           ? new Date(selectedInterview.interview_date).toISOString().slice(0, 16)
           : "",
-        interviewee_confirmed: selectedInterview.interviewee_confirmed || false,
-        feedback_provided: selectedInterview.feedback_provided || false,
-        english_proficiency: selectedInterview.english_proficiency || false,
-        good_behaviour: selectedInterview.good_behaviour || false,
-        relevant_skills: selectedInterview.relevant_skills || false,
-        cultural_fit: selectedInterview.cultural_fit || false,
-        clarity_of_communication: selectedInterview.clarity_of_communication || false,
+        place: selectedInterview.place || "",
+        education: selectedInterview.education || "",
+        job_knowledge: selectedInterview.job_knowledge || "",
+        work_experience: selectedInterview.work_experience || "",
+        communication: selectedInterview.communication || "",
+        personality: selectedInterview.personality || "",
+        potential: selectedInterview.potential || "",
+        general_knowledge: selectedInterview.general_knowledge || "",
+        assertiveness: selectedInterview.assertiveness || "",
         interview_questions: selectedInterview.interview_questions || "",
         interview_mark: selectedInterview.interview_mark ?? "", // Ensure non-null value
         interview_result: selectedInterview.interview_result ?? "",
         interview_notes: selectedInterview.interview_notes ?? "",
+        current_remuneration: selectedInterview.current_remuneration || "",
+        expected_package: selectedInterview.expected_package || "",
+        notice_period_required: selectedInterview.notice_period_required || "",
+        recommendation: selectedInterview.recommendation || "",
+        immediate_recruitment: selectedInterview.immediate_recruitment || false,
+        on_hold: selectedInterview.on_hold || false,
+        no_good: selectedInterview.no_good || false,
+        final_selection_remarks: selectedInterview.final_selection_remarks || "",
       });
     } else {
       resetForm();
@@ -258,22 +320,33 @@ const Interviews = () => {
     setSelectedInterview(null);
     setFormData({
       name: location.state?.name || "",
+      position_for: location.state?.position_for || "",
       age: location.state?.age || "",
       email: location.state?.email || "",
       phone: location.state?.phone || "",
       reference: location.state?.reference || "",
+      place: "",
       interview_date: "",
-      interviewee_confirmed: false,
-      feedback_provided: false,
-      english_proficiency: false,
-      good_behaviour: false,
-      relevant_skills: false,
-      cultural_fit: false,
-      clarity_of_communication: false,
+      education: "",
+      job_knowledge: "",
+      work_experience: "",
+      communication: "",
+      personality: "",
+      potential: "",
+      general_knowledge: "",
+      assertiveness: "",
       interview_questions: "",
       interview_mark: "",
       interview_result: "",
       interview_notes: "",
+      current_remuneration: "",
+      expected_package: "",
+      notice_period_required: "",
+      recommendation: "",
+      immediate_recruitment: false,
+      on_hold: false,
+      no_good: false,
+      final_selection_remarks: "",
     });
   };
 
@@ -285,72 +358,409 @@ const Interviews = () => {
 
   const printInterview = (interview) => {
     const printContent = `
-      <h2>${interview.name}'s Interview</h2>
-      <p><strong>Age:</strong> ${interview.age}</p>
-      <p><strong>Reference:</strong> ${interview.reference}</p>
-      <p><strong>Email:</strong> ${interview.email}</p>
-      <p><strong>Phone:</strong> ${interview.phone}</p>
-      <p><strong>Interview Date:</strong> ${new Date(interview.interview_date).toLocaleString()}</p>
-      <p><strong>Interview Mark:</strong> ${interview.interview_mark}</p>
-      <p><strong>Result:</strong> ${interview.interview_result}</p>
-      <p><strong>Notes:</strong> ${interview.interview_notes || "No notes available"}</p>
-      <p><strong>Feedback Provided:</strong> ${interview.feedback_provided ? "Yes" : "No"}</p>
-      <p><strong>English Proficiency:</strong> ${interview.english_proficiency ? "Yes" : "No"}</p>
-      <p><strong>Good Behavior:</strong> ${interview.good_behaviour ? "Yes" : "No"}</p>
-      <p><strong>Relevant Skills:</strong> ${interview.relevant_skills ? "Yes" : "No"}</p>
-      <p><strong>Cultural Fit:</strong> ${interview.cultural_fit ? "Yes" : "No"}</p>
-      <p><strong>Clarity of Communication:</strong> ${interview.clarity_of_communication ? "Yes" : "No"}</p>
-      <p><strong>Interview Questions:</strong> ${interview.interview_questions || "No questions recorded"}</p>
+      <html>
+        <head>
+          <style>
+            body {
+              font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+              line-height: 1.2;
+              color: #333;
+              background-color: #fff;
+              margin: 0;
+              padding: 10px;
+              font-size: 12px;
+            }
+            .container {
+              width: 100%;
+              max-width: 800px;
+              margin: auto;
+              padding: 10px;
+            }
+            h2 {
+              text-align: center;
+              border-bottom: 2px solid #333;
+              padding-bottom: 5px;
+              margin-bottom: 10px;
+              font-size: 16px;
+            }
+            .details-container {
+              display: flex;
+              flex-wrap: wrap;
+              justify-content: space-between;
+            }
+            .details-item {
+              width: 48%;
+              margin-bottom: 5px;
+            }
+            .label {
+              font-weight: bold;
+              color: #2a2a2a;
+            }
+            .value {
+              color: #555;
+            }
+            .vertical-container {
+              margin-top: 10px;
+              border: 1px solid #333;
+              padding: 5px;
+              background-color: #f9f9f9;
+              page-break-inside: avoid;
+            }
+            .vertical-container .item {
+              display: flex;
+              justify-content: space-between;
+              margin-bottom: 3px;
+              padding: 3px;
+            }
+            .footer {
+              text-align: center;
+              margin-top: 10px;
+              font-size: 10px;
+              color: #777;
+            }
+            .final-selection {
+              margin-top: 15px;
+              padding: 10px;
+              border: 1px solid #333;
+              background-color: #f1f1f1;
+              text-align: center;
+              font-weight: bold;
+            }
+            .signature-container {
+              margin-top: 20px;
+              border: 1px solid #333;
+              padding: 10px;
+              background-color: #f1f1f1;
+              page-break-inside: avoid;
+            }
+            .spacer {
+              height: 0.8in; /* Creates a 1-inch vertical gap */
+            }
+
+            .signature-box {
+              height: 50px;
+              width: 200px;
+              border: 1px solid #999;
+              margin-top: 5px;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <h2>${interview.name}'s Interview</h2>
+  
+            <div class="details-container">
+              <div class="details-item"><span class="label">Position:</span> ${interview.position_for}</div>
+              <div class="details-item"><span class="label">Age:</span> ${interview.age}</div>
+              <div class="details-item"><span class="label">Reference:</span> ${interview.reference}</div>
+              <div class="details-item"><span class="label">Email:</span> ${interview.email}</div>
+              <div class="details-item"><span class="label">Phone:</span> ${interview.phone}</div>
+              <div class="details-item"><span class="label">Interview Date:</span> ${new Date(interview.interview_date).toLocaleString()}</div>
+              <div class="details-item"><span class="label">Place:</span> ${interview.place}</div>
+            </div>
+  
+            <div class="vertical-container">
+              <div class="item"><span class="label">Current Remuneration:</span> ${interview.current_remuneration}</div>
+              <div class="item"><span class="label">Expected Package:</span> ${interview.expected_package}</div>
+              <div class="item"><span class="label">Notice Period Required:</span> ${interview.notice_period_required}</div>
+            </div>
+  
+            <div class="vertical-container">
+              <div class="item"><span class="label">Education:</span> ${interview.education}</div>
+              <div class="value">Qualification, special courses & training, projects, reports, surveys, technical knowledge, etc.</div>
+              
+              <div class="item"><span class="label">Job Knowledge:</span> ${interview.job_knowledge}</div>
+              <div class="value">Technical capability, in-depth knowledge, know-how, etc.</div>
+              
+              <div class="item"><span class="label">Work Experience:</span> ${interview.work_experience}</div>
+              <div class="value">With special reference to the function for which they are being interviewed.</div>
+              
+              <div class="item"><span class="label">Communication:</span> ${interview.communication}</div>
+              <div class="value">Language, speech, flexibility, smartness, punctuation, etc.</div>
+              
+              <div class="item"><span class="label">Personality:</span> ${interview.personality}</div>
+              <div class="value">Impression created regarding administrative/leadership/communication skills, look, dress sense, etc.</div>
+              
+              <div class="item"><span class="label">Potential:</span> ${interview.potential}</div>
+              <div class="value">Ambition, enthusiasm, attitude, motivation, initiative, career growth potential.</div>
+              
+              <div class="item"><span class="label">General Knowledge:</span> ${interview.general_knowledge}</div>
+              <div class="value">Interests, hobbies, reading, computer skills, etc.</div>
+              
+              <div class="item"><span class="label">Assertiveness:</span> ${interview.assertiveness}</div>
+              <div class="value">Positive approach, smoothness, flexibility, etc.</div>
+            </div>
+  
+            <div class="vertical-container">
+              <div class="item"><span class="label">Interview Mark:</span> ${interview.interview_mark}</div>
+              <div class="item"><span class="label">Result:</span> ${interview.interview_result}</div>
+            </div>
+  
+            <div class="vertical-container">
+              <div class="item"><span class="label">Recommendation:</span> ${interview.recommendation}</div>
+              <div class="item"><span class="label">Immediate Recruitment:</span> ${interview.immediate_recruitment ? "Yes" : "No"}</div>
+              <div class="item"><span class="label">On Hold:</span> ${interview.on_hold ? "Yes" : "No"}</div>
+              <div class="item"><span class="label">No Good:</span> ${interview.no_good ? "Yes" : "No"}</div>
+              <div class="item"><span class="label">MD Sir Notes:</span> ${interview.interview_notes || "No notes available"}</div>
+              <div class="item"><span class="label">Interview Questions:</span> ${interview.interview_questions || "No questions recorded"}</div>
+            </div>
+  
+            <!-- Final Selection Remarks Section -->
+            
+  
+            <!-- Signature Section -->
+            <div class="signature-container">
+              <div class="item">
+                <span class="label">Final Selection Remarks:</span> ${interview.final_selection_remarks || "No remarks provided"}
+              </div>
+              <div class="spacer"></div> <!-- 1-inch gap -->
+              <div class="item">
+                <div class="signature-box"></div> <!-- Signature box above text -->
+                <span class="label">Interviewer's Signature:</span>
+              </div>
+            </div>
+            <div class="footer">
+              <p>Interview details printed by the HR system</p>
+            </div>
+          </div>
+        </body>
+      </html>
     `;
+
     const newWindow = window.open("", "_blank");
     newWindow.document.write(printContent);
+    newWindow.document.close();
     newWindow.print();
     newWindow.close();
   };
 
+
+
+
   const printAllInterviews = () => {
     const printWindow = window.open("", "Print All Interviews", "width=800,height=800");
-    let allInterviewsContent = "<h2>All Interviews</h2>";
-
+    let allInterviewsContent = `
+      <html>
+        <head>
+          <style>
+            body {
+              font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+              line-height: 1.2;
+              color: #333;
+              background-color: #fff;
+              margin: 0;
+              padding: 10px;
+              font-size: 12px;
+            }
+            .container {
+              width: 100%;
+              max-width: 800px;
+              margin: auto;
+              padding: 10px;
+            }
+            h2 {
+              text-align: center;
+              border-bottom: 2px solid #333;
+              padding-bottom: 5px;
+              margin-bottom: 10px;
+              font-size: 16px;
+            }
+            .details-container {
+              display: flex;
+              flex-wrap: wrap;
+              justify-content: space-between;
+            }
+            .details-item {
+              width: 48%;
+              margin-bottom: 5px;
+            }
+            .label {
+              font-weight: bold;
+              color: #2a2a2a;
+            }
+            .value {
+              color: #555;
+            }
+            .vertical-container {
+              margin-top: 10px;
+              border: 1px solid #333;
+              padding: 5px;
+              background-color: #f9f9f9;
+              page-break-inside: avoid;
+            }
+            .vertical-container .item {
+              display: flex;
+              justify-content: space-between;
+              margin-bottom: 3px;
+              padding: 3px;
+            }
+            .footer {
+              text-align: center;
+              margin-top: 10px;
+              font-size: 10px;
+              color: #777;
+            }
+            .final-selection {
+              margin-top: 15px;
+              padding: 10px;
+              border: 1px solid #333;
+              background-color: #f1f1f1;
+              text-align: center;
+              font-weight: bold;
+            }
+            .signature-container {
+              margin-top: 20px;
+              border: 1px solid #333;
+              padding: 10px;
+              background-color: #f1f1f1;
+              page-break-inside: avoid;
+            }
+            .spacer {
+              height: 0.8in;
+            }
+            .signature-box {
+              height: 50px;
+              width: 200px;
+              border: 1px solid #999;
+              margin-top: 5px;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <h2>All Interviews</h2>
+    `;
+  
+    // Loop through each interview and add their details
     interviews.forEach((interview) => {
       allInterviewsContent += `
-        <div>
-          <p><strong>Name:</strong> ${interview.name}</p>
-          <p><strong>Age:</strong> ${interview.age}</p>
-          <p><strong>Reference:</strong> ${interview.reference}</p>
-          <p><strong>Email:</strong> ${interview.email}</p>
-          <p><strong>Phone:</strong> ${interview.phone}</p>
-          <p><strong>Interview Date:</strong> ${new Date(interview.interview_date).toLocaleString()}</p>
-          <p><strong>Interview Mark:</strong> ${interview.interview_mark}</p>
-          <p><strong>Result:</strong> ${interview.interview_result}</p>
-          <p><strong>Notes:</strong> ${interview.interview_notes || "No notes available"}</p>
-          <p><strong>Feedback Provided:</strong> ${interview.feedback_provided ? "Yes" : "No"}</p>
-          <p><strong>English Proficiency:</strong> ${interview.english_proficiency ? "Yes" : "No"}</p>
-          <p><strong>Good Behavior:</strong> ${interview.good_behaviour ? "Yes" : "No"}</p>
-          <p><strong>Relevant Skills:</strong> ${interview.relevant_skills ? "Yes" : "No"}</p>
-          <p><strong>Cultural Fit:</strong> ${interview.cultural_fit ? "Yes" : "No"}</p>
-          <p><strong>Clarity of Communication:</strong> ${interview.clarity_of_communication ? "Yes" : "No"}</p>
-          <p><strong>Interview Questions:</strong> ${interview.interview_questions || "No questions recorded"}</p>
+        <h2>${interview.name}'s Interview</h2>
+        <div class="details-container">
+          <div class="details-item"><span class="label">Position:</span> ${interview.position_for}</div>
+          <div class="details-item"><span class="label">Age:</span> ${interview.age}</div>
+          <div class="details-item"><span class="label">Reference:</span> ${interview.reference}</div>
+          <div class="details-item"><span class="label">Email:</span> ${interview.email}</div>
+          <div class="details-item"><span class="label">Phone:</span> ${interview.phone}</div>
+          <div class="details-item"><span class="label">Interview Date:</span> ${new Date(interview.interview_date).toLocaleString()}</div>
+          <div class="details-item"><span class="label">Place:</span> ${interview.place}</div>
+        </div>
+  
+        <div class="vertical-container">
+          <div class="item"><span class="label">Current Remuneration:</span> ${interview.current_remuneration}</div>
+          <div class="item"><span class="label">Expected Package:</span> ${interview.expected_package}</div>
+          <div class="item"><span class="label">Notice Period Required:</span> ${interview.notice_period_required}</div>
+        </div>
+  
+        <div class="vertical-container">
+          <div class="item"><span class="label">Education:</span> ${interview.education}</div>
+          <div class="value">Qualification, special courses & training, projects, reports, surveys, technical knowledge, etc.</div>
+          
+          <div class="item"><span class="label">Job Knowledge:</span> ${interview.job_knowledge}</div>
+          <div class="value">Technical capability, in-depth knowledge, know-how, etc.</div>
+          
+          <div class="item"><span class="label">Work Experience:</span> ${interview.work_experience}</div>
+          <div class="value">With special reference to the function for which they are being interviewed.</div>
+          
+          <div class="item"><span class="label">Communication:</span> ${interview.communication}</div>
+          <div class="value">Language, speech, flexibility, smartness, punctuation, etc.</div>
+          
+          <div class="item"><span class="label">Personality:</span> ${interview.personality}</div>
+          <div class="value">Impression created regarding administrative/leadership/communication skills, look, dress sense, etc.</div>
+          
+          <div class="item"><span class="label">Potential:</span> ${interview.potential}</div>
+          <div class="value">Ambition, enthusiasm, attitude, motivation, initiative, career growth potential.</div>
+          
+          <div class="item"><span class="label">General Knowledge:</span> ${interview.general_knowledge}</div>
+          <div class="value">Interests, hobbies, reading, computer skills, etc.</div>
+          
+          <div class="item"><span class="label">Assertiveness:</span> ${interview.assertiveness}</div>
+          <div class="value">Positive approach, smoothness, flexibility, etc.</div>
+        </div>
+  
+        <div class="vertical-container">
+          <div class="item"><span class="label">Interview Mark:</span> ${interview.interview_mark}</div>
+          <div class="item"><span class="label">Result:</span> ${interview.interview_result}</div>
+        </div>
+  
+        <div class="vertical-container">
+          <div class="item"><span class="label">Recommendation:</span> ${interview.recommendation}</div>
+          <div class="item"><span class="label">Immediate Recruitment:</span> ${interview.immediate_recruitment ? "Yes" : "No"}</div>
+          <div class="item"><span class="label">On Hold:</span> ${interview.on_hold ? "Yes" : "No"}</div>
+          <div class="item"><span class="label">No Good:</span> ${interview.no_good ? "Yes" : "No"}</div>
+          <div class="item"><span class="label">MD Sir Notes:</span> ${interview.interview_notes || "No notes available"}</div>
+          <div class="item"><span class="label">Interview Questions:</span> ${interview.interview_questions || "No questions recorded"}</div>
+        </div>
+  
+        <div class="signature-container">
+          <div class="item">
+            <span class="label">Final Selection Remarks:</span> ${interview.final_selection_remarks || "No remarks provided"}
+          </div>
+          <div class="spacer"></div>
+          <div class="item">
+            <div class="signature-box"></div>
+            <span class="label">Interviewer's Signature:</span>
+          </div>
         </div>
         <hr />
       `;
     });
-
+  
+    allInterviewsContent += `
+      <div class="footer">
+        <p>Interview details printed by the HR system</p>
+      </div>
+    </body>
+  </html>
+  `;
+  
     printWindow.document.write(allInterviewsContent);
     printWindow.document.close();
     printWindow.print();
   };
+  
+  
 
   const style = {
     container: {
       display: "flex",
       fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-      height: "100vh",
+      height: "85vh",
+      overflow: "hidden",
+      backgroundColor: "#fff",
+      color: "#333",
+      fontSize: "16px",
+      lineHeight: "1.5",
+      padding: "20px",
+      boxSizing: "border-box",
+      fontWeight: "400",
+      textAlign: "left",
+      margin: "0 auto",
+      maxWidth: "1200px",
+      border: "1px solid #ddd",
+      borderRadius: "10px",
+      boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
+      display: "flex",
+      flexDirection: "row",
+      gap: "20px",
+      justifyContent: "space-between",
+      alignItems: "flex-start",
+      position: "relative",
+      zIndex: 1,
+      padding: "20px",
+      backgroundColor: "#f9f9f9",
+      borderRadius: "10px",
+      boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+      margin: "20px auto",
+      maxWidth: "1200px",
+      overflowY: "auto",
+      overflowX: "hidden",
+      transition: "background-color 0.3s ease",
+      "&:hover": {
+        backgroundColor: "#f0f0f0",
+      },
     },
     sidebar: {
       width: "280px",
-      backgroundColor: "#f3f3f3",
-      borderRight: "1px solid #ddd",
       padding: "20px",
       display: "flex",
       flexDirection: "column",
@@ -398,8 +808,10 @@ const Interviews = () => {
       marginBottom: "20px",
     },
     interviewForm: {
-      display: "flex",
-      flexDirection: "column",
+      display: 'flex',
+      flexWrap: 'wrap', // Allow fields to wrap to the next line if necessary
+      gap: '20px', // Add space between fields
+      justifyContent: 'space-between', // Distribute the items evenly
     },
     input: {
       marginBottom: "10px",
@@ -423,6 +835,23 @@ const Interviews = () => {
       borderRadius: "5px",
       cursor: "pointer",
     },
+    btnSend: {
+      padding: "10px",
+      backgroundColor: "#ffc107", // Yellow color
+      color: "black", // Better contrast with yellow
+      border: "none",
+      borderRadius: "5px",
+      cursor: "pointer",
+    },
+    btnInvite: {
+      padding: "10px",
+      backgroundColor: "#6f42c1", // Yellow color
+      color: "white", // Better contrast with yellow
+      border: "none",
+      borderRadius: "5px",
+      cursor: "pointer",
+    },
+
     toast: {
       padding: "10px",
       borderRadius: "5px",
@@ -439,7 +868,112 @@ const Interviews = () => {
     buttonContainer: {
       display: "flex",
       gap: "10px", // Adjust gap between buttons
+      padding: "20px",
     },
+    button: {
+      padding: "10px",
+      backgroundColor: "#0078d4",
+      color: "white",
+      border: "none",
+      borderRadius: "5px",
+      cursor: "pointer",
+    },
+    infocontainer: {
+      display: "flex",
+      justifycontent: "space-between",
+      flexDirection: "column",
+      marginBottom: "20px",
+      border: "1px solid #ccc",
+      borderRadius: "8px",
+      padding: "20px",
+      backgroundColor: "#f9f9f9",
+      flexWrap: "wrap",
+      gap: "10px",
+      justifyContent: "space-between",
+    },
+    section: {
+      marginBottom: "15px",
+      border: "1px solid #ccc",
+      borderRadius: "8px",
+      padding: "15px",
+      backgroundColor: "#f9f9f9",
+    },
+    detailsContainer: {
+      display: "flex",
+      flexWrap: "wrap",
+      justifyContent: "space-between",
+    },
+    detailsItem: {
+      width: "45%",
+      marginBottom: "10px",
+      fontSize: "14px",
+    },
+    label: {
+      fontWeight: "bold",
+      color: "#2a2a2a",
+    },
+    containerr: {
+      width: "80%",
+      margin: "0 auto",
+      padding: "20px",
+      backgroundColor: "#fff",
+      border: "1px solid #ccc",
+      borderRadius: "8px",
+      fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+      lineHeight: "1.6",
+      color: "#333",
+    },
+    infoItem: {
+      marginBottom: "10px",
+      padding: "10px",
+      borderBottom: "1px solid #eee",
+      backgroundColor: "#fff",
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+    },
+    infoItemLast: {
+      borderBottom: "none",
+    },
+    infoLabel: {
+      fontWeight: "bold",
+      color: "#2a2a2a",
+    },
+    infoValue: {
+      color: "#555",
+    },
+    verticalContainer: {
+      display: "flex",
+      flexDirection: "column",
+      borderRadius: "8px",
+      padding: "15px",
+      backgroundColor: "#f9f9f9",
+    },
+    item: {
+      padding: "10px",
+      borderBottom: "1px solid #eee",
+      backgroundColor: "#fff",
+      display: "flex",
+      flexDirection: "column",
+    },
+    description: {
+      fontSize: "12px",
+      color: "#666",
+      marginTop: "5px",
+    },
+    subHeading: {
+      fontSize: "16px",
+      fontWeight: "bold",
+      color: "#2a2a2a",
+      marginBottom: "10px",
+    },
+    footer: {
+      marginTop: "20px",
+      textAlign: "center",
+      fontSize: "12px",
+      color: "#777",
+    },
+
   };
 
 
@@ -493,23 +1027,74 @@ const Interviews = () => {
         )}
         {selectedInterview ? (
           <div>
-            <h2>{selectedInterview.name}</h2>
-            <p><strong>Name:</strong> {selectedInterview.name}</p>
-            <p><strong>Age:</strong> {selectedInterview.age}</p>
-            <p><strong>Reference:</strong> {selectedInterview.reference}</p>
-            <p><strong>Email:</strong> {selectedInterview.email}</p>
-            <p><strong>Phone:</strong> {selectedInterview.phone}</p>
-            <p><strong>Interview Date:</strong> {new Date(selectedInterview.interview_date).toLocaleString()}</p>
-            <p><strong>Interview Mark:</strong> {selectedInterview.interview_mark}</p>
-            <p><strong>Interview Result:</strong> {selectedInterview.interview_result}</p>
-            <p><strong>Interview Notes:</strong> {selectedInterview.interview_notes || "No notes available"}</p>
-            <p><strong>Feedback Provided:</strong> {selectedInterview.feedback_provided ? "Yes" : "No"}</p>
-            <p><strong>English Proficiency:</strong> {selectedInterview.english_proficiency ? "Yes" : "No"}</p>
-            <p><strong>Good Behavior:</strong> {selectedInterview.good_behaviour ? "Yes" : "No"}</p>
-            <p><strong>Relevant Skills:</strong> {selectedInterview.relevant_skills ? "Yes" : "No"}</p>
-            <p><strong>Cultural Fit:</strong> {selectedInterview.cultural_fit ? "Yes" : "No"}</p>
-            <p><strong>Clarity of Communication:</strong> {selectedInterview.clarity_of_communication ? "Yes" : "No"}</p>
-            <p><strong>Interview Questions:</strong> {selectedInterview.interview_questions || "No questions recorded"}</p>
+            <h2 className="header">{selectedInterview.name}'s Interview</h2>
+
+            {/* Section 1: Basic Info */}
+            <div style={style.containerr}>
+
+              <div style={style.section}>
+                <div style={style.detailsContainer}>
+                  <div style={style.detailsItem}><span style={style.label}>Position:</span> {selectedInterview.position_for}</div>
+                  <div style={style.detailsItem}><span style={style.label}>Age:</span> {selectedInterview.age}</div>
+                  <div style={style.detailsItem}><span style={style.label}>Reference:</span> {selectedInterview.reference}</div>
+                  <div style={style.detailsItem}><span style={style.label}>Email:</span> {selectedInterview.email}</div>
+                  <div style={style.detailsItem}><span style={style.label}>Phone:</span> {selectedInterview.phone}</div>
+                  <div style={style.detailsItem}><span style={style.label}>Interview Date:</span> {new Date(selectedInterview.interview_date).toLocaleString()}</div>
+                  <div style={style.detailsItem}><span style={style.label}>Place:</span> {selectedInterview.place}</div>
+                </div>
+              </div>
+
+              {/* Section 2: Remuneration */}
+              <div style={style.section}>
+                <div style={style.detailsContainer}>
+                  <div style={style.detailsItem}><span style={style.label}>Current Remuneration:</span> {selectedInterview.current_remuneration}</div>
+                  <div style={style.detailsItem}><span style={style.label}>Expected Package:</span> {selectedInterview.expected_package}</div>
+                  <div style={style.detailsItem}><span style={style.label}>Notice Period Required:</span> {selectedInterview.notice_period_required}</div>
+                </div>
+              </div>
+
+              {/* Section 3: Evaluation Criteria */}
+              <div style={style.section}>
+                <h3 style={style.subHeading}>Evaluation Criteria</h3>
+                <div style={style.verticalContainer}>
+                  <div style={style.item}><span style={style.label}>Education:</span> {selectedInterview.education} <p style={style.description}>Qualification, special courses and training, projects, reports, surveys, technical knowledge, etc.</p></div>
+                  <div style={style.item}><span style={style.label}>Job Knowledge:</span> {selectedInterview.job_knowledge} <p style={style.description}>Technical capability, in-depth knowledge, know-how.</p></div>
+                  <div style={style.item}><span style={style.label}>Work Experience:</span> {selectedInterview.work_experience} <p style={style.description}>With special reference to function for which he is being interviewed.</p></div>
+                  <div style={style.item}><span style={style.label}>Communication:</span> {selectedInterview.communication} <p style={style.description}>Language, speech, flexibility, smartness, punctuality, etc.</p></div>
+                  <div style={style.item}><span style={style.label}>Personality:</span> {selectedInterview.personality} <p style={style.description}>Impression created regarding administrative/leadership/communication skills, look, dress sense, etc.</p></div>
+                  <div style={style.item}><span style={style.label}>Potential:</span> {selectedInterview.potential} <p style={style.description}>Ambition, enthusiasm, attitude, motivation, initiative, and career aspirations.</p></div>
+                  <div style={style.item}><span style={style.label}>General Knowledge:</span> {selectedInterview.general_knowledge} <p style={style.description}>Interests, hobbies, reading habits, computer skills, etc.</p></div>
+                  <div style={style.item}><span style={style.label}>Assertiveness:</span> {selectedInterview.assertiveness} <p style={style.description}>Positive approach, smoothness, flexibility, etc.</p></div>
+                </div>
+              </div>
+
+              {/* Section 4: Interview Result */}
+              <div style={style.section}>
+                <div style={style.detailsContainer}>
+                  <div style={style.detailsItem}><span style={style.label}>Interview Mark:</span> {selectedInterview.interview_mark}</div>
+                  <div style={style.detailsItem}><span style={style.label}>Interview Result:</span> {selectedInterview.interview_result}</div>
+                </div>
+              </div>
+
+              {/* Section 5: Decision & Notes */}
+              <div style={style.section}>
+                <div style={style.detailsContainer}>
+                  <div style={style.detailsItem}><span style={style.label}>Recommendation:</span> {selectedInterview.recommendation}</div>
+                  <div style={style.detailsItem}><span style={style.label}>Immediate Recruitment:</span> {selectedInterview.immediate_recruitment ? "Yes" : "No"}</div>
+                  <div style={style.detailsItem}><span style={style.label}>On Hold:</span> {selectedInterview.on_hold ? "Yes" : "No"}</div>
+                  <div style={style.detailsItem}><span style={style.label}>No Good:</span> {selectedInterview.no_good ? "Yes" : "No"}</div>
+                  <div style={style.detailsItem}><span style={style.label}>Interview Questions:</span> {selectedInterview.interview_questions || "No questions recorded"}</div>
+                  <div style={style.detailsItem}><span style={style.label}>MD Sir Notes:</span> {selectedInterview.interview_notes || "No notes available"}</div>
+                  <div style={style.detailsItem}><span style={style.label}>Final Selection Remarks:</span> {selectedInterview.final_selection_remarks || "No remarks provided"}</div>
+                </div>
+              </div>
+
+              <div style={style.footer}>
+                <p>Interview details printed by the HR system</p>
+              </div>
+            </div>
+
+
             <div style={style.buttonContainer}>
               <button onClick={() => printInterview(selectedInterview)} style={style.button}>
                 Print Interview
@@ -517,10 +1102,10 @@ const Interviews = () => {
               <button style={style.btnDelete} onClick={() => handleDelete(selectedInterview.id)}>
                 Delete Interview
               </button>
-              <button style={style.btnDelete} onClick={() => handleSendMail(selectedInterview)}>
-                Sent Mail
+              <button style={style.btnSend} onClick={() => handleSendMail(selectedInterview)}>
+                Sent Mail to MD Sir
               </button>
-              <button style={style.btnDelete} onClick={() => handleInviteMail(selectedInterview)}>
+              <button style={style.btnInvite} onClick={() => handleInviteMail(selectedInterview)}>
                 Invite for interview
               </button>
               <button style={{ ...style.button, ...style.buttonPrint }} onClick={() => handleLetterSend(selectedInterview)}>
@@ -534,147 +1119,275 @@ const Interviews = () => {
         )}
 
         <form style={style.interviewForm} onSubmit={handleSubmit}>
-          <label>Name</label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleInputChange}
-            style={style.input}
-            readOnly
-          />
-
-          <label>Age</label>
-          <input
-            type="number"
-            name="age"
-            value={formData.age}
-            onChange={handleInputChange}
-            style={style.input}
-          />
-
-          <label>Reference</label>
-          <input
-            type="text"
-            name="reference"
-            value={formData.reference}
-            onChange={handleInputChange}
-            style={style.input}
-          />
-
-          <label>Email</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleInputChange}
-            style={style.input}
-          />
-
-          <label>Phone</label>
-          <input
-            type="tel"
-            name="phone"
-            value={formData.phone}
-            onChange={handleInputChange}
-            style={style.input}
-          />
-
-          <label>Interview Date</label>
-          <input
-            type="datetime-local"
-            name="interview_date"
-            value={formData.interview_date}
-            onChange={handleInputChange}
-            style={style.input}
-          />
-
-          <label>Interview Mark</label>
-          <input
-            type="number"
-            name="interview_mark"
-            value={formData.interview_mark}
-            onChange={handleInputChange}
-            style={style.input}
-          />
-
-          <label>Interview Result</label>
-          <input
-            type="text"
-            name="interview_result"
-            value={formData.interview_result}
-            onChange={handleInputChange}
-            style={style.input}
-          />
-
-          <label>Interview Notes</label>
-          <textarea
-            name="interview_notes"
-            value={formData.interview_notes}
-            onChange={handleInputChange}
-            style={style.input}
-          />
-
           <div>
-            <label>Feedback Provided</label>
+            <label>Name</label>
             <input
-              type="checkbox"
-              name="feedback_provided"
-              checked={formData.feedback_provided}
+              type="text"
+              name="name"
+              value={formData.name}
               onChange={handleInputChange}
+              style={style.input}
+            />
+          </div>
+          <div>
+            <label>Position for</label>
+            <input
+              type="text"
+              name="position_for"
+              value={formData.position_for}
+              onChange={handleInputChange}
+              style={style.input}
+            />
+          </div>
+          <div>
+            <label>Age</label>
+            <input
+              type="number"
+              name="age"
+              value={formData.age}
+              onChange={handleInputChange}
+              style={style.input}
+            />
+          </div>
+          <div>
+            <label>Reference</label>
+            <input
+              type="text"
+              name="reference"
+              value={formData.reference}
+              onChange={handleInputChange}
+              style={style.input}
             />
           </div>
 
           <div>
-            <label>English Proficiency</label>
+            <label>Email</label>
             <input
-              type="checkbox"
-              name="english_proficiency"
-              checked={formData.english_proficiency}
+              type="email"
+              name="email"
+              value={formData.email}
               onChange={handleInputChange}
+              style={style.input}
             />
           </div>
 
           <div>
-            <label>Good Behavior</label>
+            <label>Phone</label>
             <input
-              type="checkbox"
-              name="good_behaviour"
-              checked={formData.good_behaviour}
+              type="tel"
+              name="phone"
+              value={formData.phone}
               onChange={handleInputChange}
+              style={style.input}
             />
           </div>
 
           <div>
-            <label>Relevant Skills</label>
+            <label>Interview Date</label>
             <input
-              type="checkbox"
-              name="relevant_skills"
-              checked={formData.relevant_skills}
+              type="datetime-local"
+              name="interview_date"
+              value={formData.interview_date}
               onChange={handleInputChange}
+              style={style.input}
             />
           </div>
 
           <div>
-            <label>Cultural Fit</label>
+            <label>Place</label>
             <input
-              type="checkbox"
-              name="cultural_fit"
-              checked={formData.cultural_fit}
+              type="text"
+              name="place"
+              value={formData.place}
               onChange={handleInputChange}
+              style={style.input}
+            />
+          </div>
+          <div>
+            <label>Interview Mark</label>
+            <input
+              type="number"
+              name="interview_mark"
+              value={formData.interview_mark}
+              onChange={handleInputChange}
+              style={style.input}
             />
           </div>
 
           <div>
-            <label>Clarity of Communication</label>
+            <label>Interview Result</label>
             <input
-              type="checkbox"
-              name="clarity_of_communication"
-              checked={formData.clarity_of_communication}
+              type="text"
+              name="interview_result"
+              value={formData.interview_result}
               onChange={handleInputChange}
+              style={style.input}
             />
           </div>
 
+
+          <div>
+            <label>Education (Max 20)</label>
+            <input
+              type="number"
+              name="education"
+              value={formData.education}
+              onChange={handleInputChange}
+              style={style.input}
+              max="20"
+            />
+          </div>
+
+          <div>
+            <label>Job Knowledge (Max 20)</label>
+            <input
+              type="number"
+              name="job_knowledge"
+              value={formData.job_knowledge}
+              onChange={handleInputChange}
+              style={style.input}
+              max="20"
+            />
+          </div>
+
+          <div>
+            <label>Work Experience (Max 10)</label>
+            <input
+              type="number"
+              name="work_experience"
+              value={formData.work_experience}
+              onChange={handleInputChange}
+              style={style.input}
+              max="10"
+            />
+          </div>
+
+          <div>
+            <label>Communication (Max 10)</label>
+            <input
+              type="number"
+              name="communication"
+              value={formData.communication}
+              onChange={handleInputChange}
+              style={style.input}
+              max="10"
+            />
+          </div>
+          <div>
+            <label>Personality (Max 10)</label>
+            <input
+              type="number"
+              name="personality"
+              value={formData.personality}
+              onChange={handleInputChange}
+              style={style.input}
+              max="10"
+            />
+          </div>
+
+          <div>
+            <label>Potential (Max 10)</label>
+            <input
+              type="number"
+              name="potential"
+              value={formData.potential}
+              onChange={handleInputChange}
+              style={style.input}
+              max="10"
+            />
+          </div>
+
+          <div>
+            <label>General Knowledge (Max 10)</label>
+            <input
+              type="number"
+              name="general_knowledge"
+              value={formData.general_knowledge}
+              onChange={handleInputChange}
+              style={style.input}
+              max="10"
+            />
+          </div>
+          <div>
+            <label>Assertiveness (Max 10)</label>
+            <input
+              type="number"
+              name="assertiveness"
+              value={formData.assertiveness}
+              onChange={handleInputChange}
+              style={style.input}
+              max="10"
+            />
+          </div>
+
+
+          <div>
+            <label>Current Remuneration</label>
+            <input
+              type="text"
+              name="current_remuneration"
+              value={formData.current_remuneration}
+              onChange={handleInputChange}
+              style={style.input}
+            />
+          </div>
+          <div>
+            <label>Expected Package</label>
+            <input
+              type="text"
+              name="expected_package"
+              value={formData.expected_package}
+              onChange={handleInputChange}
+              style={style.input}
+            />
+          </div>
+          <div>
+            <label>Notice Period Required</label>
+            <input
+              type="text"
+              name="notice_period_required"
+              value={formData.notice_period_required}
+              onChange={handleInputChange}
+              style={style.input}
+            />
+          </div>
+          <div>
+            <label>Recommendation</label>
+            <input
+              type="text"
+              name="recommendation"
+              value={formData.recommendation}
+              onChange={handleInputChange}
+              style={style.input}
+            />
+          </div>
+          <div>
+            <label>Immediate Recruitment</label>
+            <input
+              type="checkbox"
+              name="immediate_recruitment"
+              checked={formData.immediate_recruitment}
+              onChange={(e) => setFormData({ ...formData, immediate_recruitment: e.target.checked })}
+            />
+          </div>
+          <div>
+            <label>On Hold</label>
+            <input
+              type="checkbox"
+              name="on_hold"
+              checked={formData.on_hold}
+              onChange={(e) => setFormData({ ...formData, on_hold: e.target.checked })}
+            />
+          </div>
+          <div>
+            <label>No Good</label>
+            <input
+              type="checkbox"
+              name="no_good"
+              checked={formData.no_good}
+              onChange={(e) => setFormData({ ...formData, no_good: e.target.checked })}
+            />
+          </div>
           <div>
             <label>Interview Questions</label>
             <textarea
@@ -685,9 +1398,29 @@ const Interviews = () => {
             />
           </div>
 
-          <button type="submit" style={style.btnSubmit}>
-            {selectedInterview ? "Update Interview" : "Create Interview"}
-          </button>
+          <div>
+            <label>MD Sir Notes</label>
+            <textarea
+              name="interview_notes"
+              value={formData.interview_notes}
+              onChange={handleInputChange}
+              style={style.input}
+            />
+          </div>
+          <div>
+            <label>Final Selection Remarks</label>
+            <textarea
+              name="final_selection_remarks"
+              value={formData.final_selection_remarks}
+              onChange={handleInputChange}
+              style={style.input}
+            />
+          </div>
+          <div>
+            <button type="submit" style={style.btnSubmit}>
+              {selectedInterview ? "Update Interview" : "Create Interview"}
+            </button>
+          </div>
         </form>
       </div>
     </div>

@@ -11,36 +11,36 @@ const LoginPage = () => {
   const logoImage = "public/texweave_Logo_1.png";
 
 
-// // const handleLogin = async (e) => {
-// //   e.preventDefault();
-// //   setError("");
-// //   setLoading(true);
+  // // const handleLogin = async (e) => {
+  // //   e.preventDefault();
+  // //   setError("");
+  // //   setLoading(true);
 
-// //   try {
-// //     const response = await fetch("http://127.0.0.1:8000/users/login/", {
-// //       method: "POST",
-// //       headers: {
-// //         "Content-Type": "application/json",
-// //       },
-// //       body: JSON.stringify({ username, password }),
-// //     });
+  // //   try {
+  // //     const response = await fetch("http://127.0.0.1:8000/users/login/", {
+  // //       method: "POST",
+  // //       headers: {
+  // //         "Content-Type": "application/json",
+  // //       },
+  // //       body: JSON.stringify({ username, password }),
+  // //     });
 
-// //     const data = await response.json();
+  // //     const data = await response.json();
 
-// //     if (response.ok) {
-// //       localStorage.setItem("token", data.token);
-// //       setUsername("");
-// //       setPassword("");
-// //       navigate("/dashboard");
-// //     } else {
-// //       setError(data.error || "Login failed. Please try again.");
-// //     }
-// //   } catch (err) {
-// //     setError("An error occurred. Please try again later.");
-// //   } finally {
-// //     setLoading(false);
-// //   }
-// // };
+  // //     if (response.ok) {
+  // //       localStorage.setItem("token", data.token);
+  // //       setUsername("");
+  // //       setPassword("");
+  // //       navigate("/dashboard");
+  // //     } else {
+  // //       setError(data.error || "Login failed. Please try again.");
+  // //     }
+  // //   } catch (err) {
+  // //     setError("An error occurred. Please try again later.");
+  // //   } finally {
+  // //     setLoading(false);
+  // //   }
+  // // };
 
   const getBackendURL = () => {
     return window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
@@ -96,7 +96,7 @@ const LoginPage = () => {
             text-align: center;
             background: linear-gradient(60deg, rgba(84,58,183,1) 0%, rgba(0,172,193,1) 100%);
             color: white;
-            height: 100vh;
+            height: 90vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -107,7 +107,7 @@ const LoginPage = () => {
             position: absolute;
             bottom: 0;
             width: 100%;
-            height: 15vh;
+            height: 25vh;
             min-height: 100px;
             max-height: 150px;
           }
@@ -187,6 +187,21 @@ const LoginPage = () => {
             font-size: 14px;
             margin-bottom: 10px;
           }
+
+          .content {
+            position:relative;
+            height:10vh;
+            text-align:center;
+            background-color: white;
+            font-size: 0.7rem;
+          }
+
+          .flex { /*Flexbox for containers*/
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+          }
         `}
       </style>
 
@@ -231,9 +246,13 @@ const LoginPage = () => {
             <use xlinkHref="#gentle-wave" x="48" y="0" fill="rgba(209, 62, 62, 0.35)" />
             <use xlinkHref="#gentle-wave" x="48" y="3" fill="rgba(8, 213, 249, 0.55)" />
             <use xlinkHref="#gentle-wave" x="48" y="5" fill="rgba(156, 216, 121, 0.69)" />
-            <use xlinkHref="#gentle-wave" x="48" y="7" fill="rgba(245, 244, 244, 0.88)" />
+            <use xlinkHref="#gentle-wave" x="48" y="7" fill="#fff" />
           </g>
         </svg>
+      </div>
+      <div class="content flex">
+        <p>Attention: Please note that transactions over the internet may be subject to interruption, delayed transmission due to internet traffic, or incorrect data transmission due to the nature of the internet. TEXWEAVE cannot assume responsibility for malfunctions in communications facilities not under our control or problems caused by your computing environment that may affect your usage of the CBX application.
+          ©2025 Copyright by TEXWEAVE. All rights reserved </p>
       </div>
     </>
   );

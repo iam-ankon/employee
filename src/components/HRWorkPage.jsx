@@ -10,71 +10,61 @@ const HRWorkPage = () => {
         <ul>
           <li>
             <Link to="/employees" className="flex items-center py-2 hover:text-gray-300">
-              <img src="/Users/iam_ankon/Desktop/employee/public/1.jpg" alt="Employees" className="mr-2 w-5 h-5" />
               Employees
             </Link>
           </li>
           <li>
             <Link to="/attendance" className="flex items-center py-2 hover:text-gray-300">
-              <img src="/path/to/attendance-logo.png" alt="Attendance" className="mr-2 w-5 h-5" />
               Attendance
             </Link>
           </li>
           <li>
             <Link to="/email-logs" className="flex items-center py-2 hover:text-gray-300">
-              <img src="/path/to/email-logs-logo.png" alt="Email Logs" className="mr-2 w-5 h-5" />
               Email Logs
             </Link>
           </li>
           <li>
             <Link to="/interviews" className="flex items-center py-2 hover:text-gray-300">
-              <img src="/path/to/interviews-logo.png" alt="Interviews" className="mr-2 w-5 h-5" />
               Interviews
             </Link>
           </li>
           <li>
             <Link to="/finance-provision" className="flex items-center py-2 hover:text-gray-300">
-              <img src="/path/to/finance-logo.png" alt="Finance Provision" className="mr-2 w-5 h-5" />
               Finance Provision
             </Link>
           </li>
           <li>
             <Link to="/admin-provision" className="flex items-center py-2 hover:text-gray-300">
-              <img src="/path/to/admin-logo.png" alt="Admin Provision" className="mr-2 w-5 h-5" />
               Admin Provision
             </Link>
           </li>
           <li>
             <Link to="/it-provision" className="flex items-center py-2 hover:text-gray-300">
-              <img src="/path/to/it-logo.png" alt="IT Provision" className="mr-2 w-5 h-5" />
               IT Provision
             </Link>
           </li>
           <li>
             <Link to="/cv-add" className="flex items-center py-2 hover:text-gray-300">
-              <img src="/path/to/cv-add-logo.png" alt="Add CV" className="mr-2 w-5 h-5" />
               Add CV
             </Link>
           </li>
           <li>
             <Link to="/letter-send" className="flex items-center py-2 hover:text-gray-300">
-              <img src="/path/to/cv-management-logo.png" alt="CV Management" className="mr-2 w-5 h-5" />
-              CV Management
+            Letter Send
             </Link>
           </li>
           <li>
             <Link to="/tad-groups" className="flex items-center py-2 hover:text-gray-300">
-              <img src="/path/to/cv-management-logo.png" alt="tad groups" className="mr-2 w-5 h-5" />
               Tad Groups
             </Link>
           </li>
           <li>
             <Link to="/tad-groups" className="flex items-center py-2 hover:text-gray-300">
-              <img src="/path/to/cv-management-logo.png" alt="tad groups" className="mr-2 w-5 h-5" />
               Employee Termination Process
             </Link>
           </li>
         </ul>
+
       </div>
 
       {/* Main Content Area */}
@@ -84,57 +74,57 @@ const HRWorkPage = () => {
         {/* Cards section */}
         <div className="card-container">
           <div className="card">
-            <h3>Employees</h3>
+            <h3> 👥  Employees</h3>
             <p>Manage employee data, view lists, and perform actions on employee records.</p>
             <Link to="/employees">Go to Employees</Link>
           </div>
           <div className="card">
-            <h3>Attendance</h3>
+            <h3> 📝 Attendance</h3>
             <p>Track employee attendance, review reports, and manage leave requests.</p>
             <Link to="/attendance">Go to Attendance</Link>
           </div>
           <div className="card">
-            <h3>Email Logs</h3>
+            <h3>📧 Email Logs</h3>
             <p>View email communication logs and track messages sent to employees.</p>
             <Link to="/email-logs">Go to Email Logs</Link>
           </div>
           <div className="card">
-            <h3>Interviews</h3>
+            <h3>💼 Interviews</h3>
             <p>Manage interview schedules, view past interviews, and make decisions.</p>
             <Link to="/interviews">Go to Interviews</Link>
           </div>
           <div className="card">
-            <h3>Finance Provision</h3>
+            <h3>📊 Finance Provision</h3>
             <p>Manage financial resources, allocate budgets, and track expenses.</p>
             <Link to="/finance-provision">Go to Finance Provision</Link>
           </div>
           <div className="card">
-            <h3>Admin Provision</h3>
+            <h3>🛠️ Admin Provision</h3>
             <p>Manage administrative tasks, user roles, and system settings.</p>
             <Link to="/admin-provision">Go to Admin Provision</Link>
           </div>
           <div className="card">
-            <h3>IT Provision</h3>
+            <h3>💻 IT Provision</h3>
             <p>Manage IT resources, provision hardware, and assign software licenses.</p>
             <Link to="/it-provision">Go to IT Provision</Link>
           </div>
           <div className="card">
-            <h3>Letter Send</h3>
+            <h3>📮 Letter Send</h3>
             <p>Manage letter submissions, review applications, and send offer letters.</p>
             <Link to="/letter-send">Go to Letter Send</Link>
           </div>
           <div className="card">
-            <h3>Add CV</h3>
+            <h3>📑 Add CV</h3>
             <p>Upload CV files, enter applicant details, and submit candidate profiles.</p>
             <Link to="/cv-list">Go to Add CV</Link>
           </div>
           <div className="card">
-            <h3>Tad Groups</h3>
+            <h3>🌐 Tad Groups</h3>
             <p>Upload company names only.</p>
             <Link to="/tad-groups">Go to Tad Groups</Link>
           </div>
           <div className="card">
-            <h3>Employee Termination Process</h3>
+            <h3>🔴 Employee Termination Process</h3>
             <p>Upload Letter for the employee.</p>
             <Link to="/employee-termination">Go to Tad Groups</Link>
           </div>

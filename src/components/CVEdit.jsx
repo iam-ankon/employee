@@ -7,6 +7,7 @@ const CVEdit = () => {
   const [cv, setCv] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
+    position_for: "",
     age: "",
     reference: "",
     email: "",
@@ -21,6 +22,7 @@ const CVEdit = () => {
         setCv(response.data);
         setFormData({
           name: response.data.name,
+          position_for: response.data.position_for || "",
           age: response.data.age || "",
           reference: response.data.reference || "",
           email: response.data.email || "",
@@ -55,6 +57,7 @@ const CVEdit = () => {
 
     const formDataToSubmit = new FormData();
     formDataToSubmit.append("name", formData.name);
+    formDataToSubmit.append("position_for", formData.position_for);
     formDataToSubmit.append("age", formData.age);
     formDataToSubmit.append("reference", formData.reference);
     formDataToSubmit.append("email", formData.email);
@@ -85,6 +88,11 @@ const CVEdit = () => {
           <div className="form-group">
             <label>Name</label>
             <input type="text" name="name" value={formData.name} onChange={handleChange} required className="form-control" />
+          </div>
+
+          <div className="form-group">
+            <label>Position for</label>
+            <input type="text" name="name" value={formData.position_for} onChange={handleChange} required className="form-control" />
           </div>
 
           <div className="form-group">

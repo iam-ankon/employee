@@ -120,6 +120,7 @@ const CVDetail = () => {
                     <h2 style={styles.header}>CV Details</h2>
                     <div style={styles.details}>
                         <p><strong>Name:</strong> {cvDetails.name}</p>
+                        <p><strong>Position:</strong> {cvDetails.position_for}</p>
                         <p><strong>Age:</strong> {cvDetails.age}</p>
                         <p><strong>Email:</strong> {cvDetails.email}</p>
                         <p><strong>Phone:</strong> {cvDetails.phone}</p>

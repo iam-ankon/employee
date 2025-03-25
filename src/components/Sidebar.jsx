@@ -69,7 +69,7 @@ const Sidebar = () => {
           onClick={handleHRWorkClick}
           className="hr-work-btn"
         >
-          HR Work
+          🧑‍💼 HR Work
         </button>
       </div>
 

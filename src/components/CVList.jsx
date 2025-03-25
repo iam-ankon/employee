@@ -105,6 +105,7 @@ const CVList = () => {
                     <thead>
                         <tr>
                             <th style={styles.th}>Name</th>
+                            <th style={styles.th}>Position For</th>
                             <th style={styles.th}>Age</th>
                             <th style={styles.th}>Email</th>
                             <th style={styles.th}>Phone</th>
@@ -118,6 +119,7 @@ const CVList = () => {
                         {filteredCvs.map((cv) => (
                             <tr key={cv.id}>
                                 <td style={styles.td}>{cv.name}</td>
+                                <td style={styles.td}>{cv.position_for}</td>
                                 <td style={styles.td}>{cv.age}</td>
                                 <td style={styles.td}>{cv.email}</td>
                                 <td style={styles.td}>{cv.phone}</td>

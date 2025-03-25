@@ -62,21 +62,32 @@ const MailMdSir = () => {
         <div style={styles.detailsContainer}>
           <h3>Interview Details</h3>
           <p><strong>Name:</strong> {interviewDetails.name}</p>
+          <p><strong>Position:</strong> {interviewDetails.position_for}</p>
           <p><strong>Age:</strong> {interviewDetails.age}</p>
           <p><strong>Reference:</strong> {interviewDetails.reference}</p>
           <p><strong>Email:</strong> {interviewDetails.email}</p>
           <p><strong>Phone:</strong> {interviewDetails.phone}</p>
           <p><strong>Interview Date:</strong> {new Date(interviewDetails.interview_date).toLocaleString()}</p>
+          <p><strong>Place:</strong> {interviewDetails.place}</p>
           <p><strong>Interview Mark:</strong> {interviewDetails.interview_mark}</p>
           <p><strong>Interview Result:</strong> {interviewDetails.interview_result}</p>
-          <p><strong>Interview Notes:</strong> {interviewDetails.interview_notes || "No notes available"}</p>
-          <p><strong>Feedback Provided:</strong> {interviewDetails.feedback_provided ? "Yes" : "No"}</p>
-          <p><strong>English Proficiency:</strong> {interviewDetails.english_proficiency ? "Yes" : "No"}</p>
-          <p><strong>Good Behavior:</strong> {interviewDetails.good_behaviour ? "Yes" : "No"}</p>
-          <p><strong>Relevant Skills:</strong> {interviewDetails.relevant_skills ? "Yes" : "No"}</p>
-          <p><strong>Cultural Fit:</strong> {interviewDetails.cultural_fit ? "Yes" : "No"}</p>
-          <p><strong>Clarity of Communication:</strong> {interviewDetails.clarity_of_communication ? "Yes" : "No"}</p>
+          <p><strong>Education:</strong> {interviewDetails.education}</p>
+          <p><strong>Job Knowledge:</strong> {interviewDetails.job_knowledge}</p>
+          <p><strong>Work Experience:</strong> {interviewDetails.work_experience}</p>
+          <p><strong>Communication:</strong> {interviewDetails.communication}</p>
+          <p><strong>Personality:</strong> {interviewDetails.personality}</p>
+          <p><strong>Potential:</strong> {interviewDetails.potential}</p>
+          <p><strong>General Knowledge:</strong> {interviewDetails.general_knowledge}</p>
+          <p><strong>Assertiveness:</strong> {interviewDetails.assertiveness}</p>
+          <p><strong>Current Remuneration:</strong> {interviewDetails.current_remuneration}</p>
+          <p><strong>Expected Package:</strong> {interviewDetails.expected_package}</p>
+          <p><strong>Notice Period Required:</strong> {interviewDetails.notice_period_required}</p>
+          <p><strong>Recommendation:</strong> {interviewDetails.recommendation}</p>
+          <p><strong>Immediate Recruitment:</strong> {interviewDetails.immediate_recruitment ? "Yes" : "No"}</p>
+          <p><strong>On Hold:</strong> {interviewDetails.on_hold ? "Yes" : "No"}</p>
+          <p><strong>No Good:</strong> {interviewDetails.no_good ? "Yes" : "No"}</p>
           <p><strong>Interview Questions:</strong> {interviewDetails.interview_questions || "No questions recorded"}</p>
+          <p><strong>MD Sir Notes:</strong> {interviewDetails.interview_notes || "No notes available"}</p>
         </div>
 
         <div style={styles.inputContainer}>

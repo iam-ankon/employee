@@ -5,6 +5,7 @@ import axios from "axios";
 const CVAdd = () => {
   const [formData, setFormData] = useState({
     name: "",
+    position_for: "",
     age: "",
     reference: "",
     email: "",
@@ -33,6 +34,7 @@ const CVAdd = () => {
 
     const uploadData = new FormData();
     uploadData.append("name", formData.name);
+    uploadData.append("position_for", formData.position_for);
     uploadData.append("age", formData.age);
     uploadData.append("reference", formData.reference);
     uploadData.append("email", formData.email);
@@ -45,7 +47,7 @@ const CVAdd = () => {
       });
 
       alert("CV uploaded successfully");
-      setFormData({ name: "", age: "", reference: "", email: "", phone: "", cvFile: null });
+      setFormData({ name: "",position_for: "", age: "", reference: "", email: "", phone: "", cvFile: null });
     } catch (error) {
       console.error("Error uploading CV:", error);
       alert("Failed to upload CV");
@@ -63,8 +65,13 @@ const CVAdd = () => {
           </div>
 
           <div className="form-group">
+            <label>Position for:</label>
+            <input type="text" name="position_for" value={formData.position_for} onChange={handleChange} className="input-field" />
+          </div>
+
+          <div className="form-group">
             <label>Age:</label>
-            <input type="number" name="age" value={formData.age} onChange={handleChange} required className="input-field" />
+            <input type="number" name="age" value={formData.age} onChange={handleChange} className="input-field" />
           </div>
 
           <div className="form-group">
@@ -74,12 +81,12 @@ const CVAdd = () => {
 
           <div className="form-group">
             <label>Email:</label>
-            <input type="email" name="email" value={formData.email} onChange={handleChange} required className="input-field" />
+            <input type="email" name="email" value={formData.email} onChange={handleChange}  className="input-field" />
           </div>
 
           <div className="form-group">
             <label>Phone:</label>
-            <input type="text" name="phone" value={formData.phone} onChange={handleChange} required className="input-field" />
+            <input type="text" name="phone" value={formData.phone} onChange={handleChange} className="input-field" />
           </div>
 
           <div className="form-group">
