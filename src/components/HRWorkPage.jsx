@@ -14,6 +14,26 @@ const HRWorkPage = () => {
             </Link>
           </li>
           <li>
+            <Link to="/performanse_appraisal" className="flex items-center py-2 hover:text-gray-300">
+              Performance Appraisal
+            </Link>
+          </li>
+          <li>
+            <Link to="/employee_leave" className="flex items-center py-2 hover:text-gray-300">
+              EmployeeLeave
+            </Link>
+          </li>
+          <li>
+            <Link to="/employee_leave_balance" className="flex items-center py-2 hover:text-gray-300">
+              Employee Leave Balance
+            </Link>
+          </li>
+          <li>
+            <Link to="/employee_leave_type" className="flex items-center py-2 hover:text-gray-300">
+              Employee Leave Type
+            </Link>
+          </li>
+          <li>
             <Link to="/attendance" className="flex items-center py-2 hover:text-gray-300">
               Attendance
             </Link>
@@ -79,6 +99,36 @@ const HRWorkPage = () => {
             <Link to="/employees">Go to Employees</Link>
           </div>
           <div className="card">
+            <h3>📑 Add CV</h3>
+            <p>Upload CV files, enter applicant details, and submit candidate profiles.</p>
+            <Link to="/cv-list">Go to Add CV</Link>
+          </div>
+          <div className="card">
+            <h3>💼 Interviews</h3>
+            <p>Manage interview schedules, view past interviews, and make decisions.</p>
+            <Link to="/interviews">Go to Interviews</Link>
+          </div>
+          <div className="card">
+            <h3>Employee Leave Request</h3 >
+            <p>Public/Festival Holiday,Casual Leave,Sick Leave,Earned Leave.</p>
+            <Link to="/employee_leave">Go to Employee Leave</Link>
+          </div>
+          <div className="card">
+            <h3>Employee Leave Type</h3 >
+            <p>Public/Festival Holiday,Casual Leave,Sick Leave,Earned Leave.</p>
+            <Link to="/employee_leave_type">Go to Employee Leave Type</Link>
+          </div>
+          <div className="card">
+            <h3>Employee Leave Balance</h3 >
+            <p>Conduct performance reviews, manage appraisals, and track employee progress.</p>
+            <Link to="/employee_leave_balance">Go to Employee Leave Balance</Link>
+          </div>
+          <div className="card">
+            <h3> 📈 Performance Appraisal</h3 >
+            <p>Conduct performance reviews, manage appraisals, and track employee progress.</p>
+            <Link to="/performanse_appraisal">Go to Performance Appraisal</Link>
+          </div>
+          <div className="card">
             <h3> 📝 Attendance</h3>
             <p>Track employee attendance, review reports, and manage leave requests.</p>
             <Link to="/attendance">Go to Attendance</Link>
@@ -88,11 +138,7 @@ const HRWorkPage = () => {
             <p>View email communication logs and track messages sent to employees.</p>
             <Link to="/email-logs">Go to Email Logs</Link>
           </div>
-          <div className="card">
-            <h3>💼 Interviews</h3>
-            <p>Manage interview schedules, view past interviews, and make decisions.</p>
-            <Link to="/interviews">Go to Interviews</Link>
-          </div>
+          
           <div className="card">
             <h3>📊 Finance Provision</h3>
             <p>Manage financial resources, allocate budgets, and track expenses.</p>
@@ -113,11 +159,7 @@ const HRWorkPage = () => {
             <p>Manage letter submissions, review applications, and send offer letters.</p>
             <Link to="/letter-send">Go to Letter Send</Link>
           </div>
-          <div className="card">
-            <h3>📑 Add CV</h3>
-            <p>Upload CV files, enter applicant details, and submit candidate profiles.</p>
-            <Link to="/cv-list">Go to Add CV</Link>
-          </div>
+          
           <div className="card">
             <h3>🌐 Tad Groups</h3>
             <p>Upload company names only.</p>
@@ -197,7 +239,7 @@ const HRWorkPage = () => {
         .card {
           background-color: white;
           padding: 20px;
-          border-radius: 8px;
+          border-radius: 30px;
           box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
           text-align: center;
           transition: transform 0.3s ease, box-shadow 0.3s ease;

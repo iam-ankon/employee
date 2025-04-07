@@ -29,6 +29,15 @@ import TerminationAttachment from "./components/TerminationAttachment"
 import CVDetail from "./components/CVDetail";
 import MailMdSir from "./components/MailMdSir";
 import InviteMail from "./components/InviteMail"
+import PerformanseAppraisal from "./components/PerformanseAppraisal";
+import NewAppraisal from "./components/NewAppraisal";
+import AppraisalDetails from "./components/AppraisalDetails";
+import EditAppraisal from "./components/EditAppraisal";
+import EmployeeLeaveBalance from "./components/EmployeeLeaveBalance";
+import EmployeeLeaveType from "./components/EmployeeLeaveType";
+import EmployeeLeave from "./components/EmployeeLeave";
+import AddLeaveRequest from "./components/AddLeaveRequest";
+
 
 
 // Protected Route Component (Prevents Unauthorized Access)
@@ -59,8 +68,17 @@ const AppContent = () => {
           <Route path="/employees" element={<ProtectedRoute><EmployeeDetails /></ProtectedRoute>} />
           <Route path="/employee/:id" element={<ProtectedRoute><EmployeeDetailPage /></ProtectedRoute>} />
           <Route path="/edit-employee/:id" element={<ProtectedRoute><EditEmployeePage /></ProtectedRoute>} />
+          <Route path="/performanse_appraisal" element={<ProtectedRoute><PerformanseAppraisal /></ProtectedRoute>} />
+          <Route path="/performanse_appraisal/:id" element={<ProtectedRoute><PerformanseAppraisal /></ProtectedRoute>} />
+          <Route path="/add-newAppraisal" element={<ProtectedRoute><NewAppraisal /></ProtectedRoute>} />
+          <Route path="/appraisal-details/:id" element={<ProtectedRoute><AppraisalDetails /></ProtectedRoute>} />
+          <Route path="/edit-appraisal/:id" element={<ProtectedRoute><EditAppraisal /></ProtectedRoute>} />
           <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
           <Route path="/attendance" element={<ProtectedRoute><Attendance /></ProtectedRoute>} />
+          <Route path="/employee_leave_balance" element={<ProtectedRoute><EmployeeLeaveBalance /></ProtectedRoute>} />
+          <Route path="/add-leave-request" element={<ProtectedRoute><AddLeaveRequest /></ProtectedRoute>} />
+          <Route path="/employee_leave_type" element={<ProtectedRoute><EmployeeLeaveType /></ProtectedRoute>} />
+          <Route path="/employee_leave" element={<ProtectedRoute><EmployeeLeave /></ProtectedRoute>} />
           <Route path="/email-logs" element={<ProtectedRoute><EmailLog /></ProtectedRoute>} />
           <Route path="/add-employee" element={<ProtectedRoute><AddEmployee /></ProtectedRoute>} />
           <Route path="/interviews" element={<ProtectedRoute><Interviews /></ProtectedRoute>} />
@@ -78,8 +96,6 @@ const AppContent = () => {
           <Route path="/employee/:id/attachments" element={<EmployeeAttachments />} />
           <Route path="/tad-groups" element={<ProtectedRoute><TADGroups /></ProtectedRoute>} />
           <Route path="/employee-termination" element={<ProtectedRoute><EmployeeTermination /></ProtectedRoute>} />
-          {/* <Route path="/add-termination" element={<ProtectedRoute><AddTermination /></ProtectedRoute>} /> */}
-          {/* <Route path="/edit/:id" element={<EditEmployeeTermination />} /> */}
           <Route path="/attachments/:id" element={<TerminationAttachment />} />
           <Route path="/cv-detail/:id" element={<CVDetail />} />
           <Route path="/mailmdsir" element={<MailMdSir />} />

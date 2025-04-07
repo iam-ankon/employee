@@ -1,12 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const API_URL = "http://127.0.0.1:8000/api/employee/details/api/interviews/";
 
 const Interviews = () => {
-  const location = useLocation()
+  const location = useLocation();
+  const [showPopup, setShowPopup] = useState(false);
   const navigate = useNavigate();
+  const containerRef = useRef(null);
   const [interviews, setInterviews] = useState([]);
   const [selectedInterview, setSelectedInterview] = useState(null);
   const { name, position_for, age, email, phone, reference } = location.state || {};
@@ -73,7 +75,12 @@ const Interviews = () => {
     return { interviewMark, interviewResult };
   };
 
-
+  useEffect(() => {
+    // Show popup whenever interviewData changes
+    if (formData.interview_mark || formData.interview_result) {
+      setShowPopup(true);
+    }
+  }, [formData]);
 
   // Fetching interview data
   useEffect(() => {
@@ -124,7 +131,7 @@ const Interviews = () => {
     const { name, value } = e.target;
 
     setFormData((prev) => {
-      const updatedValue = isNaN(value) ? value : parseInt(value) || 0;
+      const updatedValue = isNaN(value) ? value : parseInt(value) || "";
 
       const updatedFormData = {
         ...prev,
@@ -293,14 +300,40 @@ const Interviews = () => {
       }
 
       console.log("Updated Interview Response:", response.data); // 🔍 Debugging
-
       fetchInterviews();
       resetForm();
+
+      return response.data; // Return the response data for further processing
     } catch (error) {
       console.error("Error submitting interview:", error);
       showToast("Error submitting interview", "error");
+      return null; // Return null in case of error
     }
   };
+
+
+  const handleInterviewAction = async (e) => {
+    e.preventDefault(); // Prevent default form behavior
+  
+    const actionType = selectedInterview ? "Update" : "Create";
+    const isConfirmed = window.confirm(`Are you sure you want to ${actionType} this interview?`);
+  
+    if (isConfirmed) {
+      const newInterview = await handleSubmit(e); // Get interview response
+  
+      if (!selectedInterview && newInterview?.id) {
+        navigate(`/interviews?interview_id=${newInterview.id}`, { replace: true });
+      } else {
+        // Scroll to top of the page before reloading
+        window.scrollTo(0, 0); // Scroll to top
+        window.location.reload(); // Reload the page after updating
+      }
+    }
+  };
+  
+
+
+
 
 
   const handleDelete = async (id) => {
@@ -630,7 +663,7 @@ const Interviews = () => {
           <div class="container">
             <h2>All Interviews</h2>
     `;
-  
+
     // Loop through each interview and add their details
     interviews.forEach((interview) => {
       allInterviewsContent += `
@@ -704,7 +737,7 @@ const Interviews = () => {
         <hr />
       `;
     });
-  
+
     allInterviewsContent += `
       <div class="footer">
         <p>Interview details printed by the HR system</p>
@@ -712,13 +745,13 @@ const Interviews = () => {
     </body>
   </html>
   `;
-  
+
     printWindow.document.write(allInterviewsContent);
     printWindow.document.close();
     printWindow.print();
   };
-  
-  
+
+
 
   const style = {
     container: {
@@ -979,7 +1012,13 @@ const Interviews = () => {
 
 
   return (
-    <div style={style.container}>
+    <div
+      style={{
+        ...style.container,
+        marginLeft: showPopup ? "-250px" : "0", // Move left when the popup is visible
+        transition: "margin-left 0.7s ease", // Smooth transition effect
+      }}
+    >
       <div style={style.sidebar}>
         <div style={style.sidebarHeader}>
           <h2>Interviews</h2>
@@ -1118,6 +1157,31 @@ const Interviews = () => {
           <h2>Create New Interview</h2>
         )}
 
+        {/* Right Container (Popup) */}
+        <div style={{ flex: 0.3 }}>
+          {showPopup && (
+            <div
+              style={{
+                position: "fixed",
+                top: "25%",
+                left: "80%",
+                transform: "translate(-50%, -50%)",
+                background: "#fff",
+                padding: "20px",
+                borderRadius: "8px",
+                boxShadow: "0px 0px 10px rgba(0,0,0,0.3)",
+                zIndex: 1000,
+              }}
+            >
+              <h3>Interview Updated</h3>
+              <p><strong>Interview Mark:</strong> {formData.interview_mark}</p>
+              <p><strong>Interview Result:</strong> {formData.interview_result}</p>
+              <button onClick={() => setShowPopup(false)}>Close</button>
+            </div>
+          )}
+        </div>
+
+
         <form style={style.interviewForm} onSubmit={handleSubmit}>
           <div>
             <label>Name</label>
@@ -1204,29 +1268,6 @@ const Interviews = () => {
             />
           </div>
           <div>
-            <label>Interview Mark</label>
-            <input
-              type="number"
-              name="interview_mark"
-              value={formData.interview_mark}
-              onChange={handleInputChange}
-              style={style.input}
-            />
-          </div>
-
-          <div>
-            <label>Interview Result</label>
-            <input
-              type="text"
-              name="interview_result"
-              value={formData.interview_result}
-              onChange={handleInputChange}
-              style={style.input}
-            />
-          </div>
-
-
-          <div>
             <label>Education (Max 20)</label>
             <input
               type="number"
@@ -1235,6 +1276,7 @@ const Interviews = () => {
               onChange={handleInputChange}
               style={style.input}
               max="20"
+              disabled={selectedInterview === null}
             />
           </div>
 
@@ -1247,6 +1289,7 @@ const Interviews = () => {
               onChange={handleInputChange}
               style={style.input}
               max="20"
+              disabled={selectedInterview === null}
             />
           </div>
 
@@ -1259,6 +1302,7 @@ const Interviews = () => {
               onChange={handleInputChange}
               style={style.input}
               max="10"
+              disabled={selectedInterview === null}
             />
           </div>
 
@@ -1271,6 +1315,7 @@ const Interviews = () => {
               onChange={handleInputChange}
               style={style.input}
               max="10"
+              disabled={selectedInterview === null}
             />
           </div>
           <div>
@@ -1282,6 +1327,7 @@ const Interviews = () => {
               onChange={handleInputChange}
               style={style.input}
               max="10"
+              disabled={selectedInterview === null}
             />
           </div>
 
@@ -1294,6 +1340,7 @@ const Interviews = () => {
               onChange={handleInputChange}
               style={style.input}
               max="10"
+              disabled={selectedInterview === null}
             />
           </div>
 
@@ -1306,6 +1353,7 @@ const Interviews = () => {
               onChange={handleInputChange}
               style={style.input}
               max="10"
+              disabled={selectedInterview === null}
             />
           </div>
           <div>
@@ -1317,6 +1365,7 @@ const Interviews = () => {
               onChange={handleInputChange}
               style={style.input}
               max="10"
+              disabled={selectedInterview === null}
             />
           </div>
 
@@ -1329,6 +1378,7 @@ const Interviews = () => {
               value={formData.current_remuneration}
               onChange={handleInputChange}
               style={style.input}
+              disabled={selectedInterview === null}
             />
           </div>
           <div>
@@ -1339,6 +1389,7 @@ const Interviews = () => {
               value={formData.expected_package}
               onChange={handleInputChange}
               style={style.input}
+              disabled={selectedInterview === null}
             />
           </div>
           <div>
@@ -1349,6 +1400,7 @@ const Interviews = () => {
               value={formData.notice_period_required}
               onChange={handleInputChange}
               style={style.input}
+              disabled={selectedInterview === null}
             />
           </div>
           <div>
@@ -1359,6 +1411,7 @@ const Interviews = () => {
               value={formData.recommendation}
               onChange={handleInputChange}
               style={style.input}
+              disabled={selectedInterview === null}
             />
           </div>
           <div>
@@ -1368,6 +1421,7 @@ const Interviews = () => {
               name="immediate_recruitment"
               checked={formData.immediate_recruitment}
               onChange={(e) => setFormData({ ...formData, immediate_recruitment: e.target.checked })}
+              disabled={selectedInterview === null}
             />
           </div>
           <div>
@@ -1377,6 +1431,7 @@ const Interviews = () => {
               name="on_hold"
               checked={formData.on_hold}
               onChange={(e) => setFormData({ ...formData, on_hold: e.target.checked })}
+              disabled={selectedInterview === null}
             />
           </div>
           <div>
@@ -1386,25 +1441,30 @@ const Interviews = () => {
               name="no_good"
               checked={formData.no_good}
               onChange={(e) => setFormData({ ...formData, no_good: e.target.checked })}
+              disabled={selectedInterview === null}
             />
           </div>
           <div>
             <label>Interview Questions</label>
             <textarea
+              type="text"
               name="interview_questions"
               value={formData.interview_questions}
               onChange={handleInputChange}
               style={style.input}
+              disabled={selectedInterview === null}
             />
           </div>
 
           <div>
             <label>MD Sir Notes</label>
             <textarea
+              type="text"
               name="interview_notes"
               value={formData.interview_notes}
               onChange={handleInputChange}
               style={style.input}
+              disabled={selectedInterview === null}
             />
           </div>
           <div>
@@ -1414,16 +1474,22 @@ const Interviews = () => {
               value={formData.final_selection_remarks}
               onChange={handleInputChange}
               style={style.input}
+              disabled={selectedInterview === null}
             />
           </div>
           <div>
-            <button type="submit" style={style.btnSubmit}>
+            <button
+              type="submit"
+              style={{ padding: '10px 20px', backgroundColor: 'blue', color: 'white' }}
+              onClick={handleInterviewAction}
+            >
               {selectedInterview ? "Update Interview" : "Create Interview"}
             </button>
           </div>
+
         </form>
       </div>
-    </div>
+    </div >
   );
 };
 
