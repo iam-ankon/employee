@@ -8,7 +8,7 @@ const EmployeeLeave = () => {
     const navigate = useNavigate();  // Hook to navigate
 
     useEffect(() => {
-        axios.get('http://0.0.0.0:8000/api/employee/details/api/employee_leaves/')
+        axios.get('http://192.168.4.183:8000/api/employee/details/api/employee_leaves/')
             .then((response) => {
                 setLeaves(response.data);
                 setLoading(false);
@@ -18,9 +18,10 @@ const EmployeeLeave = () => {
                 setLoading(false);
             });
     }, []);
+
     const handleDelete = (id) => {
         // Make a DELETE request to the API to remove the leave record
-        axios.delete(`http://0.0.0.0:8000/api/employee/details/api/employee_leaves/${id}/`)
+        axios.delete(`http://192.168.4.183:8000/api/employee/details/api/employee_leaves/${id}/`)
             .then((response) => {
                 console.log('Leave record deleted:', response.data);
                 // Remove the deleted leave record from the state
@@ -30,8 +31,9 @@ const EmployeeLeave = () => {
                 console.error('Error deleting leave record:', error);
             });
     };
-    const handleAddLeaveClick = () => {
-        navigate('/add-leave-request');  // Navigate to AddLeaveRequest page
+
+    const handleRowClick = (id) => {
+        navigate(`/leave-request-details/${id}`);  // Navigate to LeaveRequestDetails page
     };
 
     if (loading) {
@@ -62,7 +64,7 @@ const EmployeeLeave = () => {
                     borderRadius: '5px',
                     cursor: 'pointer',
                 }}
-                onClick={handleAddLeaveClick}  // Handle navigation
+                onClick={() => navigate('/add-leave-request')}  // Navigate to AddLeaveRequest page
             >
                 Add New Leave Record
             </button>
@@ -87,7 +89,11 @@ const EmployeeLeave = () => {
                 </thead>
                 <tbody>
                     {leaves.map((leave) => (
-                        <tr key={leave.id} style={{ backgroundColor: '#fff' }}>
+                        <tr
+                            key={leave.id}
+                            style={{ backgroundColor: '#fff', cursor: 'pointer' }}
+                            onClick={() => handleRowClick(leave.id)}  // Handle row click to navigate
+                        >
                             <td style={cellStyle}>{leave.employee_name}</td>
                             <td style={cellStyle}>{leave.leave_type.replace(/_/g, ' ')}</td>
                             <td style={cellStyle}>{leave.start_date}</td>
@@ -96,7 +102,10 @@ const EmployeeLeave = () => {
                             <td style={cellStyle}>{leave.status}</td>
                             <td style={cellStyle}>
                                 <button
-                                    onClick={() => handleDelete(leave.id)}
+                                    onClick={(e) => {
+                                        e.stopPropagation();  // Prevent the row click from being triggered
+                                        handleDelete(leave.id);
+                                    }}
                                     style={{
                                         backgroundColor: '#ff4d4d',
                                         color: 'white',
@@ -104,9 +113,27 @@ const EmployeeLeave = () => {
                                         border: 'none',
                                         borderRadius: '5px',
                                         cursor: 'pointer',
+                                        marginRight: '10px',
                                     }}
                                 >
                                     Delete
+                                </button>
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation(); // Prevent row click
+                                        navigate(`/edit-leave-request/${leave.id}`);
+                                    }}
+                                    style={{
+                                        backgroundColor: '#ffaa00',
+                                        color: 'white',
+                                        padding: '10px 10px',
+                                        border: 'none',
+                                        borderRadius: '5px',
+                                        cursor: 'pointer',
+                                        
+                                    }}
+                                >
+                                    Edit
                                 </button>
                             </td>
                         </tr>

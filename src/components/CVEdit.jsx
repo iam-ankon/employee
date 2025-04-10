@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useParams,useNavigate } from "react-router-dom";
 
 const CVEdit = () => {
   const { id } = useParams(); // Get the CV ID from the URL
   const [cv, setCv] = useState(null);
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     position_for: "",
@@ -18,7 +19,7 @@ const CVEdit = () => {
   useEffect(() => {
     const fetchCV = async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/employee/details/api/CVAdd/${id}/`);
+        const response = await axios.get(`http://192.168.4.183:8000/api/employee/details/api/CVAdd/${id}/`);
         setCv(response.data);
         setFormData({
           name: response.data.name,
@@ -68,7 +69,7 @@ const CVEdit = () => {
     }
 
     try {
-      await axios.put(`http://127.0.0.1:8000/api/employee/details/api/CVAdd/${id}/`, formDataToSubmit, {
+      await axios.put(`http://192.168.4.183:8000/api/employee/details/api/CVAdd/${id}/`, formDataToSubmit, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       alert("CV updated successfully!");
@@ -121,6 +122,7 @@ const CVEdit = () => {
           </div>
 
           <button type="submit" className="btn-submit">Save</button>
+          <button type="button" onClick={() => navigate(-1)} className="btn-submit">Cancel</button>
         </form>
       </div>
 

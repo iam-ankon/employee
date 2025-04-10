@@ -14,7 +14,7 @@ const EmployeeAttachments = () => {
   const fetchAttachments = async () => {
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/employee/details/api/employee_attachments/?employee_id=${id}`
+        `http://192.168.4.183:8000/api/employee/details/api/employee_attachments/?employee_id=${id}`
       );
       setAttachments(response.data);
     } catch (error) {
@@ -47,7 +47,7 @@ const EmployeeAttachments = () => {
 
     try {
       await axios.post(
-        "http://127.0.0.1:8000/api/employee/details/api/employee_attachments/",
+        "http://192.168.4.183:8000/api/employee/details/api/employee_attachments/",
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -71,7 +71,7 @@ const EmployeeAttachments = () => {
 
     try {
       await axios.delete(
-        `http://127.0.0.1:8000/api/employee/details/api/employee_attachments/${attachmentId}/`
+        `http://192.168.4.183:8000/api/employee/details/api/employee_attachments/${attachmentId}/`
       );
       setAttachments(attachments.filter((attachment) => attachment.id !== attachmentId));
       alert("File deleted successfully!");
@@ -82,7 +82,7 @@ const EmployeeAttachments = () => {
 
   const handleEditDescription = (attachmentId, newDescription) => {
     axios.patch(
-      `http://127.0.0.1:8000/api/employee/details/api/employee_attachments/${attachmentId}/`,
+      `http://192.168.4.183:8000/api/employee/details/api/employee_attachments/${attachmentId}/`,
       { description: newDescription }
     )
       .then(() => {

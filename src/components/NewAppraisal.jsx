@@ -49,7 +49,7 @@ const NewAppraisal = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://127.0.0.1:8000/api/employee/details/api/performanse_appraisals/", formData);
+      await axios.post("http://192.168.4.183:8000/api/employee/details/api/performanse_appraisals/", formData);
       alert("Appraisal Added Successfully!");
     } catch (error) {
       console.error("Error adding appraisal:", error);
@@ -113,6 +113,7 @@ const NewAppraisal = () => {
       transition: "background-color 0.3s ease",
       textAlign: "center",
       border: "none",
+      width: '20%',
     },
     buttonHover: {
       backgroundColor: "#005a9e",

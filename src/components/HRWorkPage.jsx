@@ -120,7 +120,7 @@ const HRWorkPage = () => {
           </div>
           <div className="card">
             <h3>Employee Leave Balance</h3 >
-            <p>Conduct performance reviews, manage appraisals, and track employee progress.</p>
+            <p>Public/Festival Holiday,Casual Leave,Sick Leave,Earned Leave.</p>
             <Link to="/employee_leave_balance">Go to Employee Leave Balance</Link>
           </div>
           <div className="card">

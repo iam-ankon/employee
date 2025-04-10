@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const API_URL = "http://127.0.0.1:8000/api/employee/details/api/interviews/";
+const API_URL = "http://192.168.4.183:8000/api/employee/details/api/interviews/";
 
 const Interviews = () => {
   const location = useLocation();
@@ -759,7 +759,7 @@ const Interviews = () => {
       fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
       height: "85vh",
       overflow: "hidden",
-      backgroundColor: "#fff",
+      backgroundColor: "#f0f0f0",
       color: "#333",
       fontSize: "16px",
       lineHeight: "1.5",
@@ -772,19 +772,14 @@ const Interviews = () => {
       border: "1px solid #ddd",
       borderRadius: "10px",
       boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
-      display: "flex",
+      
       flexDirection: "row",
       gap: "20px",
       justifyContent: "space-between",
       alignItems: "flex-start",
       position: "relative",
       zIndex: 1,
-      padding: "20px",
-      backgroundColor: "#f9f9f9",
-      borderRadius: "10px",
-      boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
-      margin: "20px auto",
-      maxWidth: "1200px",
+     
       overflowY: "auto",
       overflowX: "hidden",
       transition: "background-color 0.3s ease",
@@ -903,14 +898,7 @@ const Interviews = () => {
       gap: "10px", // Adjust gap between buttons
       padding: "20px",
     },
-    button: {
-      padding: "10px",
-      backgroundColor: "#0078d4",
-      color: "white",
-      border: "none",
-      borderRadius: "5px",
-      cursor: "pointer",
-    },
+
     infocontainer: {
       display: "flex",
       justifycontent: "space-between",

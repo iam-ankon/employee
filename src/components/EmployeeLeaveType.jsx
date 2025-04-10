@@ -12,7 +12,7 @@ const EmployeeLeaveTypes = () => {
 
     const fetchLeaveTypes = async () => {
         try {
-            const response = await axios.get('http://localhost:8000/api/employee/details/api/employee_leave_types/');
+            const response = await axios.get('http://192.168.4.183:8000/api/employee/details/api/employee_leave_types/');
             setLeaveTypes(response.data);
         } catch (error) {
             console.error('Error fetching leave types:', error);
@@ -35,7 +35,7 @@ const EmployeeLeaveTypes = () => {
             };
 
             await axios.put(
-                `http://localhost:8000/api/employee/details/api/employee_leave_types/${editingField.id}/`,
+                `http://192.168.4.183:8000/api/employee/details/api/employee_leave_types/${editingField.id}/`,
                 updatedLeave
             );
 

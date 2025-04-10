@@ -28,24 +28,28 @@ const EditEmployeePage = () => {
     permanent_address: "",
   });
 
-  const [companies, setCompanies] = useState([]); // Store available companies
+  const [companies, setCompanies] = useState([]);
 
   useEffect(() => {
     const fetchEmployee = async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/employee/details/api/employees/${id}/`);
-        setEmployee(response.data);
-      } catch (error) {
-        console.error("Error fetching employee details", error);
+        const res = await axios.get(`http://192.168.4.183:8000/api/employee/details/api/employees/${id}/`);
+        const emp = res.data;
+        setEmployee({
+          ...emp,
+          company: emp.company?.id || emp.company,
+        });
+      } catch (err) {
+        console.error("Error fetching employee details", err);
       }
     };
 
     const fetchCompanies = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/employee/details/api/tad_groups/"); // Adjust API URL if needed
-        setCompanies(response.data);
-      } catch (error) {
-        console.error("Error fetching companies", error);
+        const res = await axios.get("http://192.168.4.183:8000/api/employee/details/api/tad_groups/");
+        setCompanies(res.data);
+      } catch (err) {
+        console.error("Error fetching companies", err);
       }
     };
 
@@ -53,55 +57,33 @@ const EditEmployeePage = () => {
     fetchCompanies();
   }, [id]);
 
-  // Handle input changes
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
-    setEmployee((prevEmployee) => ({
-      ...prevEmployee,
+    setEmployee((prev) => ({
+      ...prev,
       [name]: type === "file" ? files[0] : value,
     }));
   };
 
-  // Handle company selection
-  const handleCompanyChange = (e) => {
-    setEmployee((prevEmployee) => ({
-      ...prevEmployee,
-      company: e.target.value,
-    }));
-  };
-
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const formData = new FormData();
       Object.keys(employee).forEach((key) => {
         if (employee[key] !== null && employee[key] !== undefined) {
-          if (key === "image1" && employee[key] instanceof File) {
-            formData.append(key, employee[key]); // Append file
-          } else {
-            formData.append(key, employee[key]);
-          }
+          formData.append(key, employee[key]);
         }
       });
 
-      const response = await axios.put(
-        `http://127.0.0.1:8000/api/employee/details/api/employees/${id}/`,
+      await axios.put(
+        `http://192.168.4.183:8000/api/employee/details/api/employees/${id}/`,
         formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
 
-      console.log("Employee updated:", response.data);
-      navigate(`/employee/${id}`); // Redirect after update
+      navigate(`/employee/${id}`);
     } catch (error) {
       console.error("Error updating employee:", error);
-      if (error.response) {
-        console.error("Response error data:", error.response.data);
-      }
     }
   };
 
@@ -109,77 +91,118 @@ const EditEmployeePage = () => {
     <div className="edit-employee">
       <h2>Edit Employee</h2>
       <form onSubmit={handleSubmit} className="form-container">
-        {Object.keys(employee).map(
-          (key) =>
-            key !== "image1" &&
-            key !== "company" && (
-              <div key={key} className="form-group">
-                <label htmlFor={key}>{key.replace(/_/g, " ").toUpperCase()}</label>
-                {key === "remarks" ? (
-                  <textarea
-                    id={key}
-                    name={key}
-                    value={employee[key]}
-                    onChange={handleChange}
-                    className="input-field"
-                  />
-                ) : (
-                  <input
-                    type={key === "salary" ? "number" : "text"}
-                    id={key}
-                    name={key}
-                    value={employee[key]}
-                    onChange={handleChange}
-                    className="input-field"
-                  />
-                )}
-              </div>
-            )
-        )}
+        <div className="form-grid">
+          <div className="form-group">
+            <label>Employee ID</label>
+            <input name="employee_id" value={employee.employee_id} onChange={handleChange} />
+          </div>
 
-        {/* Company Dropdown */}
-        <div className="form-group">
-          <label htmlFor="company">Company</label>
-          <select
-            name="company"
-            value={employee.company}
-            onChange={handleCompanyChange}
-            className="input-field"
-          >
-            <option value="">Select Company</option>
-            {companies.map((comp) => (
-              <option key={comp.id} value={comp.id}>
-                {comp.company_name}
-              </option>
-            ))}
-          </select>
+          <div className="form-group">
+            <label>Full Name</label>
+            <input name="name" value={employee.name} onChange={handleChange} />
+          </div>
+
+          <div className="form-group">
+            <label>Designation</label>
+            <input name="designation" value={employee.designation} onChange={handleChange} />
+          </div>
+
+          <div className="form-group">
+            <label>Joining Date</label>
+            <input type="date" name="joining_date" value={employee.joining_date} onChange={handleChange} />
+          </div>
+
+          <div className="form-group">
+            <label>Date of Birth</label>
+            <input type="date" name="date_of_birth" value={employee.date_of_birth} onChange={handleChange} />
+          </div>
+
+          <div className="form-group">
+            <label>Email</label>
+            <input name="email" value={employee.email} onChange={handleChange} />
+          </div>
+
+          <div className="form-group">
+            <label>Mailing Address</label>
+            <input name="mail_address" value={employee.mail_address} onChange={handleChange} />
+          </div>
+
+          <div className="form-group">
+            <label>Personal Phone</label>
+            <input name="personal_phone" value={employee.personal_phone} onChange={handleChange} />
+          </div>
+
+          <div className="form-group">
+            <label>Office Phone</label>
+            <input name="office_phone" value={employee.office_phone} onChange={handleChange} />
+          </div>
+
+          <div className="form-group">
+            <label>Reference Phone</label>
+            <input name="reference_phone" value={employee.reference_phone} onChange={handleChange} />
+          </div>
+
+          <div className="form-group">
+            <label>Job Title</label>
+            <input name="job_title" value={employee.job_title} onChange={handleChange} />
+          </div>
+
+          <div className="form-group">
+            <label>Department</label>
+            <input name="department" value={employee.department} onChange={handleChange} />
+          </div>
+
+          <div className="form-group">
+            <label>Salary</label>
+            <input type="number" name="salary" value={employee.salary} onChange={handleChange} />
+          </div>
+
+          <div className="form-group">
+            <label>Reporting Leader</label>
+            <input name="reporting_leader" value={employee.reporting_leader} onChange={handleChange} />
+          </div>
+
+          <div className="form-group">
+            <label>Special Skills</label>
+            <textarea name="special_skills" value={employee.special_skills} onChange={handleChange} />
+          </div>
+
+          <div className="form-group">
+            <label>Remarks</label>
+            <textarea name="remarks" value={employee.remarks} onChange={handleChange} />
+          </div>
+
+          <div className="form-group">
+            <label>Permanent Address</label>
+            <textarea name="permanent_address" value={employee.permanent_address} onChange={handleChange} />
+          </div>
+
+          <div className="form-group">
+            <label>Company</label>
+            <select name="company" value={employee.company} onChange={handleChange}>
+              <option value="">Select Company</option>
+              {companies.map((c) => (
+                <option key={c.id} value={c.id}>{c.company_name}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label>Upload Image</label>
+            <input type="file" name="image1" onChange={handleChange} />
+          </div>
         </div>
 
-        {/* Image Field */}
-        <div className="form-group">
-          <label htmlFor="image1">Image 1</label>
-          <input type="file" name="image1" onChange={handleChange} className="input-field" />
-        </div>
-
-        <button type="submit" className="submit-button">
-          Update Employee
-        </button>
+        <button type="submit" className="submit-button">Update Employee</button>
       </form>
 
       <style jsx>{`
         .edit-employee {
-          max-width: 800px;
-          margin: 0 auto;
+          max-width: 1000px;
+          margin: auto;
           padding: 20px;
-          background-color: #f9fafb;
+          background: #f9fafb;
           border-radius: 8px;
-        }
-
-        .edit-employee h2 {
-          font-size: 2rem;
-          font-weight: bold;
-          text-align: center;
-          margin-bottom: 20px;
         }
 
         .form-container {
@@ -187,45 +210,42 @@ const EditEmployeePage = () => {
           flex-direction: column;
         }
 
+        .form-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 20px;
+        }
+
         .form-group {
-          margin-bottom: 15px;
+          display: flex;
+          flex-direction: column;
         }
 
         label {
           font-weight: bold;
-          font-size: 1.1rem;
-          margin-bottom: 5px;
-          color: #4a5568;
+          margin-bottom: 6px;
         }
 
-        .input-field {
-          width: 100%;
+        input, select, textarea {
           padding: 10px;
-          margin-top: 5px;
           border-radius: 5px;
-          border: 1px solid #cbd5e0;
-          font-size: 1rem;
+          border: 1px solid #ccc;
         }
 
-        .input-field:focus {
-          border-color: #63b3ed;
-          outline: none;
-        }
-
-        textarea.input-field {
+        textarea {
           resize: vertical;
-          height: 150px;
         }
 
         .submit-button {
+          margin-top: 30px;
+          padding: 12px 20px;
+          font-size: 1rem;
           background-color: #3182ce;
           color: white;
-          padding: 12px 20px;
           border: none;
           border-radius: 5px;
-          font-size: 1.1rem;
           cursor: pointer;
-          transition: background-color 0.3s ease;
+          align-self: center;
         }
 
         .submit-button:hover {

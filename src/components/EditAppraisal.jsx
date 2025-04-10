@@ -47,7 +47,7 @@ const EditAppraisal = () => {
 
     useEffect(() => {
         axios
-            .get(`http://127.0.0.1:8000/api/employee/details/api/performanse_appraisals/${id}/`)
+            .get(`http://192.168.4.183:8000/api/employee/details/api/performanse_appraisals/${id}/`)
             .then((res) => setFormData(res.data))
             .catch((err) => console.error("Error fetching data:", err));
     }, [id]);
@@ -59,7 +59,7 @@ const EditAppraisal = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.put(`http://127.0.0.1:8000/api/employee/details/api/performanse_appraisals/${id}/`, formData);
+            await axios.put(`http://192.168.4.183:8000/api/employee/details/api/performanse_appraisals/${id}/`, formData);
             alert("Appraisal updated successfully!");
             navigate("/performanse_appraisal"); // Ensure the route exists
         } catch (error) {
@@ -134,7 +134,7 @@ const styles = {
     label: { fontSize: "14px", fontWeight: "600", marginBottom: "5px", color: "#333" },
     input: { padding: "10px", borderRadius: "4px", border: "1px solid #ccc", fontSize: "14px", outline: "none" },
     checkbox: { marginTop: "5px" },
-    submitButton: { backgroundColor: "#0078D4", color: "white", padding: "12px", fontSize: "16px", border: "none", borderRadius: "4px", cursor: "pointer", marginTop: "20px" },
+    submitButton: { backgroundColor: "#0078D4", color: "white", padding: "12px", fontSize: "16px", border: "none", borderRadius: "4px", cursor: "pointer", marginTop: "20px", width: '20%'},
 };
 
 export default EditAppraisal;

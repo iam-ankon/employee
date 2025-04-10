@@ -3,10 +3,11 @@ import axios from 'axios';
 
 const EmployeeLeaveBalance = () => {
   const [balances, setBalances] = useState([]);
+  const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get('http://0.0.0.0:8000/api/employee/details/api/employee_leave_balances/')
+    axios.get('http://192.168.4.183:8000/api/employee/details/api/employee_leave_balances/')
       .then(response => {
         setBalances(response.data);
         setLoading(false);
@@ -15,6 +16,13 @@ const EmployeeLeaveBalance = () => {
         console.error('Error fetching leave balances:', error);
         setLoading(false);
       });
+
+    axios.get('http://192.168.4.183:8000/api/employee/details/api/employees/')
+      .then(res => {
+        setEmployees(res.data);
+      })
+      .catch(err => console.error('Error fetching employees:', err));
+
   }, []);
 
   if (loading) return <div style={{ padding: '20px' }}>Loading...</div>;
@@ -52,6 +60,7 @@ const EmployeeLeaveBalance = () => {
             <th style={thTdStyle}>Casual Leave</th>
             <th style={thTdStyle}>Sick Leave</th>
             <th style={thTdStyle}>Earned Leave</th>
+            <th style={thTdStyle}>Total</th>
           </tr>
         </thead>
         <tbody>
@@ -62,6 +71,7 @@ const EmployeeLeaveBalance = () => {
               <td style={thTdStyle}>{balance.casual_leave}</td>
               <td style={thTdStyle}>{balance.sick_leave}</td>
               <td style={thTdStyle}>{balance.earned_leave}</td>
+              <td style={thTdStyle}>{balance.leave_balance}</td>
             </tr>
           ))}
         </tbody>

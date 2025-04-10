@@ -43,7 +43,7 @@ const AddLetterPage = () => {
   // API request function
   const addLetterSend = async (formData) => {
     try {
-      const response = await axios.post("http://127.0.0.1:8000/api/employee/details/api/letter_send/", formData, {
+      const response = await axios.post("http://192.168.4.183:8000/api/employee/details/api/letter_send/", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

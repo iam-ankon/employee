@@ -36,7 +36,7 @@ const AddEmployee = () => {
     useEffect(() => {
         const fetchCompanies = async () => {
             try {
-                const response = await axios.get("http://127.0.0.1:8000/api/employee/details/api/tad_groups/"); // Make sure to use correct endpoint
+                const response = await axios.get("http://192.168.4.183:8000/api/employee/details/api/tad_groups/"); // Make sure to use correct endpoint
                 setCompanies(response.data);
             } catch (error) {
                 console.error("Error fetching companies:", error);
@@ -64,7 +64,7 @@ const AddEmployee = () => {
         });
 
         try {
-            const response = await axios.post(`http://127.0.0.1:8000/api/employee/details/api/employees/`, employeeFormData, {
+            const response = await axios.post(`http://192.168.4.183:8000/api/employee/details/api/employees/`, employeeFormData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -114,6 +114,8 @@ const AddEmployee = () => {
             fontWeight: "bold",
             transition: "background-color 0.3s, transform 0.2s",
             boxShadow: "2px 4px 6px rgba(0, 0, 0, 0.1)",
+            width: '30%',
+            marginTop: "50px",
         },
         buttonHover: {
             backgroundColor: "#005ea6",
@@ -279,6 +281,18 @@ const AddEmployee = () => {
                     onMouseLeave={() => setIsHovered(false)}
                 >
                     Submit
+                </button>
+                <button
+                    type="back"
+                    onClick={() => navigate("/employees")}
+                    style={{
+                        ...styles.button,
+                        ...(isHovered ? styles.buttonHover : {})
+                    }}
+                    onMouseEnter={() => setIsHovered(true)}
+                    onMouseLeave={() => setIsHovered(false)}
+                >
+                    Back
                 </button>
             </form>
 

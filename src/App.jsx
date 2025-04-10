@@ -37,6 +37,8 @@ import EmployeeLeaveBalance from "./components/EmployeeLeaveBalance";
 import EmployeeLeaveType from "./components/EmployeeLeaveType";
 import EmployeeLeave from "./components/EmployeeLeave";
 import AddLeaveRequest from "./components/AddLeaveRequest";
+import LeaveRequestDetails from "./components/LeaveRequestDetails";
+import EditLeaveRequest from "./components/EditLeaveRequest";
 
 
 
@@ -77,6 +79,8 @@ const AppContent = () => {
           <Route path="/attendance" element={<ProtectedRoute><Attendance /></ProtectedRoute>} />
           <Route path="/employee_leave_balance" element={<ProtectedRoute><EmployeeLeaveBalance /></ProtectedRoute>} />
           <Route path="/add-leave-request" element={<ProtectedRoute><AddLeaveRequest /></ProtectedRoute>} />
+          <Route path="/leave-request-details/:id" element={<ProtectedRoute><LeaveRequestDetails /></ProtectedRoute>} />
+          <Route path="/edit-leave-request/:id" element={<ProtectedRoute><EditLeaveRequest /></ProtectedRoute>} />
           <Route path="/employee_leave_type" element={<ProtectedRoute><EmployeeLeaveType /></ProtectedRoute>} />
           <Route path="/employee_leave" element={<ProtectedRoute><EmployeeLeave /></ProtectedRoute>} />
           <Route path="/email-logs" element={<ProtectedRoute><EmailLog /></ProtectedRoute>} />

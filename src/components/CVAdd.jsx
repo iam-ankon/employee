@@ -42,7 +42,7 @@ const CVAdd = () => {
     uploadData.append("cv_file", formData.cvFile);
 
     try {
-      await axios.post("http://127.0.0.1:8000/api/employee/details/api/CVAdd/", uploadData, {
+      await axios.post("http://192.168.4.183:8000/api/employee/details/api/CVAdd/", uploadData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
