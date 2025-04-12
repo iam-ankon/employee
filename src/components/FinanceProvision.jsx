@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { getFinanceProvisions, addFinanceProvision, updateFinanceProvision, deleteFinanceProvision } from "../api/employeeApi"; // Adjust according to your file structure
+import { useNavigate } from 'react-router-dom';
 
 const FinanceProvision = () => {
   const [provisions, setProvisions] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editProvision, setEditProvision] = useState(null);
+  const navigate = useNavigate();
   const [newProvision, setNewProvision] = useState({
     employee: "",
     email: "",
@@ -130,7 +132,7 @@ const FinanceProvision = () => {
   return (
     <div className="main-content">
       <h2 className="heading">Finance Provision</h2>
-      
+
       {/* Search Bar */}
       <input
         type="text"
@@ -140,9 +142,50 @@ const FinanceProvision = () => {
         className="search-bar"
       />
 
-      <button onClick={() => setIsAddModalOpen(true)} className="add-button">
-        Add New Provision
-      </button>
+      <div className="button-group" style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
+        <button
+          onClick={() => setIsAddModalOpen(true)}
+          className="add-button"
+          style={{
+            backgroundColor: '#4CAF50', // Green
+            color: 'white',
+            padding: '10px 20px',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer'
+          }}
+        >
+          Add New Provision
+        </button>
+        <button
+          onClick={() => navigate('/it-provision')}
+          className="it-button"
+          style={{
+            backgroundColor: '#2196F3', // Blue
+            color: 'white',
+            padding: '10px 20px',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer'
+          }}
+        >
+          IT Provision
+        </button>
+        <button
+          onClick={() => navigate('/admin-provision')}
+          className="admin-button"
+          style={{
+            backgroundColor: '#FF9800', // Orange
+            color: 'white',
+            padding: '10px 20px',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer'
+          }}
+        >
+          Admin Provision
+        </button>
+      </div>
 
       <div className="card-container">
         {filteredProvisions.map((provision) => (

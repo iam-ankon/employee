@@ -29,7 +29,6 @@ const Interviews = () => {
     potential: '',
     general_knowledge: '',
     assertiveness: '',
-    interview_questions: "",
     interview_mark: "",
     interview_result: "",
     interview_notes: "",
@@ -111,7 +110,6 @@ const Interviews = () => {
         potential: '',
         general_knowledge: '',
         assertiveness: '',
-        interview_questions: "",
         interview_mark: "",
         interview_result: "",
         interview_notes: "",
@@ -232,7 +230,6 @@ const Interviews = () => {
         potential: selectedInterview.potential || "",
         general_knowledge: selectedInterview.general_knowledge || "",
         assertiveness: selectedInterview.assertiveness || "",
-        interview_questions: selectedInterview.interview_questions || "",
         interview_mark: selectedInterview.interview_mark ?? "", // Ensure non-null value
         interview_result: selectedInterview.interview_result ?? "",
         interview_notes: selectedInterview.interview_notes ?? "",
@@ -314,13 +311,13 @@ const Interviews = () => {
 
   const handleInterviewAction = async (e) => {
     e.preventDefault(); // Prevent default form behavior
-  
+
     const actionType = selectedInterview ? "Update" : "Create";
     const isConfirmed = window.confirm(`Are you sure you want to ${actionType} this interview?`);
-  
+
     if (isConfirmed) {
       const newInterview = await handleSubmit(e); // Get interview response
-  
+
       if (!selectedInterview && newInterview?.id) {
         navigate(`/interviews?interview_id=${newInterview.id}`, { replace: true });
       } else {
@@ -330,8 +327,19 @@ const Interviews = () => {
       }
     }
   };
-  
 
+
+  const handleSelectedAsEmployee = (selectedInterview) => {
+    console.log(selectedInterview); // Log to ensure data is correct
+    navigate("/add-employee", {
+        state: {
+            name: selectedInterview.name,
+            position_for: selectedInterview.position_for,
+            email: selectedInterview.email,
+            phone: selectedInterview.phone,
+        },
+    });
+};
 
 
 
@@ -368,7 +376,6 @@ const Interviews = () => {
       potential: "",
       general_knowledge: "",
       assertiveness: "",
-      interview_questions: "",
       interview_mark: "",
       interview_result: "",
       interview_notes: "",
@@ -535,7 +542,6 @@ const Interviews = () => {
               <div class="item"><span class="label">On Hold:</span> ${interview.on_hold ? "Yes" : "No"}</div>
               <div class="item"><span class="label">No Good:</span> ${interview.no_good ? "Yes" : "No"}</div>
               <div class="item"><span class="label">MD Sir Notes:</span> ${interview.interview_notes || "No notes available"}</div>
-              <div class="item"><span class="label">Interview Questions:</span> ${interview.interview_questions || "No questions recorded"}</div>
             </div>
   
             <!-- Final Selection Remarks Section -->
@@ -721,7 +727,6 @@ const Interviews = () => {
           <div class="item"><span class="label">On Hold:</span> ${interview.on_hold ? "Yes" : "No"}</div>
           <div class="item"><span class="label">No Good:</span> ${interview.no_good ? "Yes" : "No"}</div>
           <div class="item"><span class="label">MD Sir Notes:</span> ${interview.interview_notes || "No notes available"}</div>
-          <div class="item"><span class="label">Interview Questions:</span> ${interview.interview_questions || "No questions recorded"}</div>
         </div>
   
         <div class="signature-container">
@@ -772,14 +777,14 @@ const Interviews = () => {
       border: "1px solid #ddd",
       borderRadius: "10px",
       boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
-      
+
       flexDirection: "row",
       gap: "20px",
       justifyContent: "space-between",
       alignItems: "flex-start",
       position: "relative",
       zIndex: 1,
-     
+
       overflowY: "auto",
       overflowX: "hidden",
       transition: "background-color 0.3s ease",
@@ -808,15 +813,15 @@ const Interviews = () => {
       border: "1px solid #ddd",
       borderRadius: "5px",
     },
-    button: {
-      padding: "10px",
-      marginBottom: "10px",
-      border: "1px solid #ddd",
-      borderRadius: "5px",
-      backgroundColor: "#0078d4",
-      color: "white",
-      cursor: "pointer",
-    },
+    // button: {
+    //   padding: "10px",
+    //   marginBottom: "10px",
+    //   border: "1px solid #ddd",
+    //   borderRadius: "5px",
+    //   backgroundColor: "#0078d4",
+    //   color: "white",
+    //   cursor: "pointer",
+    // },
     buttonPrint: {
       backgroundColor: "#28a745",
     },
@@ -995,6 +1000,8 @@ const Interviews = () => {
       color: "#777",
     },
 
+    
+
   };
 
 
@@ -1110,7 +1117,6 @@ const Interviews = () => {
                   <div style={style.detailsItem}><span style={style.label}>Immediate Recruitment:</span> {selectedInterview.immediate_recruitment ? "Yes" : "No"}</div>
                   <div style={style.detailsItem}><span style={style.label}>On Hold:</span> {selectedInterview.on_hold ? "Yes" : "No"}</div>
                   <div style={style.detailsItem}><span style={style.label}>No Good:</span> {selectedInterview.no_good ? "Yes" : "No"}</div>
-                  <div style={style.detailsItem}><span style={style.label}>Interview Questions:</span> {selectedInterview.interview_questions || "No questions recorded"}</div>
                   <div style={style.detailsItem}><span style={style.label}>MD Sir Notes:</span> {selectedInterview.interview_notes || "No notes available"}</div>
                   <div style={style.detailsItem}><span style={style.label}>Final Selection Remarks:</span> {selectedInterview.final_selection_remarks || "No remarks provided"}</div>
                 </div>
@@ -1123,20 +1129,26 @@ const Interviews = () => {
 
 
             <div style={style.buttonContainer}>
+              <button style={style.btnInvite} onClick={() => handleInviteMail(selectedInterview)}>
+                (1)Invite for interview
+              </button>
+              <button style={style.btnSend} onClick={() => handleSendMail(selectedInterview)}>
+                (2)Sent Mail to MD Sir
+              </button>
+              <button style={{ ...style.button, ...style.buttonPrint }} onClick={() => handleLetterSend(selectedInterview)}>
+                (3)Send Letters
+              </button>
+              <button
+                style={{ ...style.button, ...style.buttonPrint }}
+                onClick={() => handleSelectedAsEmployee(selectedInterview)}
+              >
+                (4)Selected as Employee
+              </button>
               <button onClick={() => printInterview(selectedInterview)} style={style.button}>
                 Print Interview
               </button>
               <button style={style.btnDelete} onClick={() => handleDelete(selectedInterview.id)}>
                 Delete Interview
-              </button>
-              <button style={style.btnSend} onClick={() => handleSendMail(selectedInterview)}>
-                Sent Mail to MD Sir
-              </button>
-              <button style={style.btnInvite} onClick={() => handleInviteMail(selectedInterview)}>
-                Invite for interview
-              </button>
-              <button style={{ ...style.button, ...style.buttonPrint }} onClick={() => handleLetterSend(selectedInterview)}>
-                Send Letters
               </button>
             </div>
 
@@ -1432,17 +1444,6 @@ const Interviews = () => {
               disabled={selectedInterview === null}
             />
           </div>
-          <div>
-            <label>Interview Questions</label>
-            <textarea
-              type="text"
-              name="interview_questions"
-              value={formData.interview_questions}
-              onChange={handleInputChange}
-              style={style.input}
-              disabled={selectedInterview === null}
-            />
-          </div>
 
           <div>
             <label>MD Sir Notes</label>
@@ -1465,7 +1466,10 @@ const Interviews = () => {
               disabled={selectedInterview === null}
             />
           </div>
-          <div>
+          
+
+        </form>
+        <div>
             <button
               type="submit"
               style={{ padding: '10px 20px', backgroundColor: 'blue', color: 'white' }}
@@ -1474,8 +1478,6 @@ const Interviews = () => {
               {selectedInterview ? "Update Interview" : "Create Interview"}
             </button>
           </div>
-
-        </form>
       </div>
     </div >
   );

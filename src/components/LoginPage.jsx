@@ -251,7 +251,7 @@ const LoginPage = () => {
         </svg>
       </div>
       <div class="content flex">
-        <p>Attention: Please note that transactions over the internet may be subject to interruption, delayed transmission due to internet traffic, or incorrect data transmission due to the nature of the internet. TEXWEAVE cannot assume responsibility for malfunctions in communications facilities not under our control or problems caused by your computing environment that may affect your usage of the CBX application.
+        <p>Attention: Please note that transactions over the internet may be subject to interruption, delayed transmission due to internet traffic, or incorrect data transmission due to the nature of the internet. TEXWEAVE cannot assume responsibility for malfunctions in communications facilities not under our control or problems caused by your computing environment that may affect your usage of this application.
           ©2025 Copyright by TEXWEAVE. All rights reserved </p>
       </div>
     </>

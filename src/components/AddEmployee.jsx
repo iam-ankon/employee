@@ -1,19 +1,22 @@
-import React, { useState } from "react";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 
 const AddEmployee = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+    // console.log("Location state:", location.state); // Debugging the data passed
+    const { name, position_for, email, phone } = location.state || {};
+
     const [formData, setFormData] = useState({
         employee_id: "",
-        name: "",
-        designation: "",
+        name: name || "",
+        designation: position_for || "",
+        email: email || "",
+        personal_phone: phone || "",
         joining_date: "",
         date_of_birth: "",
-        email: "",
         mail_address: "",
-        personal_phone: "",
         office_phone: "",
         reference_phone: "",
         job_title: "",
@@ -27,16 +30,17 @@ const AddEmployee = () => {
         permanent_address: "",
     });
 
-    const [successMessage, setSuccessMessage] = useState("");
-    const [showPopup, setShowPopup] = useState(false);
     const [companies, setCompanies] = useState([]);
-    const [isHovered, setIsHovered] = useState(false);
+    const [successMessage, setSuccessMessage] = useState("");
+    const [showPopup, setShowPopup] = useState(false); // Add this line to define showPopup
+    const [isHovered, setIsHovered] = useState(false); // Define isHovered for hover effect
 
     // Fetch companies from backend API
     useEffect(() => {
         const fetchCompanies = async () => {
             try {
-                const response = await axios.get("http://192.168.4.183:8000/api/employee/details/api/tad_groups/"); // Make sure to use correct endpoint
+                const response = await axios.get("http://192.168.4.183:8000/api/employee/details/api/tad_groups/");
+                // console.log("Fetched companies:", response.data); // Check fetched data
                 setCompanies(response.data);
             } catch (error) {
                 console.error("Error fetching companies:", error);
@@ -64,10 +68,8 @@ const AddEmployee = () => {
         });
 
         try {
-            const response = await axios.post(`http://192.168.4.183:8000/api/employee/details/api/employees/`, employeeFormData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
+            const response = await axios.post("http://192.168.4.183:8000/api/employee/details/api/employees/", employeeFormData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
             });
             console.log('Employee added:', response.data);
             setSuccessMessage("Employee saved successfully!");
@@ -84,7 +86,7 @@ const AddEmployee = () => {
                 reference_phone: "",
                 job_title: "",
                 department: "",
-                company: "", // Reset company field
+                company: "",
                 salary: "",
                 reporting_leader: "",
                 special_skills: "",
@@ -92,8 +94,8 @@ const AddEmployee = () => {
                 image1: null,
                 permanent_address: "",
             });
-            setShowPopup(true);
-            setTimeout(() => setShowPopup(false), 3000);
+            setShowPopup(true); // Show success popup
+            setTimeout(() => setShowPopup(false), 3000); // Hide popup after 3 seconds
         } catch (error) {
             console.error('Error saving employee data:', error);
             setSuccessMessage("Error saving employee data. Please try again.");
@@ -172,12 +174,50 @@ const AddEmployee = () => {
 
                 <div>
                     <label style={styles.label}>Name <span style={{ color: "red" }}>*</span></label>
-                    <input type="text" name="name" required onChange={handleChange} style={styles.input} value={formData.name} />
+                    <input
+                        type="text"
+                        name="name"
+                        required
+                        onChange={handleChange}
+                        style={styles.input}
+                        value={formData.name|| ""}
+                    />
                 </div>
 
                 <div>
                     <label style={styles.label}>Designation <span style={{ color: "red" }}>*</span></label>
-                    <input type="text" name="designation" required onChange={handleChange} style={styles.input} value={formData.designation} />
+                    <input
+                        type="text"
+                        name="designation"
+                        required
+                        onChange={handleChange}
+                        style={styles.input}
+                        value={formData.designation|| ""}
+                    />
+                </div>
+
+                <div>
+                    <label style={styles.label}>Email <span style={{ color: "red" }}>*</span></label>
+                    <input
+                        type="email"
+                        name="email"
+                        required
+                        onChange={handleChange}
+                        style={styles.input}
+                        value={formData.email|| ""}
+                    />
+                </div>
+
+                <div>
+                    <label style={styles.label}>Personal Phone <span style={{ color: "red" }}>*</span></label>
+                    <input
+                        type="text"
+                        name="personal_phone"
+                        required
+                        onChange={handleChange}
+                        style={styles.input}
+                        value={formData.personal_phone|| ""}
+                    />
                 </div>
 
                 <div>
@@ -191,19 +231,11 @@ const AddEmployee = () => {
                 </div>
 
                 <div>
-                    <label style={styles.label}>Email <span style={{ color: "red" }}>*</span></label>
-                    <input type="email" name="email" required onChange={handleChange} style={styles.input} value={formData.email} />
-                </div>
-
-                <div>
                     <label style={styles.label}>Mail Address <span style={{ color: "red" }}>*</span></label>
                     <input type="text" name="mail_address" required onChange={handleChange} style={styles.input} value={formData.mail_address} />
                 </div>
 
-                <div>
-                    <label style={styles.label}>Personal Phone <span style={{ color: "red" }}>*</span></label>
-                    <input type="text" name="personal_phone" required onChange={handleChange} style={styles.input} value={formData.personal_phone} />
-                </div>
+
 
                 <div>
                     <label style={styles.label}>Office Phone <span style={{ color: "red" }}>*</span></label>

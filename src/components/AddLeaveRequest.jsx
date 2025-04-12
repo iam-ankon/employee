@@ -16,6 +16,7 @@ const AddLeaveRequest = () => {
     company: '',
     personal_phone: '',
     sub_person: '',
+    email: '',
     receiver_name: '',
     to: '',
     date: '',
@@ -77,6 +78,7 @@ const AddLeaveRequest = () => {
           company: selectedEmployee.company || '',
           personal_phone: selectedEmployee.personal_phone || '',
           joining_date: selectedEmployee.joining_date || '',
+          email: selectedEmployee.email || '',
         }));
 
         // Find the corresponding leave balance for the selected employee
@@ -164,6 +166,7 @@ const AddLeaveRequest = () => {
             { label: 'Department', name: 'department' },
             { label: 'Company', name: 'company', type: 'select', options: companies, optionLabel: 'company_name' },
             { label: 'Personal Phone', name: 'personal_phone' },
+            { label: 'Email', name: 'email', type: 'email' },
             { label: 'Substitute Person', name: 'sub_person' },
             { label: 'Receiver Name', name: 'receiver_name' },
             { label: 'To', name: 'to' },

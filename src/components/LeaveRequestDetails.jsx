@@ -1,44 +1,41 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState,useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
 const LeaveRequestDetails = () => {
     const { id } = useParams();
     const [leave, setLeave] = useState(null);
-    const [companies, setCompanies] = useState([]);
+    const [leaveEntitlements, setLeaveEntitlements] = useState({
+        earned_leave: 0,
+        casual_leave: 0,
+        sick_leave: 0,
+        public_festival_holiday: 0
+    });
     const [leaveBalances, setLeaveBalances] = useState({
         casual_leave: 0,
         sick_leave: 0,
         earned_leave: 0
     });
-    const formRef = useRef();
-
+    const [loading, setLoading] = useState(true);
+     const formRef = useRef();
     useEffect(() => {
-        // Fetch leave details
-        axios.get(`http://192.168.4.183:8000/api/employee/details/api/employee_leaves/${id}/`)
-            .then((response) => {
-                setLeave(response.data);
-            })
-            .catch((error) => {
-                console.error('Error fetching leave details:', error);
-            });
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+                
+                // Fetch all required data
+                const [leaveRes, balancesRes, typesRes] = await Promise.all([
+                    axios.get(`http://192.168.4.183:8000/api/employee/details/api/employee_leaves/${id}/`),
+                    axios.get('http://192.168.4.183:8000/api/employee/details/api/employee_leave_balances/'),
+                    axios.get('http://192.168.4.183:8000/api/employee/details/api/employee_leave_types/')
+                ]);
 
-        // Fetch companies
-        axios.get('http://192.168.4.183:8000/api/employee/details/api/tad_groups/')
-            .then((response) => {
-                setCompanies(response.data);
-            })
-            .catch((error) => {
-                console.error('Error fetching companies:', error);
-            });
+                setLeave(leaveRes.data);
 
-        // Fetch leave balances for the employee
-        axios.get('http://192.168.4.183:8000/api/employee/details/api/employee_leave_balances/')
-            .then(response => {
-                // Find the balance for the current employee
-                const employeeBalance = response.data.find(balance =>
-                    balance.employee === leave?.employee_id ||
-                    balance.employee_name === leave?.employee_name
+                // Process leave balances
+                const employeeBalance = balancesRes.data.find(balance =>
+                    balance.employee === leaveRes.data?.employee_id ||
+                    balance.employee_name === leaveRes.data?.employee_name
                 );
 
                 if (employeeBalance) {
@@ -48,25 +45,37 @@ const LeaveRequestDetails = () => {
                         earned_leave: employeeBalance.earned_leave
                     });
                 }
-            })
-            .catch(error => {
-                console.error('Error fetching leave balances:', error);
-            });
-    }, [id, leave?.employee_id, leave?.employee_name]);
 
-    // Calculate balance values
-    const calculateBalance = (leaveType) => {
-        const entitled = leaveBalances[leaveType] || 0;
-        const applied = leave.leave_type === leaveType ? leave.leave_days : 0;
-        return entitled - applied;
-    };
+                // Process leave entitlements from EmployeeLeaveTypes
+                if (typesRes.data && typesRes.data.length > 0) {
+                    // Assuming the first item contains all leave types
+                    const firstLeaveType = typesRes.data[0];
+                    setLeaveEntitlements({
+                        earned_leave: firstLeaveType.earned_leave || 0,
+                        casual_leave: firstLeaveType.casual_leave || 0,
+                        sick_leave: firstLeaveType.sick_leave || 0,
+                        public_festival_holiday: firstLeaveType.public_festival_holiday || 0
+                    });
+                }
 
-    // Calculate leave availed values (Leave entitled - Balance)
-    const calculateLeaveAvailed = (leaveType) => {
-        const entitled = leaveBalances[leaveType] || 0;
-        const balance = calculateBalance(leaveType);
-        return entitled - balance;
-    };
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, [id]);
+
+    if (loading) return <div>Loading...</div>;
+    if (!leave) return <div>Leave request not found</div>;
+
+    // Helper functions
+    const getEntitledLeaveDays = (leaveType) => leaveEntitlements[leaveType] || 0;
+    const getBalance = (leaveType) => leaveBalances[leaveType] || 0;
+    const calculateLeaveAvailed = (leaveType) => getEntitledLeaveDays(leaveType) - getBalance(leaveType);
+    const getAppliedFor = (leaveType) => leave.leave_type === leaveType ? leave.leave_days : '-';
 
     const handlePrint = () => {
         const printWindow = window.open('', '_blank');
@@ -423,9 +432,9 @@ const LeaveRequestDetails = () => {
                     <tbody>
                         <tr>
                             <td style={styles.tableCell}>Leave entitled</td>
-                            <td style={styles.tableCell}>{leaveBalances.earned_leave}</td>
-                            <td style={styles.tableCell}>{leaveBalances.casual_leave}</td>
-                            <td style={styles.tableCell}>{leaveBalances.sick_leave}</td>
+                            <td style={styles.tableCell}>{getEntitledLeaveDays('earned_leave')}</td>
+                            <td style={styles.tableCell}>{getEntitledLeaveDays('casual_leave')}</td>
+                            <td style={styles.tableCell}>{getEntitledLeaveDays('sick_leave')}</td>
                         </tr>
                         <tr>
                             <td style={styles.tableCell}>Leave availed</td>
@@ -435,15 +444,15 @@ const LeaveRequestDetails = () => {
                         </tr>
                         <tr>
                             <td style={styles.tableCell}>Balance</td>
-                            <td style={styles.tableCell}>{calculateBalance('earned_leave')}</td>
-                            <td style={styles.tableCell}>{calculateBalance('casual_leave')}</td>
-                            <td style={styles.tableCell}>{calculateBalance('sick_leave')}</td>
+                            <td style={styles.tableCell}>{getBalance('earned_leave')}</td>
+                            <td style={styles.tableCell}>{getBalance('casual_leave')}</td>
+                            <td style={styles.tableCell}>{getBalance('sick_leave')}</td>
                         </tr>
                         <tr>
                             <td style={styles.tableCell}>Applied for</td>
-                            <td style={styles.tableCell}>{leave.leave_type === 'earned_leave' ? leave.leave_days : '-'}</td>
-                            <td style={styles.tableCell}>{leave.leave_type === 'casual_leave' ? leave.leave_days : '-'}</td>
-                            <td style={styles.tableCell}>{leave.leave_type === 'sick_leave' ? leave.leave_days : '-'}</td>
+                            <td style={styles.tableCell}>{getAppliedFor('earned_leave')}</td>
+                            <td style={styles.tableCell}>{getAppliedFor('casual_leave')}</td>
+                            <td style={styles.tableCell}>{getAppliedFor('sick_leave')}</td>
                         </tr>
                     </tbody>
                 </table>

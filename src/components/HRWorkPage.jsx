@@ -70,7 +70,7 @@ const HRWorkPage = () => {
           </li>
           <li>
             <Link to="/letter-send" className="flex items-center py-2 hover:text-gray-300">
-            Letter Send
+              Letter Send
             </Link>
           </li>
           <li>
@@ -94,11 +94,6 @@ const HRWorkPage = () => {
         {/* Cards section */}
         <div className="card-container">
           <div className="card">
-            <h3> 👥  Employees</h3>
-            <p>Manage employee data, view lists, and perform actions on employee records.</p>
-            <Link to="/employees">Go to Employees</Link>
-          </div>
-          <div className="card">
             <h3>📑 Add CV</h3>
             <p>Upload CV files, enter applicant details, and submit candidate profiles.</p>
             <Link to="/cv-list">Go to Add CV</Link>
@@ -109,67 +104,56 @@ const HRWorkPage = () => {
             <Link to="/interviews">Go to Interviews</Link>
           </div>
           <div className="card">
-            <h3>Employee Leave Request</h3 >
-            <p>Public/Festival Holiday,Casual Leave,Sick Leave,Earned Leave.</p>
-            <Link to="/employee_leave">Go to Employee Leave</Link>
-          </div>
-          <div className="card">
-            <h3>Employee Leave Type</h3 >
-            <p>Public/Festival Holiday,Casual Leave,Sick Leave,Earned Leave.</p>
-            <Link to="/employee_leave_type">Go to Employee Leave Type</Link>
-          </div>
-          <div className="card">
-            <h3>Employee Leave Balance</h3 >
-            <p>Public/Festival Holiday,Casual Leave,Sick Leave,Earned Leave.</p>
-            <Link to="/employee_leave_balance">Go to Employee Leave Balance</Link>
-          </div>
-          <div className="card">
-            <h3> 📈 Performance Appraisal</h3 >
-            <p>Conduct performance reviews, manage appraisals, and track employee progress.</p>
-            <Link to="/performanse_appraisal">Go to Performance Appraisal</Link>
+            <h3> 👥  Employees</h3>
+            <p>Manage employee data, view lists, and perform actions on employee records.</p>
+            <Link to="/employees">Go to Employees</Link>
           </div>
           <div className="card">
             <h3> 📝 Attendance</h3>
             <p>Track employee attendance, review reports, and manage leave requests.</p>
             <Link to="/attendance">Go to Attendance</Link>
           </div>
+          
           <div className="card">
-            <h3>📧 Email Logs</h3>
-            <p>View email communication logs and track messages sent to employees.</p>
-            <Link to="/email-logs">Go to Email Logs</Link>
+            <h3>Employee Leave Request/Type/Balance</h3 >
+            <p>Public/Festival Holiday,Casual Leave,Sick Leave,Earned Leave.</p>
+            <Link to="/employee_leave">Go to Employee Leave</Link>
           </div>
           
           <div className="card">
-            <h3>📊 Finance Provision</h3>
-            <p>Manage financial resources, allocate budgets, and track expenses.</p>
+            <h3> 📈 Performance Appraisal</h3 >
+            <p>Conduct performance reviews, manage appraisals, and track employee progress.</p>
+            <Link to="/performanse_appraisal">Go to Performance Appraisal</Link>
+          </div>
+          <div className="card">
+            <h3>🔴 Employee Termination Process</h3>
+            <p>Add An Employee Termination Process.</p>
+            <Link to="/employee-termination">Go to Tad Groups</Link>
+          </div>
+          
+
+          <div className="card">
+            <h3>📊 Finance/IT/Admin Provision</h3>
+            <p>Manage financial resources, allocate budgets,tasks, user roles,IT resources, provision hardware, and assign software licenses and track expenses.</p>
             <Link to="/finance-provision">Go to Finance Provision</Link>
           </div>
-          <div className="card">
-            <h3>🛠️ Admin Provision</h3>
-            <p>Manage administrative tasks, user roles, and system settings.</p>
-            <Link to="/admin-provision">Go to Admin Provision</Link>
-          </div>
-          <div className="card">
-            <h3>💻 IT Provision</h3>
-            <p>Manage IT resources, provision hardware, and assign software licenses.</p>
-            <Link to="/it-provision">Go to IT Provision</Link>
-          </div>
+          
           <div className="card">
             <h3>📮 Letter Send</h3>
             <p>Manage letter submissions, review applications, and send offer letters.</p>
             <Link to="/letter-send">Go to Letter Send</Link>
           </div>
-          
+          <div className="card">
+            <h3>📧 Email Logs</h3>
+            <p>View email communication logs and track messages sent to employees.</p>
+            <Link to="/email-logs">Go to Email Logs</Link>
+          </div>
           <div className="card">
             <h3>🌐 Tad Groups</h3>
             <p>Upload company names only.</p>
             <Link to="/tad-groups">Go to Tad Groups</Link>
           </div>
-          <div className="card">
-            <h3>🔴 Employee Termination Process</h3>
-            <p>Upload Letter for the employee.</p>
-            <Link to="/employee-termination">Go to Tad Groups</Link>
-          </div>
+          
         </div>
       </div>
 

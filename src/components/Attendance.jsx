@@ -3,99 +3,160 @@ import { getAttendance, addAttendance, updateAttendance, deleteAttendance, getEm
 
 const Attendance = () => {
   const [attendance, setAttendance] = useState([]);
+  const [filteredAttendance, setFilteredAttendance] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
     employee: '',
     check_in: '',
     check_out: '',
-    office_start_time: '09:30', // Default office start time (9:30 AM)
+    office_start_time: '09:30',
     id: null,
   });
+  const [searchTerm, setSearchTerm] = useState('');
+  const [dateFilter, setDateFilter] = useState('');
 
   useEffect(() => {
-    const fetchAttendance = async () => {
+    const fetchData = async () => {
       try {
-        const response = await getAttendance();
-        setAttendance(response.data);
+        const [attendanceRes, employeesRes] = await Promise.all([
+          getAttendance(),
+          getEmployees()
+        ]);
+        setAttendance(attendanceRes.data);
+        setFilteredAttendance(attendanceRes.data);
+        setEmployees(employeesRes.data);
       } catch (error) {
-        console.error('Error fetching attendance', error);
+        console.error('Error fetching data', error);
       }
     };
-
-    const fetchEmployees = async () => {
-      try {
-        const response = await getEmployees();
-        setEmployees(response.data);
-      } catch (error) {
-        console.error('Error fetching employees', error);
-      }
-    };
-
-    fetchAttendance();
-    fetchEmployees();
+    fetchData();
   }, []);
 
+  useEffect(() => {
+    const filtered = attendance.filter(item => {
+      const matchesName = item.employee_name.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesDate = dateFilter ? item.date.includes(dateFilter) : true;
+      return matchesName && matchesDate;
+    });
+    setFilteredAttendance(filtered);
+  }, [searchTerm, dateFilter, attendance]);
+
   const handleFormChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: value,
     });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-  
-    if (!formData.check_in) {
-      console.error("Check-in is required!");
-      return;
+
+  const formatTimeTo12Hour = (timeString) => {
+    if (!timeString) return null;
+    
+    // Extract time portion from different formats
+    let timePart = '';
+    if (timeString.includes('T')) {
+      // Format: "2023-05-15T09:30:00Z"
+      timePart = timeString.slice(11, 16);
+    } else if (timeString.includes(':')) {
+      // Format: "09:30:00" or "09:30"
+      timePart = timeString.length > 5 ? timeString.slice(0, 5) : timeString;
+    } else {
+      return timeString;
     }
-  
+
+    // Convert to 12-hour format
+    const [hours, minutes] = timePart.split(':').map(Number);
+    const period = hours >= 12 ? 'PM' : 'AM';
+    const hours12 = hours % 12 || 12; // Convert 0 to 12 for 12 AM
+    
+    return `${hours12}:${minutes.toString().padStart(2, '0')} ${period}`;
+  };
+
+  const calculateTimeDifference = (checkIn, officeStart) => {
+    if (!checkIn || !officeStart) return { inTime: null, delayTime: null, status: '-' };
+    
     try {
-      const checkInTime = formData.check_in.slice(0, 5); 
-      const checkOutTime = formData.check_out ? `${formData.check_out.slice(0, 5)}:00` : null;
-      const officeStartTime = formData.office_start_time.slice(0, 5);
-  
-      const formattedData = {
-        employee: parseInt(formData.employee, 10),
-        check_in: `${checkInTime}:00`,
-        check_out: checkOutTime,
-        office_start_time: `${officeStartTime}:00`,
+      // Extract 24-hour time for calculations
+      const get24HourTime = (timeStr) => {
+        const [time, period] = timeStr.split(' ');
+        let [hours, minutes] = time.split(':').map(Number);
+        if (period === 'PM' && hours !== 12) hours += 12;
+        if (period === 'AM' && hours === 12) hours = 0;
+        return { hours, minutes };
       };
-  
-      if (formData.id) {
-        await updateAttendance(formData.id, formattedData);
-        console.log("Attendance updated successfully");
+
+      const checkIn24 = get24HourTime(checkIn);
+      const officeStart24 = get24HourTime(officeStart);
+
+      const checkInTotal = checkIn24.hours * 60 + checkIn24.minutes;
+      const officeTotal = officeStart24.hours * 60 + officeStart24.minutes;
+
+      if (checkInTotal <= officeTotal) {
+        const diffMinutes = officeTotal - checkInTotal;
+        const hours = Math.floor(diffMinutes / 60);
+        const minutes = diffMinutes % 60;
+        return {
+          inTime: `${hours}:${minutes.toString().padStart(2, '0')}`,
+          delayTime: null,
+          status: 'On Time'
+        };
       } else {
-        await addAttendance(formattedData);
-        console.log("Attendance saved successfully");
+        const diffMinutes = checkInTotal - officeTotal;
+        const hours = Math.floor(diffMinutes / 60);
+        const minutes = diffMinutes % 60;
+        return {
+          inTime: null,
+          delayTime: `${hours}:${minutes.toString().padStart(2, '0')}`,
+          status: 'Late'
+        };
       }
-  
-      setShowForm(false);
-      setFormData({ employee: '', check_in: '', check_out: '', office_start_time: '09:30', id: null });
-      const response = await getAttendance();
-      setAttendance(response.data);
     } catch (error) {
-      console.error("Error saving attendance:", error.response?.data || error);
+      console.error('Error calculating time difference:', error);
+      return { inTime: null, delayTime: null, status: 'Error' };
     }
   };
-  
-  
 
-  const handleEdit = (attendanceItem) => {
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const payload = {
+        employee: parseInt(formData.employee, 10),
+        check_in: `${formData.check_in}:00`,
+        check_out: formData.check_out ? `${formData.check_out}:00` : null,
+        office_start_time: `${formData.office_start_time}:00`,
+      };
+
+      if (formData.id) {
+        await updateAttendance(formData.id, payload);
+      } else {
+        await addAttendance(payload);
+      }
+
+      const response = await getAttendance();
+      setAttendance(response.data);
+      setShowForm(false);
+      setFormData({ employee: '', check_in: '', check_out: '', office_start_time: '09:30', id: null });
+    } catch (error) {
+      console.error("Error saving attendance:", error);
+    }
+  };
+
+  const handleEdit = (record) => {
     setFormData({
-      ...attendanceItem,
-      employee: attendanceItem.employee.id,
-      check_in: attendanceItem.check_in.slice(11, 16),  // Extract time portion
-      check_out: attendanceItem.check_out ? attendanceItem.check_out.slice(11, 16) : '',
-      office_start_time: attendanceItem.office_start_time ? attendanceItem.office_start_time.slice(11, 16) : '09:30', // Ensure proper time format
+      id: record.id,
+      employee: record.employee.id,
+      check_in: record.check_in.slice(11, 16),
+      check_out: record.check_out ? record.check_out.slice(11, 16) : '',
+      office_start_time: record.office_start_time.slice(11, 16),
     });
     setShowForm(true);
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this attendance record?")) {
+    if (window.confirm("Delete this attendance record?")) {
       try {
         await deleteAttendance(id);
         const response = await getAttendance();
@@ -106,225 +167,224 @@ const Attendance = () => {
     }
   };
 
+
+
+  const containerStyle = {
+    maxWidth: '1200px',
+    margin: 'auto',
+    padding: '40px 20px',
+    fontFamily: 'Segoe UI, sans-serif',
+    color: '#333'
+  };
+
+  const sectionStyle = {
+    backgroundColor: '#fff',
+    border: '1px solid #ddd',
+    borderRadius: '8px',
+    padding: '24px',
+    marginBottom: '24px',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+  };
+
+  const inputStyle = {
+    width: '100%',
+    padding: '8px',
+    borderRadius: '4px',
+    border: '1px solid #ccc',
+    marginTop: '4px',
+    marginBottom: '12px'
+  };
+
+  const buttonStyle = {
+    padding: '10px 20px',
+    borderRadius: '4px',
+    border: 'none',
+    cursor: 'pointer',
+    fontWeight: 'bold',
+    fontSize: '14px'
+  };
+
+  const tableStyle = {
+    width: '100%',
+    borderCollapse: 'collapse',
+    marginTop: '12px'
+  };
+
+  const thStyle = {
+    textAlign: 'left',
+    padding: '12px',
+    backgroundColor: '#f3f3f3',
+    borderBottom: '1px solid #ddd'
+  };
+
+  const tdStyle = {
+    padding: '10px',
+    borderBottom: '1px solid #eee',
+    verticalAlign: 'middle'
+  };
+
   return (
-    <div className="attendance">
-      <h2>Attendance</h2>
-      <button onClick={() => setShowForm(true)}>+ Add Attendance</button>
+    <div style={containerStyle}>
+      <h2 style={{ fontSize: '24px', marginBottom: '24px' }}>Attendance Management</h2>
+
+      <div style={{ display: 'flex', gap: '16px', marginBottom: '24px', flexWrap: 'wrap' }}>
+        <div style={{ flex: 1, minWidth: '220px' }}>
+          <label>Search by Name:</label>
+          <input
+            type="text"
+            placeholder="Employee name..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={inputStyle}
+          />
+        </div>
+        <div style={{ flex: 1, minWidth: '220px' }}>
+          <label>Filter by Date:</label>
+          <input
+            type="date"
+            value={dateFilter}
+            onChange={(e) => setDateFilter(e.target.value)}
+            style={inputStyle}
+          />
+        </div>
+        <div style={{ alignSelf: 'flex-end' }}>
+          <button
+            onClick={() => setShowForm(true)}
+            style={{ ...buttonStyle, backgroundColor: '#0078d4', color: '#fff' }}
+          >
+            + Add Attendance
+          </button>
+        </div>
+      </div>
+
       {showForm && (
-        <div className="attendance-form">
-          <h3>{formData.id ? 'Edit Attendance' : 'Add Attendance'}</h3>
+        <div style={sectionStyle}>
+          <h3 style={{ marginBottom: '16px' }}>{formData.id ? 'Edit Attendance' : 'Add Attendance'}</h3>
           <form onSubmit={handleSubmit}>
-            <div>
-              <label>Employee:</label>
-              <select
-                name="employee"
-                value={formData.employee}
-                onChange={handleFormChange}
-                required
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+              <div>
+                <label>Employee:</label>
+                <select
+                  name="employee"
+                  value={formData.employee}
+                  onChange={handleFormChange}
+                  style={inputStyle}
+                  required
+                >
+                  <option value="">Select Employee</option>
+                  {employees.map((emp) => (
+                    <option key={emp.id} value={emp.id}>{emp.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label>Office Start Time:</label>
+                <input
+                  type="time"
+                  name="office_start_time"
+                  value={formData.office_start_time}
+                  onChange={handleFormChange}
+                  style={inputStyle}
+                />
+              </div>
+              <div>
+                <label>Check In:</label>
+                <input
+                  type="time"
+                  name="check_in"
+                  value={formData.check_in}
+                  onChange={handleFormChange}
+                  style={inputStyle}
+                  required
+                />
+              </div>
+              <div>
+                <label>Check Out:</label>
+                <input
+                  type="time"
+                  name="check_out"
+                  value={formData.check_out}
+                  onChange={handleFormChange}
+                  style={inputStyle}
+                />
+              </div>
+            </div>
+            <div style={{ marginTop: '16px', display: 'flex', gap: '12px' }}>
+              <button type="submit" style={{ ...buttonStyle, backgroundColor: '#28a745', color: '#fff' }}>
+                {formData.id ? 'Update' : 'Save'}
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowForm(false)}
+                style={{ ...buttonStyle, backgroundColor: '#6c757d', color: '#fff' }}
               >
-                <option value="">Select an Employee</option>
-                {employees.map((emp) => (
-                  <option key={emp.id} value={emp.id}>
-                    {emp.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label>Check In:</label>
-              <input
-                type="time"
-                name="check_in"
-                value={formData.check_in}
-                onChange={handleFormChange}
-                required
-              />
-            </div>
-            <div>
-              <label>Check Out:</label>
-              <input
-                type="time"
-                name="check_out"
-                value={formData.check_out}
-                onChange={handleFormChange}
-              />
-            </div>
-            <div>
-              <label>Office Start Time:</label>
-              <input
-                type="time"
-                name="office_start_time"
-                value={formData.office_start_time}
-                onChange={handleFormChange}
-              />
-            </div>
-            <div>
-              <button type="submit">{formData.id ? 'Update' : 'Save'} Attendance</button>
-              <button type="button" onClick={() => setShowForm(false)}>
                 Cancel
               </button>
             </div>
           </form>
         </div>
       )}
-      <table>
-        <thead>
-          <tr>
-            <th>Employee</th>
-            <th>Date</th>
-            <th>Check In</th>
-            <th>Check Out</th>
-            <th>Office Start Time</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {attendance.map((record) => (
-            <tr key={record.id}>
-              <td>{record.employee_name}</td>
-              <td>{record.date}</td>
-              <td>{record.check_in}</td>
-              <td>{record.check_out}</td>
-              <td>{record.office_start_time}</td>
-              <td>
-                <button onClick={() => handleEdit(record)}>Edit</button>
-                <button onClick={() => handleDelete(record.id)}>Delete</button>
-              </td>
+
+      <div style={sectionStyle}>
+        <table style={tableStyle}>
+          <thead>
+            <tr>
+              <th style={thStyle}>Employee</th>
+              <th style={thStyle}>Date</th>
+              <th style={thStyle}>Check In</th>
+              <th style={thStyle}>Check Out</th>
+              <th style={thStyle}>Office Start</th>
+              <th style={thStyle}>In Time</th>
+              <th style={thStyle}>Delay Time</th>
+              <th style={thStyle}>Status</th>
+              <th style={thStyle}>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-      {/* Add your CSS Styling here */}
-      <style jsx>{`
-        .attendance {
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-          padding: 20px;
-          background-color: #f3f4f6;
-          border-radius: 8px;
-          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-          max-width: 800px;
-          margin: auto;
-        }
-        h2 {
-          text-align: center;
-          color: #333;
-        }
-        button {
-          background-color: #0078d4;
-          color: white;
-          padding: 10px 20px;
-          border: none;
-          border-radius: 4px;
-          font-size: 14px;
-          cursor: pointer;
-          transition: background-color 0.3s ease;
-        }
-        button:hover {
-          background-color: #005a9e;
-        }
-        .attendance-form {
-          background-color: white;
-          padding: 20px;
-          border-radius: 8px;
-          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-          margin-top: 20px;
-        }
-        .attendance-form h3 {
-          color: #333;
-          margin-bottom: 15px;
-        }
-        form {
-          display: grid;
-          gap: 15px;
-        }
-        form div {
-          display: flex;
-          flex-direction: column;
-        }
-        label {
-          font-weight: bold;
-          margin-bottom: 5px;
-        }
-        input[type="time"],
-        select {
-          padding: 10px;
-          font-size: 14px;
-          border-radius: 4px;
-          border: 1px solid #ccc;
-        }
-        button[type="submit"],
-        button[type="button"] {
-          width: 100%;
-          padding: 10px;
-          border: none;
-          border-radius: 4px;
-          font-size: 14px;
-          cursor: pointer;
-          transition: background-color 0.3s ease;
-        }
-        button[type="submit"] {
-          background-color: #28a745;
-          color: white;
-        }
-        button[type="submit"]:hover {
-          background-color: #218838;
-        }
-        button[type="button"] {
-          background-color: #dc3545;
-          color: white;
-        }
-        button[type="button"]:hover {
-          background-color: #c82333;
-        }
-        table {
-          width: 100%;
-          margin-top: 30px;
-          border-collapse: collapse;
-        }
-        th, td {
-          padding: 10px;
-          text-align: left;
-          border-bottom: 1px solid #ddd;
-        }
-        th {
-          background-color: #0078d4;
-          color: white;
-          font-weight: bold;
-        }
-        tr:hover {
-          background-color: #f1f1f1;
-        }
-        td {
-          font-size: 14px;
-        }
-        button {
-          padding: 6px 12px;
-          font-size: 14px;
-          cursor: pointer;
-        }
-        button:hover {
-          background-color: #ccc;
-          color: white;
-        }
-        button:focus {
-          outline: none;
-        }
-        @media (max-width: 768px) {
-          .attendance {
-            padding: 10px;
-          }
-          .attendance-form {
-            padding: 15px;
-          }
-          table {
-            font-size: 12px;
-          }
-        }
-      `}</style>
+          </thead>
+             <tbody>
+            {filteredAttendance.map((record) => {
+              // Format the times to 12-hour format
+              const checkIn = formatTimeTo12Hour(record.check_in);
+              const checkOut = formatTimeTo12Hour(record.check_out);
+              const officeStart = formatTimeTo12Hour(record.office_start_time) || '09:30 AM';
+              
+              // Calculate time differences
+              const { inTime, delayTime, status } = calculateTimeDifference(
+                checkIn || '00:00 AM', 
+                officeStart
+              );
+
+              return (
+                <tr key={record.id}>
+                  <td style={tdStyle}>{record.employee_name}</td>
+                  <td style={tdStyle}>{record.date}</td>
+                  <td style={tdStyle}>{checkIn || '-'}</td>
+                  <td style={tdStyle}>{checkOut || '-'}</td>
+                  <td style={tdStyle}>{officeStart}</td>
+                  <td style={tdStyle}>{inTime ? `${inTime}` : '-'}</td>
+                  <td style={tdStyle}>{delayTime ? `${delayTime}` : '-'}</td>
+                  <td style={tdStyle}>{status}</td>
+                  <td style={{ ...tdStyle, display: 'flex', gap: '8px' }}>
+                    <button
+                      onClick={() => handleEdit(record)}
+                      style={{ ...buttonStyle, backgroundColor: '#0078d4', color: '#fff', padding: '8px 12px' }}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(record.id)}
+                      style={{ ...buttonStyle, backgroundColor: '#dc3545', color: '#fff', padding: '8px 12px' }}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
 
 export default Attendance;
-
-
