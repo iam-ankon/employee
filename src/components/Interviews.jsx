@@ -813,15 +813,7 @@ const Interviews = () => {
       border: "1px solid #ddd",
       borderRadius: "5px",
     },
-    // button: {
-    //   padding: "10px",
-    //   marginBottom: "10px",
-    //   border: "1px solid #ddd",
-    //   borderRadius: "5px",
-    //   backgroundColor: "#0078d4",
-    //   color: "white",
-    //   cursor: "pointer",
-    // },
+
     buttonPrint: {
       backgroundColor: "#28a745",
     },

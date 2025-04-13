@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getAttendance, addAttendance, updateAttendance, deleteAttendance, getEmployees } from '../api/employeeApi';
+import { Link } from 'react-router-dom';
 
 const Attendance = () => {
   const [attendance, setAttendance] = useState([]);
@@ -50,35 +51,29 @@ const Attendance = () => {
     });
   };
 
-
   const formatTimeTo12Hour = (timeString) => {
     if (!timeString) return null;
-    
-    // Extract time portion from different formats
+
     let timePart = '';
     if (timeString.includes('T')) {
-      // Format: "2023-05-15T09:30:00Z"
       timePart = timeString.slice(11, 16);
     } else if (timeString.includes(':')) {
-      // Format: "09:30:00" or "09:30"
       timePart = timeString.length > 5 ? timeString.slice(0, 5) : timeString;
     } else {
       return timeString;
     }
 
-    // Convert to 12-hour format
     const [hours, minutes] = timePart.split(':').map(Number);
     const period = hours >= 12 ? 'PM' : 'AM';
-    const hours12 = hours % 12 || 12; // Convert 0 to 12 for 12 AM
-    
+    const hours12 = hours % 12 || 12;
+
     return `${hours12}:${minutes.toString().padStart(2, '0')} ${period}`;
   };
 
   const calculateTimeDifference = (checkIn, officeStart) => {
     if (!checkIn || !officeStart) return { inTime: null, delayTime: null, status: '-' };
-    
+
     try {
-      // Extract 24-hour time for calculations
       const get24HourTime = (timeStr) => {
         const [time, period] = timeStr.split(' ');
         let [hours, minutes] = time.split(':').map(Number);
@@ -117,7 +112,6 @@ const Attendance = () => {
       return { inTime: null, delayTime: null, status: 'Error' };
     }
   };
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -166,222 +160,402 @@ const Attendance = () => {
       }
     }
   };
-
-
-
-  const containerStyle = {
-    maxWidth: '1200px',
-    margin: 'auto',
-    padding: '40px 20px',
-    fontFamily: 'Segoe UI, sans-serif',
-    color: '#333'
+  const styles = {
+    container: {
+      display: "flex",
+      fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+    },
+    sidebar: {
+      width: "230px",
+      backgroundColor: "#f3f6fb",
+      height: "100vh",
+      padding: "20px 15px",
+      boxShadow: "2px 0 5px rgba(0, 0, 0, 0.05)",
+    },
+    sidebarHeader: {
+      fontSize: "20px",
+      fontWeight: "bold",
+      marginBottom: "20px",
+      color: "#0078D4",
+    },
+    sidebarLink: {
+      display: "block",
+      padding: "10px",
+      margin: "5px 0",
+      textDecoration: "none",
+      color: "#333",
+      borderRadius: "6px",
+      transition: "0.3s",
+    },
+    sidebarLinkHover: {
+      backgroundColor: "#e1eaff",
+    },
   };
-
-  const sectionStyle = {
-    backgroundColor: '#fff',
-    border: '1px solid #ddd',
-    borderRadius: '8px',
-    padding: '24px',
-    marginBottom: '24px',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
-  };
-
-  const inputStyle = {
-    width: '100%',
-    padding: '8px',
-    borderRadius: '4px',
-    border: '1px solid #ccc',
-    marginTop: '4px',
-    marginBottom: '12px'
-  };
-
-  const buttonStyle = {
-    padding: '10px 20px',
-    borderRadius: '4px',
-    border: 'none',
-    cursor: 'pointer',
-    fontWeight: 'bold',
-    fontSize: '14px'
-  };
-
-  const tableStyle = {
-    width: '100%',
-    borderCollapse: 'collapse',
-    marginTop: '12px'
-  };
-
-  const thStyle = {
-    textAlign: 'left',
-    padding: '12px',
-    backgroundColor: '#f3f3f3',
-    borderBottom: '1px solid #ddd'
-  };
-
-  const tdStyle = {
-    padding: '10px',
-    borderBottom: '1px solid #eee',
-    verticalAlign: 'middle'
-  };
-
   return (
-    <div style={containerStyle}>
-      <h2 style={{ fontSize: '24px', marginBottom: '24px' }}>Attendance Management</h2>
-
-      <div style={{ display: 'flex', gap: '16px', marginBottom: '24px', flexWrap: 'wrap' }}>
-        <div style={{ flex: 1, minWidth: '220px' }}>
-          <label>Search by Name:</label>
-          <input
-            type="text"
-            placeholder="Employee name..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            style={inputStyle}
-          />
-        </div>
-        <div style={{ flex: 1, minWidth: '220px' }}>
-          <label>Filter by Date:</label>
-          <input
-            type="date"
-            value={dateFilter}
-            onChange={(e) => setDateFilter(e.target.value)}
-            style={inputStyle}
-          />
-        </div>
-        <div style={{ alignSelf: 'flex-end' }}>
-          <button
-            onClick={() => setShowForm(true)}
-            style={{ ...buttonStyle, backgroundColor: '#0078d4', color: '#fff' }}
-          >
-            + Add Attendance
-          </button>
-        </div>
+    <div style={{
+      display: 'flex',
+      minHeight: '100vh',
+      backgroundColor: '#f9fafb',
+      fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif'
+    }}>
+      {/* Sidebar */}
+      <div style={styles.sidebar}>
+        <div style={styles.sidebarHeader}>HR Work</div>
+        <a href="/cv-add" style={styles.sidebarLink}>Add CV</a>
+        <a href="/interviews" style={styles.sidebarLink}>Interviews</a>
+        <a href="/employee" style={styles.sidebarLink}>Employee</a>
+        <a href="/attendance" style={{ ...styles.sidebarLink, backgroundColor: "#e1eaff" }}>Attendance</a>
+        <a href="/employee_leave" style={styles.sidebarLink}>Employee Leave</a>
+        <a href="/performanse_appraisal" style={styles.sidebarLink}>Performance Appraisal</a>
+        <a href="/finance-provision" style={styles.sidebarLink}>Finance Provision</a>
+        <a href="/employee-termination" style={{ ...styles.sidebarLink }}>Employee Termination</a>
+        <a href="/letter-send" style={styles.sidebarLink}>Send Letter</a>
+        <a href="/email-logs" style={styles.sidebarLink}>Email Logs</a>
+        <a href="/tad-groups" style={styles.sidebarLink}>TAD Groups</a>
       </div>
 
-      {showForm && (
-        <div style={sectionStyle}>
-          <h3 style={{ marginBottom: '16px' }}>{formData.id ? 'Edit Attendance' : 'Add Attendance'}</h3>
-          <form onSubmit={handleSubmit}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-              <div>
-                <label>Employee:</label>
-                <select
-                  name="employee"
-                  value={formData.employee}
-                  onChange={handleFormChange}
-                  style={inputStyle}
-                  required
-                >
-                  <option value="">Select Employee</option>
-                  {employees.map((emp) => (
-                    <option key={emp.id} value={emp.id}>{emp.name}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label>Office Start Time:</label>
-                <input
-                  type="time"
-                  name="office_start_time"
-                  value={formData.office_start_time}
-                  onChange={handleFormChange}
-                  style={inputStyle}
-                />
-              </div>
-              <div>
-                <label>Check In:</label>
-                <input
-                  type="time"
-                  name="check_in"
-                  value={formData.check_in}
-                  onChange={handleFormChange}
-                  style={inputStyle}
-                  required
-                />
-              </div>
-              <div>
-                <label>Check Out:</label>
-                <input
-                  type="time"
-                  name="check_out"
-                  value={formData.check_out}
-                  onChange={handleFormChange}
-                  style={inputStyle}
-                />
-              </div>
-            </div>
-            <div style={{ marginTop: '16px', display: 'flex', gap: '12px' }}>
-              <button type="submit" style={{ ...buttonStyle, backgroundColor: '#28a745', color: '#fff' }}>
-                {formData.id ? 'Update' : 'Save'}
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowForm(false)}
-                style={{ ...buttonStyle, backgroundColor: '#6c757d', color: '#fff' }}
-              >
-                Cancel
-              </button>
-            </div>
-          </form>
+      {/* Main Content */}
+      <div style={{
+        flex: 1,
+        padding: '1.5rem',
+        maxWidth: '1200px',
+        margin: '0 auto'
+      }}>
+        <h2 style={{
+          fontSize: '1.5rem',
+          fontWeight: 'bold',
+          marginBottom: '1.5rem',
+          color: '#333'
+        }}>Attendance Management</h2>
+
+        {/* Filters and Add Button */}
+        <div style={{
+          display: 'flex',
+          gap: '1rem',
+          marginBottom: '1.5rem',
+          flexWrap: 'wrap'
+        }}>
+          <div style={{ flex: 1, minWidth: '220px' }}>
+            <label style={{ display: 'block', marginBottom: '0.25rem' }}>Search by Name:</label>
+            <input
+              type="text"
+              placeholder="Employee name..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '0.5rem',
+                borderRadius: '0.25rem',
+                border: '1px solid #d1d5db',
+                fontSize: '0.875rem'
+              }}
+            />
+          </div>
+          <div style={{ flex: 1, minWidth: '220px' }}>
+            <label style={{ display: 'block', marginBottom: '0.25rem' }}>Filter by Date:</label>
+            <input
+              type="date"
+              value={dateFilter}
+              onChange={(e) => setDateFilter(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '0.5rem',
+                borderRadius: '0.25rem',
+                border: '1px solid #d1d5db',
+                fontSize: '0.875rem'
+              }}
+            />
+          </div>
+          <div style={{ alignSelf: 'flex-end' }}>
+            <button
+              onClick={() => setShowForm(true)}
+              style={{
+                padding: '0.5rem 1rem',
+                borderRadius: '0.25rem',
+                border: 'none',
+                backgroundColor: '#2563eb',
+                color: 'white',
+                fontWeight: '500',
+                cursor: 'pointer',
+                fontSize: '0.875rem'
+              }}
+            >
+              + Add Attendance
+            </button>
+          </div>
         </div>
-      )}
 
-      <div style={sectionStyle}>
-        <table style={tableStyle}>
-          <thead>
-            <tr>
-              <th style={thStyle}>Employee</th>
-              <th style={thStyle}>Date</th>
-              <th style={thStyle}>Check In</th>
-              <th style={thStyle}>Check Out</th>
-              <th style={thStyle}>Office Start</th>
-              <th style={thStyle}>In Time</th>
-              <th style={thStyle}>Delay Time</th>
-              <th style={thStyle}>Status</th>
-              <th style={thStyle}>Actions</th>
-            </tr>
-          </thead>
-             <tbody>
-            {filteredAttendance.map((record) => {
-              // Format the times to 12-hour format
-              const checkIn = formatTimeTo12Hour(record.check_in);
-              const checkOut = formatTimeTo12Hour(record.check_out);
-              const officeStart = formatTimeTo12Hour(record.office_start_time) || '09:30 AM';
-              
-              // Calculate time differences
-              const { inTime, delayTime, status } = calculateTimeDifference(
-                checkIn || '00:00 AM', 
-                officeStart
-              );
+        {/* Attendance Form */}
+        {showForm && (
+          <div style={{
+            backgroundColor: 'white',
+            border: '1px solid #e5e7eb',
+            borderRadius: '0.5rem',
+            padding: '1.5rem',
+            marginBottom: '1.5rem',
+            boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
+          }}>
+            <h3 style={{
+              fontSize: '1.125rem',
+              fontWeight: '600',
+              marginBottom: '1rem'
+            }}>{formData.id ? 'Edit Attendance' : 'Add Attendance'}</h3>
+            <form onSubmit={handleSubmit}>
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
+                gap: '1rem',
+                marginBottom: '1rem'
+              }}>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.875rem' }}>Employee:</label>
+                  <select
+                    name="employee"
+                    value={formData.employee}
+                    onChange={handleFormChange}
+                    style={{
+                      width: '100%',
+                      padding: '0.5rem',
+                      borderRadius: '0.25rem',
+                      border: '1px solid #d1d5db',
+                      fontSize: '0.875rem'
+                    }}
+                    required
+                  >
+                    <option value="">Select Employee</option>
+                    {employees.map((emp) => (
+                      <option key={emp.id} value={emp.id}>{emp.name}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.875rem' }}>Office Start Time:</label>
+                  <input
+                    type="time"
+                    name="office_start_time"
+                    value={formData.office_start_time}
+                    onChange={handleFormChange}
+                    style={{
+                      width: '100%',
+                      padding: '0.5rem',
+                      borderRadius: '0.25rem',
+                      border: '1px solid #d1d5db',
+                      fontSize: '0.875rem'
+                    }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.875rem' }}>Check In:</label>
+                  <input
+                    type="time"
+                    name="check_in"
+                    value={formData.check_in}
+                    onChange={handleFormChange}
+                    style={{
+                      width: '100%',
+                      padding: '0.5rem',
+                      borderRadius: '0.25rem',
+                      border: '1px solid #d1d5db',
+                      fontSize: '0.875rem'
+                    }}
+                    required
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.875rem' }}>Check Out:</label>
+                  <input
+                    type="time"
+                    name="check_out"
+                    value={formData.check_out}
+                    onChange={handleFormChange}
+                    style={{
+                      width: '100%',
+                      padding: '0.5rem',
+                      borderRadius: '0.25rem',
+                      border: '1px solid #d1d5db',
+                      fontSize: '0.875rem'
+                    }}
+                  />
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: '0.75rem' }}>
+                <button
+                  type="submit"
+                  style={{
+                    padding: '0.5rem 1rem',
+                    borderRadius: '0.25rem',
+                    border: 'none',
+                    backgroundColor: '#16a34a',
+                    color: 'white',
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                    fontSize: '0.875rem'
+                  }}
+                >
+                  {formData.id ? 'Update' : 'Save'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowForm(false)}
+                  style={{
+                    padding: '0.5rem 1rem',
+                    borderRadius: '0.25rem',
+                    border: 'none',
+                    backgroundColor: '#6b7280',
+                    color: 'white',
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                    fontSize: '0.875rem'
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
 
-              return (
-                <tr key={record.id}>
-                  <td style={tdStyle}>{record.employee_name}</td>
-                  <td style={tdStyle}>{record.date}</td>
-                  <td style={tdStyle}>{checkIn || '-'}</td>
-                  <td style={tdStyle}>{checkOut || '-'}</td>
-                  <td style={tdStyle}>{officeStart}</td>
-                  <td style={tdStyle}>{inTime ? `${inTime}` : '-'}</td>
-                  <td style={tdStyle}>{delayTime ? `${delayTime}` : '-'}</td>
-                  <td style={tdStyle}>{status}</td>
-                  <td style={{ ...tdStyle, display: 'flex', gap: '8px' }}>
-                    <button
-                      onClick={() => handleEdit(record)}
-                      style={{ ...buttonStyle, backgroundColor: '#0078d4', color: '#fff', padding: '8px 12px' }}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(record.id)}
-                      style={{ ...buttonStyle, backgroundColor: '#dc3545', color: '#fff', padding: '8px 12px' }}
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        {/* Attendance Table */}
+        <div style={{
+          backgroundColor: 'white',
+          border: '1px solid #e5e7eb',
+          borderRadius: '0.5rem',
+          padding: '1.5rem',
+          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+          overflowX: 'auto'
+        }}>
+          <table style={{
+            width: '100%',
+            borderCollapse: 'collapse',
+            fontSize: '0.875rem'
+          }}>
+            <thead>
+              <tr>
+                <th style={{
+                  padding: '0.75rem 1rem',
+                  textAlign: 'left',
+                  backgroundColor: '#f3f4f6',
+                  borderBottom: '1px solid #e5e7eb',
+                  fontWeight: '500'
+                }}>Employee</th>
+                <th style={{
+                  padding: '0.75rem 1rem',
+                  textAlign: 'left',
+                  backgroundColor: '#f3f4f6',
+                  borderBottom: '1px solid #e5e7eb',
+                  fontWeight: '500'
+                }}>Date</th>
+                <th style={{
+                  padding: '0.75rem 1rem',
+                  textAlign: 'left',
+                  backgroundColor: '#f3f4f6',
+                  borderBottom: '1px solid #e5e7eb',
+                  fontWeight: '500'
+                }}>Check In</th>
+                <th style={{
+                  padding: '0.75rem 1rem',
+                  textAlign: 'left',
+                  backgroundColor: '#f3f4f6',
+                  borderBottom: '1px solid #e5e7eb',
+                  fontWeight: '500'
+                }}>Check Out</th>
+                <th style={{
+                  padding: '0.75rem 1rem',
+                  textAlign: 'left',
+                  backgroundColor: '#f3f4f6',
+                  borderBottom: '1px solid #e5e7eb',
+                  fontWeight: '500'
+                }}>Office Start</th>
+                <th style={{
+                  padding: '0.75rem 1rem',
+                  textAlign: 'left',
+                  backgroundColor: '#f3f4f6',
+                  borderBottom: '1px solid #e5e7eb',
+                  fontWeight: '500'
+                }}>In Time</th>
+                <th style={{
+                  padding: '0.75rem 1rem',
+                  textAlign: 'left',
+                  backgroundColor: '#f3f4f6',
+                  borderBottom: '1px solid #e5e7eb',
+                  fontWeight: '500'
+                }}>Delay Time</th>
+                <th style={{
+                  padding: '0.75rem 1rem',
+                  textAlign: 'left',
+                  backgroundColor: '#f3f4f6',
+                  borderBottom: '1px solid #e5e7eb',
+                  fontWeight: '500'
+                }}>Status</th>
+                <th style={{
+                  padding: '0.75rem 1rem',
+                  textAlign: 'left',
+                  backgroundColor: '#f3f4f6',
+                  borderBottom: '1px solid #e5e7eb',
+                  fontWeight: '500'
+                }}>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredAttendance.map((record) => {
+                const checkIn = formatTimeTo12Hour(record.check_in);
+                const checkOut = formatTimeTo12Hour(record.check_out);
+                const officeStart = formatTimeTo12Hour(record.office_start_time) || '09:30 AM';
+                const { inTime, delayTime, status } = calculateTimeDifference(
+                  checkIn || '00:00 AM',
+                  officeStart
+                );
+
+                return (
+                  <tr key={record.id} style={{ borderBottom: '1px solid #e5e7eb' }}>
+                    <td style={{ padding: '0.75rem 1rem', verticalAlign: 'middle' }}>{record.employee_name}</td>
+                    <td style={{ padding: '0.75rem 1rem', verticalAlign: 'middle' }}>{record.date}</td>
+                    <td style={{ padding: '0.75rem 1rem', verticalAlign: 'middle' }}>{checkIn || '-'}</td>
+                    <td style={{ padding: '0.75rem 1rem', verticalAlign: 'middle' }}>{checkOut || '-'}</td>
+                    <td style={{ padding: '0.75rem 1rem', verticalAlign: 'middle' }}>{officeStart}</td>
+                    <td style={{ padding: '0.75rem 1rem', verticalAlign: 'middle' }}>{inTime ? `${inTime}` : '-'}</td>
+                    <td style={{ padding: '0.75rem 1rem', verticalAlign: 'middle' }}>{delayTime ? `${delayTime}` : '-'}</td>
+                    <td style={{ padding: '0.75rem 1rem', verticalAlign: 'middle' }}>{status}</td>
+                    <td style={{ padding: '0.75rem 1rem', verticalAlign: 'middle' }}>
+                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <button
+                          onClick={() => handleEdit(record)}
+                          style={{
+                            padding: '0.375rem 0.75rem',
+                            borderRadius: '0.25rem',
+                            border: 'none',
+                            backgroundColor: '#2563eb',
+                            color: 'white',
+                            fontWeight: '500',
+                            cursor: 'pointer',
+                            fontSize: '0.75rem'
+                          }}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDelete(record.id)}
+                          style={{
+                            padding: '0.375rem 0.75rem',
+                            borderRadius: '0.25rem',
+                            border: 'none',
+                            backgroundColor: '#dc2626',
+                            color: 'white',
+                            fontWeight: '500',
+                            cursor: 'pointer',
+                            fontSize: '0.75rem'
+                          }}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

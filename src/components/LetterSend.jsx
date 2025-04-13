@@ -40,235 +40,184 @@ const LetterSend = () => {
     cv.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const styles = {
+    container: {
+      display: "flex",
+      height: "100vh",
+      fontFamily: "Segoe UI, Tahoma, Geneva, Verdana, sans-serif",
+    },
+    sidebar: {
+      width: "230px",
+      backgroundColor: "#f3f6fb",
+      height: "100vh",
+      padding: "20px 15px",
+      boxShadow: "2px 0 5px rgba(0, 0, 0, 0.05)",
+    },
+    sidebarHeader: {
+      fontSize: "20px",
+      fontWeight: "bold",
+      marginBottom: "20px",
+      color: "#0078D4",
+    },
+    sidebarLink: {
+      display: "block",
+      padding: "10px",
+      margin: "5px 0",
+      textDecoration: "none",
+      color: "#333",
+      borderRadius: "6px",
+      transition: "0.3s",
+    },
+    sidebarLinkHover: {
+      backgroundColor: "#e1eaff",
+    },
+    mainContent: {
+      flex: 1,
+      overflowY: "auto",
+      padding: "30px",
+      backgroundColor: "#f3f3f3",
+    },
+    heading: {
+      fontSize: "26px",
+      fontWeight: "bold",
+      marginBottom: "20px",
+      color: "#333",
+    },
+    searchInput: {
+      padding: "10px",
+      borderRadius: "5px",
+      border: "1px solid #ccc",
+      width: "100%",
+      marginBottom: "20px",
+    },
+    addButton: {
+      padding: "10px 20px",
+      backgroundColor: "#0078D4",
+      color: "#fff",
+      border: "none",
+      borderRadius: "4px",
+      cursor: "pointer",
+      marginBottom: "20px",
+    },
+    cardContainer: {
+      display: "grid",
+      gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+      gap: "20px",
+    },
+    card: {
+      backgroundColor: "white",
+      padding: "20px",
+      borderRadius: "8px",
+      boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+    },
+    cardTitle: {
+      fontSize: "20px",
+      fontWeight: "600",
+      marginBottom: "10px",
+    },
+    cardText: {
+      color: "#333",
+      marginBottom: "8px",
+    },
+    cardLink: {
+      color: "#0078D4",
+      textDecoration: "none",
+    },
+    buttonContainer: {
+      marginTop: "10px",
+      display: "flex",
+      gap: "10px",
+    },
+    editButton: {
+      padding: "6px 12px",
+      backgroundColor: "#28a745",
+      color: "white",
+      border: "none",
+      borderRadius: "4px",
+      cursor: "pointer",
+    },
+    deleteButton: {
+      padding: "6px 12px",
+      backgroundColor: "#d9534f",
+      color: "white",
+      border: "none",
+      borderRadius: "4px",
+      cursor: "pointer",
+    },
+  };
+
   return (
-    <div className="flex h-screen bg-gray-100">
-      <div className="sidebar">
-        <h2>HR Work</h2>
-        <ul>
-          <li><a href="/employees" className="block py-2 hover:text-gray-300">Employees</a></li>
-          <li><a href="/attendance" className="block py-2 hover:text-gray-300">Attendance</a></li>
-          <li><a href="/email-logs" className="block py-2 hover:text-gray-300">Email Logs</a></li>
-          <li><a href="/interviews" className="block py-2 hover:text-gray-300">Interviews</a></li>
-          <li><a href="/cv-management" className="block py-2 hover:text-gray-300">CV Management</a></li>
-        </ul>
+    <div style={styles.container}>
+      <div style={styles.sidebar}>
+        <div style={styles.sidebarHeader}>HR Work</div>
+        <a href="/cv-add" style={styles.sidebarLink}>Add CV</a>
+        <a href="/interviews" style={styles.sidebarLink}>Interviews</a>
+        <a href="/employee" style={styles.sidebarLink}>Employee</a>
+        <a href="/attendance" style={styles.sidebarLink}>Attendance</a>
+        <a href="/employee_leave" style={styles.sidebarLink}>Employee Leave</a>
+        <a href="/performanse_appraisal" style={styles.sidebarLink}>Performance Appraisal</a>
+        <a href="/finance-provision" style={styles.sidebarLink}>Finance Provision</a>
+        <a href="/employee-termination" style={styles.sidebarLink}>Employee Termination</a>
+        <a href="/letter-send" style={{ ...styles.sidebarLink, backgroundColor: "#e1eaff" }}>Send Letter</a>
+        <a href="/email-logs" style={styles.sidebarLink}>Email Logs</a>
+        <a href="/tad-groups" style={styles.sidebarLink}>TAD Groups</a>
+        
       </div>
 
-      <div className="main-content flex-1 overflow-y-auto">
-        <div className="container mx-auto p-6">
-          <h2 className="heading">Letter Send</h2>
+      <div style={styles.mainContent}>
+        <h2 style={styles.heading}>Letter Send</h2>
 
-          {/* Search Field */}
-          <div className="search-container mb-6">
-            <input
-              type="text"
-              placeholder="Search Letter..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="search-input px-4 py-2 border border-gray-300 rounded-lg w-full"
-            />
-          </div>
+        <input
+          type="text"
+          placeholder="Search Letter..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          style={styles.searchInput}
+        />
 
-          {/* Add CV Button */}
-          <button
-            onClick={handleAddCV}
-            className="add-button mb-6"
-          >
-            Send Email
-          </button>
+        <button onClick={handleAddCV} style={styles.addButton}>
+          Send Email
+        </button>
 
-          <div className="card-container">
-            {filteredCVs.map((cv) => (
-              <div key={cv.id} className="card">
-                <h3 className="text-xl font-semibold mb-2">{cv.name}</h3>
-                <p className="text-gray-700 mb-2">Email: {cv.email}</p>
-                <p className="text-gray-700 mb-2">Letter Type: {cv.letter_type}</p>
-                <p className="text-gray-700">
-                  Letter File:{" "}
-                  {cv.letter_file ? (
-                    <a
-                      href={cv.letter_file}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-500 hover:underline"
-                    >
-                      View Letter
-                    </a>
-                  ) : (
-                    "No File"
-                  )}
-                </p>
-
-                <div className="button-container">
-                  <button
-                    onClick={() => handleEditCV(cv.id)}
-                    className="edit-button"
+        <div style={styles.cardContainer}>
+          {filteredCVs.map((cv) => (
+            <div key={cv.id} style={styles.card}>
+              <h3 style={styles.cardTitle}>{cv.name}</h3>
+              <p style={styles.cardText}>Email: {cv.email}</p>
+              <p style={styles.cardText}>Letter Type: {cv.letter_type}</p>
+              <p style={styles.cardText}>
+                Letter File:{" "}
+                {cv.letter_file ? (
+                  <a
+                    href={cv.letter_file}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={styles.cardLink}
                   >
-                    Edit
-                  </button>
-
-                  <button
-                    onClick={() => handleDeleteCV(cv.id)}
-                    className="delete-button"
-                  >
-                    Delete
-                  </button>
-                </div>
+                    View Letter
+                  </a>
+                ) : (
+                  "No File"
+                )}
+              </p>
+              <div style={styles.buttonContainer}>
+                <button
+                  onClick={() => handleEditCV(cv.id)}
+                  style={styles.editButton}
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => handleDeleteCV(cv.id)}
+                  style={styles.deleteButton}
+                >
+                  Delete
+                </button>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
       </div>
-
-      <style jsx>{`
-        .main-content {
-          display: flex;
-          flex-direction: column;
-          padding: 40px;
-          background-color: #f4f7fc;
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-          align-items: center;
-        }
-
-        .heading {
-          font-size: 2.5rem;
-          margin-bottom: 30px;
-          font-weight: bold;
-          color: #0078d4;
-          text-align: center;
-        }
-
-        .search-container {
-          max-width: 400px;
-          margin-bottom: 20px;
-        }
-
-        .search-input {
-          font-size: 1rem;
-          border-radius: 8px;
-          border: 1px solid #e2e8f0;
-          width: 100%;
-          transition: border 0.2s ease;
-        }
-
-        .search-input:focus {
-          border-color: #3182ce;
-          outline: none;
-        }
-
-        .card-container {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-          gap: 20px;
-          width: 100%;
-          max-width: 1200px;
-          margin-top: 30px;
-        }
-
-        .card {
-          background-color: white;
-          padding: 20px;
-          border-radius: 8px;
-          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-          text-align: center;
-          transition: transform 0.3s ease, box-shadow 0.3s ease;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: space-between;
-        }
-
-        .card:hover {
-          transform: translateY(-10px);
-          box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .add-button {
-          background-color: #28a745;
-          color: white;
-          padding: 10px 20px;
-          font-size: 1rem;
-          border: none;
-          border-radius: 4px;
-          cursor: pointer;
-          margin-bottom: 20px;
-        }
-
-        .add-button:hover {
-          background-color: #218838;
-        }
-
-        .button-container {
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-          width: 100%;
-          align-items: center;
-        }
-
-        .edit-button {
-          background-color: #fbc02d;
-          color: white;
-          padding: 8px 16px;
-          border-radius: 4px;
-          border: none;
-          cursor: pointer;
-        }
-
-        .edit-button:hover {
-          background-color: #f9a825;
-        }
-
-        .delete-button {
-          background-color: #e57373;
-          color: white;
-          padding: 8px 16px;
-          border-radius: 4px;
-          border: none;
-          cursor: pointer;
-        }
-
-        .delete-button:hover {
-          background-color: #d32f2f;
-        }
-
-        .sidebar {
-          background-color: #2d3748;
-          color: white;
-          padding: 20px;
-          width: 250px;
-          height: 100vh;
-        }
-
-        .sidebar h2 {
-          font-size: 1.5rem;
-          font-weight: 600;
-          text-align: center;
-          margin-bottom: 20px;
-        }
-
-        .sidebar ul {
-          list-style-type: none;
-          padding: 0;
-        }
-
-        .sidebar ul li {
-          margin-bottom: 15px;
-        }
-
-        .sidebar ul li a {
-          display: block;
-          padding: 10px 20px;
-          border-radius: 8px;
-          text-decoration: none;
-          color: white;
-          transition: background-color 0.2s ease, color 0.2s ease;
-        }
-
-        .sidebar ul li a:hover {
-          background-color: #4a5568;
-          color: #edf2f7;
-        }
-      `}</style>
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { getEmployees, deleteEmployee } from "../api/employeeApi";
 
 const EmployeeDetails = () => {
@@ -48,97 +48,223 @@ const EmployeeDetails = () => {
       employee.department.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const styles = {
-    container: { padding: "20px" },
-    header: { display: "flex", justifyContent: "space-between", alignItems: "center" },
-    buttonContainer: {
-      display: "flex",
-      gap: "10px",  // Space between buttons
-      width: "fit-content",
-      marginTop: "10px" // Ensures it's spaced from the table
-    },
-    searchInput: { padding: "8px", marginBottom: "10px", width: "250px" },
-    addButton: {
-      padding: "10px 15px",
-      backgroundColor: "#0078D4",
-      color: "#fff",
-      border: "none",
-      cursor: "pointer",
-      width: "auto"
-    },
-    printButton: {
-      padding: "10px 15px",
-      backgroundColor: "#28a745",
-      color: "#fff",
-      border: "none",
-      cursor: "pointer",
-      display: "flex",
-      alignItems: "center",
-      width: "auto" // Ensures Print button does not stretch
-    },
-    printLogo: { width: "20px", height: "20px", marginRight: "8px" }, // Logo styling
-    table: { width: "100%", borderCollapse: "collapse", marginTop: "10px" },
-    th: { backgroundColor: "#0078D4", color: "white", padding: "10px" },
-    td: { padding: "10px", borderBottom: "1px solid #ddd", cursor: "pointer" },
-    actionButton: { marginRight: "5px", padding: "5px 10px", cursor: "pointer" },
-    deleteButton: { backgroundColor: "#d9534f", color: "white", border: "none" }
+  // Styles
+  const containerStyle = {
+    display: "flex",
+    minHeight: "100vh",
+    backgroundColor: "#f9fafb",
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+  };
+
+  const sidebarStyle = {
+    width: "230px",
+    backgroundColor: "#f3f6fb",
+    padding: "20px 15px",
+    boxShadow: "2px 0 5px rgba(0, 0, 0, 0.05)",
+    flexShrink: 0
+  };
+
+  const sidebarHeaderStyle = {
+    fontSize: "20px",
+    fontWeight: "bold",
+    marginBottom: "20px",
+    color: "#0078D4"
+  };
+
+  const sidebarLinkStyle = {
+    display: "block",
+    padding: "10px",
+    margin: "5px 0",
+    textDecoration: "none",
+    color: "#333",
+    borderRadius: "6px",
+    transition: "0.3s"
+  };
+
+  const mainContentStyle = {
+    flex: 1,
+    padding: "30px",
+    backgroundColor: "#f3f2f1"
+  };
+
+  const headerStyle = {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: "20px"
+  };
+
+  const buttonContainerStyle = {
+    display: "flex",
+    gap: "10px",
+    marginTop: "10px",
+    marginBottom: "20px"
+  };
+
+  const searchInputStyle = {
+    padding: "10px",
+    width: "300px",
+    border: "1px solid #ccc",
+    borderRadius: "5px",
+    marginBottom: "15px",
+    fontSize: "14px"
+  };
+
+  const addButtonStyle = {
+    padding: "10px 20px",
+    backgroundColor: "#0078d4",
+    color: "#fff",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
+    fontWeight: "bold"
+  };
+
+  const printButtonStyle = {
+    padding: "10px 20px",
+    backgroundColor: "#107c10",
+    color: "#fff",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
+    fontWeight: "bold",
+    display: "flex",
+    alignItems: "center"
+  };
+
+  const tableStyle = {
+    width: "100%",
+    borderCollapse: "collapse",
+    backgroundColor: "#fff",
+    boxShadow: "0 0 8px rgba(0,0,0,0.05)",
+    borderRadius: "6px",
+    overflow: "hidden"
+  };
+
+  const thStyle = {
+    backgroundColor: "#0078d4",
+    color: "white",
+    padding: "12px",
+    textAlign: "left",
+    fontWeight: "500"
+  };
+
+  const tdStyle = {
+    padding: "12px",
+    borderBottom: "1px solid #e1e1e1",
+    cursor: "pointer",
+    transition: "background 0.2s ease"
+  };
+
+  const actionButtonStyle = {
+    marginRight: "8px",
+    padding: "6px 12px",
+    fontSize: "13px",
+    borderRadius: "4px",
+    border: "none",
+    cursor: "pointer"
+  };
+
+  const deleteButtonStyle = {
+    backgroundColor: "#d9534f",
+    color: "white"
+  };
+
+  const attachmentButtonStyle = {
+    backgroundColor: "#605e5c",
+    color: "white"
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>
-        <h2>Employee Details</h2>
+    <div style={containerStyle}>
+      {/* Sidebar */}
+      <div style={sidebarStyle}>
+        <div style={sidebarHeaderStyle}>HR Work</div>
+        <Link to="/cv-add" style={sidebarLinkStyle}>Add CV</Link>
+        <Link to="/interviews" style={sidebarLinkStyle}>Interviews</Link>
+        <Link to="/employee" style={{ ...sidebarLinkStyle, backgroundColor: "#e1eaff" }}>Employee</Link>
+        <Link to="/attendance" style={sidebarLinkStyle}>Attendance</Link>
+        <Link to="/employee_leave" style={sidebarLinkStyle}>Employee Leave</Link>
+        <Link to="/performanse_appraisal" style={sidebarLinkStyle}>Performance Appraisal</Link>
+        <Link to="/finance-provision" style={sidebarLinkStyle}>Finance Provision</Link>
+        <Link to="/employee-termination" style={sidebarLinkStyle}>Employee Termination</Link>
+        <Link to="/letter-send" style={sidebarLinkStyle}>Send Letter</Link>
+        <Link to="/email-logs" style={sidebarLinkStyle}>Email Logs</Link>
+        <Link to="/tad-groups" style={sidebarLinkStyle}>TAD Groups</Link>
       </div>
-      <input
-        type="text"
-        placeholder="Search employees..."
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        style={styles.searchInput}
-      />
-      <div style={styles.buttonContainer}>
-        <button style={styles.addButton} onClick={() => navigate("/add-employee")}>+ Add Employee</button>
-        <button style={styles.printButton} onClick={handlePrint}>
-        🖨️ Print All
-        </button>
-      </div>
-      <table style={styles.table}>
-        <thead>
-          <tr>
-            <th style={styles.th}>Employee ID</th>
-            <th style={styles.th}>Name</th>
-            <th style={styles.th}>Designation</th>
-            <th style={styles.th}>Department</th>
-            <th style={styles.th}>Company</th>
-            <th style={styles.th}>Salary</th>
-            <th style={styles.th}>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredEmployees.map((employee) => (
-            <tr key={employee.id} onClick={() => handleRowClick(employee.id)} style={styles.td}>
-              <td>{employee.employee_id}</td>
-              <td>{employee.name}</td>
-              <td>{employee.designation}</td>
-              <td>{employee.department}</td>
-              <td>{employee.company_name}</td>
-              <td>{employee.salary}</td>
-              <td>
-                <button
-                  style={styles.actionButton}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigate(`/employee/${employee.id}/attachments`);
-                  }}>
-                  Attachment
-                </button>
 
-                <button style={{ ...styles.actionButton, ...styles.deleteButton }} onClick={(e) => handleDelete(employee.id, e)}>Delete</button>
-              </td>
+      {/* Main Content */}
+      <div style={mainContentStyle}>
+        <div style={headerStyle}>
+          <h2>Employee Details</h2>
+        </div>
+        
+        <input
+          type="text"
+          placeholder="Search employees..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          style={searchInputStyle}
+        />
+        
+        <div style={buttonContainerStyle}>
+          <button style={addButtonStyle} onClick={() => navigate("/add-employee")}>
+            + Add Employee
+          </button>
+          <button style={printButtonStyle} onClick={handlePrint}>
+            🖨️ Print All
+          </button>
+        </div>
+        
+        <table style={tableStyle}>
+          <thead>
+            <tr>
+              <th style={thStyle}>Employee ID</th>
+              <th style={thStyle}>Name</th>
+              <th style={thStyle}>Designation</th>
+              <th style={thStyle}>Department</th>
+              <th style={thStyle}>Company</th>
+              <th style={thStyle}>Salary</th>
+              <th style={thStyle}>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {filteredEmployees.map((employee) => (
+              <tr
+                key={employee.id}
+                onClick={() => handleRowClick(employee.id)}
+                style={tdStyle}
+                onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#f0f0f0")}
+                onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "white")}
+              >
+                <td style={tdStyle}>{employee.employee_id}</td>
+                <td style={tdStyle}>{employee.name}</td>
+                <td style={tdStyle}>{employee.designation}</td>
+                <td style={tdStyle}>{employee.department}</td>
+                <td style={tdStyle}>{employee.company_name}</td>
+                <td style={tdStyle}>{employee.salary}</td>
+                <td style={tdStyle}>
+                  <button
+                    style={{ ...actionButtonStyle, ...attachmentButtonStyle }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(`/employee/${employee.id}/attachments`);
+                    }}
+                  >
+                    Attachment
+                  </button>
+                  <button
+                    style={{ ...actionButtonStyle, ...deleteButtonStyle }}
+                    onClick={(e) => handleDelete(employee.id, e)}
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
