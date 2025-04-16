@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getAttendance, addAttendance, updateAttendance, deleteAttendance, getEmployees } from '../api/employeeApi';
-import { Link } from 'react-router-dom';
+import Sidebars from './sidebars';
 
 const Attendance = () => {
   const [attendance, setAttendance] = useState([]);
@@ -16,6 +16,8 @@ const Attendance = () => {
   });
   const [searchTerm, setSearchTerm] = useState('');
   const [dateFilter, setDateFilter] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const attendancePerPage = 5;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,6 +43,7 @@ const Attendance = () => {
       return matchesName && matchesDate;
     });
     setFilteredAttendance(filtered);
+    setCurrentPage(1); // Reset to first page when filters change
   }, [searchTerm, dateFilter, attendance]);
 
   const handleFormChange = (e) => {
@@ -160,37 +163,18 @@ const Attendance = () => {
       }
     }
   };
-  const styles = {
-    container: {
-      display: "flex",
-      fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-    },
-    sidebar: {
-      width: "230px",
-      backgroundColor: "#f3f6fb",
-      height: "100vh",
-      padding: "20px 15px",
-      boxShadow: "2px 0 5px rgba(0, 0, 0, 0.05)",
-    },
-    sidebarHeader: {
-      fontSize: "20px",
-      fontWeight: "bold",
-      marginBottom: "20px",
-      color: "#0078D4",
-    },
-    sidebarLink: {
-      display: "block",
-      padding: "10px",
-      margin: "5px 0",
-      textDecoration: "none",
-      color: "#333",
-      borderRadius: "6px",
-      transition: "0.3s",
-    },
-    sidebarLinkHover: {
-      backgroundColor: "#e1eaff",
-    },
+
+  const indexOfLastAttendance = currentPage * attendancePerPage;
+  const indexOfFirstAttendance = indexOfLastAttendance - attendancePerPage;
+  const currentAttendance = filteredAttendance.slice(indexOfFirstAttendance, indexOfLastAttendance);
+
+  const totalPages = Math.ceil(filteredAttendance.length / attendancePerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
   };
+
+
   return (
     <div style={{
       display: 'flex',
@@ -199,19 +183,11 @@ const Attendance = () => {
       fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif'
     }}>
       {/* Sidebar */}
-      <div style={styles.sidebar}>
-        <div style={styles.sidebarHeader}>HR Work</div>
-        <a href="/cv-add" style={styles.sidebarLink}>Add CV</a>
-        <a href="/interviews" style={styles.sidebarLink}>Interviews</a>
-        <a href="/employee" style={styles.sidebarLink}>Employee</a>
-        <a href="/attendance" style={{ ...styles.sidebarLink, backgroundColor: "#e1eaff" }}>Attendance</a>
-        <a href="/employee_leave" style={styles.sidebarLink}>Employee Leave</a>
-        <a href="/performanse_appraisal" style={styles.sidebarLink}>Performance Appraisal</a>
-        <a href="/finance-provision" style={styles.sidebarLink}>Finance Provision</a>
-        <a href="/employee-termination" style={{ ...styles.sidebarLink }}>Employee Termination</a>
-        <a href="/letter-send" style={styles.sidebarLink}>Send Letter</a>
-        <a href="/email-logs" style={styles.sidebarLink}>Email Logs</a>
-        <a href="/tad-groups" style={styles.sidebarLink}>TAD Groups</a>
+      <div style={{ display: 'flex' }}>
+        <Sidebars />
+        <div style={{ flex: 1, overflow: 'auto' }}>
+          {/* Your page content here */}
+        </div>
       </div>
 
       {/* Main Content */}
@@ -497,7 +473,7 @@ const Attendance = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredAttendance.map((record) => {
+              {currentAttendance.map((record) => {
                 const checkIn = formatTimeTo12Hour(record.check_in);
                 const checkOut = formatTimeTo12Hour(record.check_out);
                 const officeStart = formatTimeTo12Hour(record.office_start_time) || '09:30 AM';
@@ -555,6 +531,31 @@ const Attendance = () => {
               })}
             </tbody>
           </table>
+        </div>
+        {/* Pagination */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          marginTop: '1.5rem'
+        }}>
+          {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNumber) => (
+            <button
+              key={pageNumber}
+              onClick={() => handlePageChange(pageNumber)}
+              style={{
+                padding: '0.5rem 1rem',
+                margin: '0 0.5rem',
+                borderRadius: '0.25rem',
+                border: '1px solid #d1d5db',
+                backgroundColor: currentPage === pageNumber ? '#2563eb' : 'white',
+                color: currentPage === pageNumber ? 'white' : 'black',
+                cursor: 'pointer',
+                fontSize: '0.875rem'
+              }}
+            >
+              {pageNumber}
+            </button>
+          ))}
         </div>
       </div>
     </div>

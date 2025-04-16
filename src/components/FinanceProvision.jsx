@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { getFinanceProvisions, addFinanceProvision, updateFinanceProvision, deleteFinanceProvision } from "../api/employeeApi";
 import { useNavigate } from 'react-router-dom';
-
+import Sidebars from './sidebars';
 const FinanceProvision = () => {
   const [provisions, setProvisions] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -10,6 +10,8 @@ const FinanceProvision = () => {
   const [newProvision, setNewProvision] = useState({ employee: "", email: "", payroll_pdf: null });
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
+  const [currentPage, setCurrentPage] = useState(1);
+  const provisionsPerPage = 6; // Adjust number of provisions per page
 
   useEffect(() => {
     const fetchProvisions = async () => {
@@ -98,36 +100,32 @@ const FinanceProvision = () => {
       provision.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const indexOfLastProvision = currentPage * provisionsPerPage;
+  const indexOfFirstProvision = indexOfLastProvision - provisionsPerPage;
+  const currentProvisions = filteredProvisions.slice(indexOfFirstProvision, indexOfLastProvision);
+  const totalPages = Math.ceil(filteredProvisions.length / provisionsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   const styles = {
-    sidebar: {
-      width: "200px",
-      backgroundColor: "#f3f6fb",
-      padding: "20px 15px",
-      height: "100vh",
-      position: "fixed",
-      boxShadow: "2px 0 5px rgba(0, 0, 0, 0.05)",
-      overflowY: "auto"
-    },
-    sidebarHeader: {
-      fontSize: "20px",
-      fontWeight: "bold",
-      marginBottom: "20px",
-      color: "#0078D4",
-    },
-    sidebarLink: {
-      display: "block",
-      padding: "10px",
-      margin: "5px 0",
-      textDecoration: "none",
-      color: "#333",
-      borderRadius: "6px",
-      transition: "0.3s",
+    container: {
+      display: "flex",
+      minHeight: "100vh",
+      backgroundColor: "#f9fafb",
+      fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
     },
     mainContent: {
-      marginLeft: "220px",
+      flex: 1,
       padding: "30px",
       backgroundColor: "#f9fbfc",
-      minHeight: "100vh",
+    },
+    header: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginBottom: "20px",
     },
     card: {
       border: "1px solid #e0e0e0",
@@ -135,7 +133,11 @@ const FinanceProvision = () => {
       padding: "20px",
       marginBottom: "20px",
       backgroundColor: "#fff",
-      boxShadow: "0 2px 4px rgba(0,0,0,0.05)"
+      boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
+      width: '48%',
+      display: 'inline-block',
+      verticalAlign: 'top',
+      marginRight: '1%',
     },
     modal: {
       position: "fixed",
@@ -147,14 +149,14 @@ const FinanceProvision = () => {
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      zIndex: 9999
+      zIndex: 9999,
     },
     modalContent: {
       backgroundColor: "#fff",
       padding: "30px",
       borderRadius: "10px",
       width: "400px",
-      boxShadow: "0 4px 8px rgba(0,0,0,0.2)"
+      boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
     },
     input: {
       display: "block",
@@ -162,48 +164,76 @@ const FinanceProvision = () => {
       padding: "10px",
       margin: "10px 0",
       borderRadius: "6px",
-      border: "1px solid #ccc"
+      border: "1px solid #ccc",
     },
     button: {
       padding: "10px 20px",
       border: "none",
       borderRadius: "6px",
       marginRight: "10px",
-      cursor: "pointer"
-    }
+      cursor: "pointer",
+    },
+    searchBar: {
+      padding: "10px",
+      marginBottom: "20px",
+      border: "1px solid #ddd",
+      borderRadius: "6px",
+      width: "300px",
+    },
+    actionButtons: {
+      display: "flex",
+      gap: "10px",
+      marginBottom: "20px",
+    },
+    provisionsContainer: {
+      display: "flex",
+      flexWrap: "wrap",
+      justifyContent: "flex-start",
+    },
+    pagination: {
+      display: "flex",
+      justifyContent: "center",
+      marginTop: "20px",
+    },
+    pageButton: {
+      padding: "8px 12px",
+      margin: "0 5px",
+      border: "1px solid #ddd",
+      borderRadius: "4px",
+      cursor: "pointer",
+      backgroundColor: "white",
+    },
+    activePageButton: {
+      backgroundColor: "#0078D4",
+      color: "white",
+    },
   };
 
+
   return (
-    <div>
+    <div style={styles.container}>
       {/* Sidebar */}
-      <div style={styles.sidebar}>
-        <div style={styles.sidebarHeader}>HR Work</div>
-        <a href="/cv-add" style={styles.sidebarLink}>Add CV</a>
-        <a href="/interviews" style={styles.sidebarLink}>Interviews</a>
-        <a href="/employee" style={styles.sidebarLink}>Employee</a>
-        <a href="/attendance" style={styles.sidebarLink}>Attendance</a>
-        <a href="/employee_leave" style={styles.sidebarLink}>Employee Leave</a>
-        <a href="/performanse_appraisal" style={styles.sidebarLink}>Performance Appraisal</a>
-        <a href="/finance-provision" style={{ ...styles.sidebarLink, backgroundColor: "#e1eaff" }}>Finance Provision</a>
-        <a href="/employee-termination" style={styles.sidebarLink}>Employee Termination</a>
-        <a href="/letter-send" style={styles.sidebarLink}>Send Letter</a>
-        <a href="/email-logs" style={styles.sidebarLink}>Email Logs</a>
-        <a href="/tad-groups" style={styles.sidebarLink}>TAD Groups</a>
+      <div style={{ display: 'flex' }}>
+        <Sidebars />
+        <div style={{ flex: 1, overflow: 'auto' }}>
+          {/* Your page content here */}
+        </div>
       </div>
 
       {/* Main Content */}
       <div style={styles.mainContent}>
-        <h2>Finance Provision</h2>
+        <div style={styles.header}>
+          <h2>Finance Provision</h2>
+          <input
+            type="text"
+            placeholder="Search by Employee or Email"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={styles.searchBar}
+          />
+        </div>
 
-        <input
-          type="text"
-          placeholder="Search by Employee Name or Email"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          style={styles.input}
-        />
-
-        <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+        <div style={styles.actionButtons}>
           <button onClick={() => setIsAddModalOpen(true)} style={{ ...styles.button, backgroundColor: "#4CAF50", color: "white" }}>
             Add New Provision
           </button>
@@ -215,9 +245,9 @@ const FinanceProvision = () => {
           </button>
         </div>
 
-        {/* Card List */}
-        <div>
-          {filteredProvisions.map((provision) => (
+        {/* Provisions List */}
+        <div style={styles.provisionsContainer}>
+          {currentProvisions.map((provision) => (
             <div key={provision.id} style={styles.card}>
               <h3>{provision.employee}</h3>
               <p>Email: {provision.email}</p>
@@ -233,6 +263,22 @@ const FinanceProvision = () => {
                 <button onClick={() => handleDelete(provision.id)} style={{ ...styles.button, backgroundColor: "#f44336", color: "white" }}>Delete</button>
               </div>
             </div>
+          ))}
+        </div>
+
+        {/* Pagination */}
+        <div style={styles.pagination}>
+          {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNumber) => (
+            <button
+              key={pageNumber}
+              onClick={() => handlePageChange(pageNumber)}
+              style={{
+                ...styles.pageButton,
+                ...(currentPage === pageNumber && styles.activePageButton),
+              }}
+            >
+              {pageNumber}
+            </button>
           ))}
         </div>
 

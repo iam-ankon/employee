@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Sidebars from './sidebars';
 
 const API_URL = "http://192.168.4.183:8000/api/employee/details/api/employees/";
 
@@ -8,6 +9,8 @@ const EmployeeTermination = () => {
   const [employees, setEmployees] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
+  const [currentPage, setCurrentPage] = useState(1);
+  const employeesPerPage = 5; // Keep employees per page as 5
 
   useEffect(() => {
     fetchEmployees();
@@ -49,44 +52,34 @@ const EmployeeTermination = () => {
     window.print();
   };
 
+  const indexOfLastEmployee = currentPage * employeesPerPage;
+  const indexOfFirstEmployee = indexOfLastEmployee - employeesPerPage;
+  const currentEmployees = filteredEmployees.slice(indexOfFirstEmployee, indexOfLastEmployee);
+
+  const totalPages = Math.ceil(filteredEmployees.length / employeesPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   const styles = {
     container: {
       display: "flex",
       fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-    },
-    sidebar: {
-      width: "230px",
-      backgroundColor: "#f3f6fb",
-      height: "100vh",
-      padding: "20px 15px",
-      boxShadow: "2px 0 5px rgba(0, 0, 0, 0.05)",
-    },
-    sidebarHeader: {
-      fontSize: "20px",
-      fontWeight: "bold",
-      marginBottom: "20px",
-      color: "#0078D4",
-    },
-    sidebarLink: {
-      display: "block",
-      padding: "10px",
-      margin: "5px 0",
-      textDecoration: "none",
-      color: "#333",
-      borderRadius: "6px",
-      transition: "0.3s",
-    },
-    sidebarLinkHover: {
-      backgroundColor: "#e1eaff",
+      minHeight: "100vh",
     },
     content: {
       flex: 1,
       padding: "20px",
+      backgroundColor: "#f4f4f4",
+      borderRadius: "8px",
+      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
     },
     header: {
       display: "flex",
       justifyContent: "space-between",
       alignItems: "center",
+      marginBottom: "20px",
     },
     searchInput: {
       padding: "10px",
@@ -94,27 +87,31 @@ const EmployeeTermination = () => {
       width: "300px",
       border: "1px solid #ccc",
       borderRadius: "5px",
+      backgroundColor: "#fff",
     },
     printButton: {
       padding: "10px 15px",
-      backgroundColor: "#28a745",
+      backgroundColor: "#007bff",
       color: "#fff",
       border: "none",
       borderRadius: "5px",
       cursor: "pointer",
       display: "flex",
       alignItems: "center",
+      transition: "background-color 0.3s",
+      ':hover': { backgroundColor: '#0056b3' },
     },
     table: {
       width: "100%",
       borderCollapse: "collapse",
       marginTop: "10px",
-      borderRadius: "10px",
+      borderRadius: "8px",
       overflow: "hidden",
       boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+      backgroundColor: "#fff",
     },
     th: {
-      backgroundColor: "#0078D4",
+      backgroundColor: "#007bff",
       color: "white",
       padding: "12px 10px",
       textAlign: "left",
@@ -126,40 +123,49 @@ const EmployeeTermination = () => {
     },
     actionButton: {
       marginRight: "5px",
-      padding: "6px 12px",
+      padding: "8px 12px",
       borderRadius: "4px",
       fontSize: "14px",
       cursor: "pointer",
+      transition: "background-color 0.3s",
     },
     deleteButton: {
-      backgroundColor: "#d9534f",
+      backgroundColor: "#dc3545",
       color: "white",
       border: "none",
+      ':hover': { backgroundColor: '#c82333' },
+    },
+    paginationStyle: {
+      display: "flex",
+      justifyContent: "center",
+      marginTop: "20px",
+    },
+    pageButtonStyle: {
+      padding: "8px 12px",
+      margin: "0 5px",
+      border: "1px solid #ccc",
+      borderRadius: "4px",
+      cursor: "pointer",
+      backgroundColor: "#fff",
+      transition: "background-color 0.3s",
+      ':hover': { backgroundColor: '#f0f0f0' },
+    },
+    activePageButtonStyle: {
+      backgroundColor: "#007bff",
+      color: "#fff",
+      border: "1px solid #007bff",
     },
   };
 
   return (
     <div style={styles.container}>
-      {/* Sidebar */}
-      <div style={styles.sidebar}>
-        <div style={styles.sidebarHeader}>HR Work</div>
-        <a href="/cv-add" style={styles.sidebarLink}>Add CV</a>
-        <a href="/interviews" style={styles.sidebarLink}>Interviews</a>
-        <a href="/employee" style={styles.sidebarLink}>Employee</a>
-        <a href="/attendance" style={styles.sidebarLink}>Attendance</a>
-        <a href="/employee_leave" style={styles.sidebarLink}>Employee Leave</a>
-        <a href="/performanse_appraisal" style={styles.sidebarLink}>Performance Appraisal</a>
-        <a href="/finance-provision" style={styles.sidebarLink}>Finance Provision</a>
-        <a href="/employee-termination" style={{ ...styles.sidebarLink, backgroundColor: "#e1eaff" }}>Employee Termination</a>
-        <a href="/letter-send" style={styles.sidebarLink}>Send Letter</a>
-        <a href="/email-logs" style={styles.sidebarLink}>Email Logs</a>
-        <a href="/tad-groups" style={styles.sidebarLink}>TAD Groups</a>
-      </div>
-
-      {/* Main Content */}
+      <Sidebars />
       <div style={styles.content}>
         <div style={styles.header}>
           <h2>Employee Termination</h2>
+          <button style={styles.printButton} onClick={handlePrint}>
+            <span role="img" aria-label="print">🖨️</span> Print List
+          </button>
         </div>
 
         <input
@@ -169,10 +175,6 @@ const EmployeeTermination = () => {
           onChange={(e) => setSearchTerm(e.target.value)}
           style={styles.searchInput}
         />
-
-        <button style={styles.printButton} onClick={handlePrint}>
-          🖨️ Print List
-        </button>
 
         <table style={styles.table}>
           <thead>
@@ -187,7 +189,7 @@ const EmployeeTermination = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredEmployees.map((employee, index) => (
+            {currentEmployees.map((employee, index) => (
               <tr
                 key={employee.id}
                 onClick={() => handleRowClick(employee.id)}
@@ -212,7 +214,7 @@ const EmployeeTermination = () => {
                   <button
                     style={{
                       ...styles.actionButton,
-                      backgroundColor: "#0078D4",
+                      backgroundColor: "#007bff",
                       color: "white",
                       border: "none",
                     }}
@@ -221,7 +223,7 @@ const EmployeeTermination = () => {
                       navigate(`/attachments/${employee.id}`);
                     }}
                   >
-                    📎 Attachment
+                    <span role="img" aria-label="attachment">📎</span> Attachment
                   </button>
                   <button
                     style={{
@@ -230,13 +232,24 @@ const EmployeeTermination = () => {
                     }}
                     onClick={(e) => handleDelete(e, employee.id)}
                   >
-                    🗑️ Delete
+                    <span role="img" aria-label="delete">🗑️</span> Delete
                   </button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+        <div style={styles.paginationStyle}>
+          {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNumber) => (
+            <button
+              key={pageNumber}
+              onClick={() => handlePageChange(pageNumber)}
+              style={currentPage === pageNumber ? styles.activePageButtonStyle : styles.pageButtonStyle}
+            >
+              {pageNumber}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );

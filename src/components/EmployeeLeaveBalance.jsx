@@ -1,89 +1,158 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import Sidebars from './sidebars';
+
 
 const EmployeeLeaveBalance = () => {
   const [balances, setBalances] = useState([]);
-  const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get('http://192.168.4.183:8000/api/employee/details/api/employee_leave_balances/')
-      .then(response => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://192.168.4.183:8000/api/employee/details/api/employee_leave_balances/');
         setBalances(response.data);
         setLoading(false);
-      })
-      .catch(error => {
+      } catch (error) {
         console.error('Error fetching leave balances:', error);
         setLoading(false);
-      });
+      }
+    };
 
-    axios.get('http://192.168.4.183:8000/api/employee/details/api/employees/')
-      .then(res => {
-        setEmployees(res.data);
-      })
-      .catch(err => console.error('Error fetching employees:', err));
-
+    fetchData();
   }, []);
 
-  if (loading) return <div style={{ padding: '20px' }}>Loading...</div>;
+  const loadingStyle = {
+    padding: '20px',
+    textAlign: 'center',
+    fontSize: '16px',
+    color: '#555',
+    fontFamily: 'Segoe UI, sans-serif',
+  };
+
+  if (loading) return <div style={loadingStyle}>Loading...</div>;
+
+  const containerStyle = {
+    display: 'flex',
+    fontFamily: 'Segoe UI, sans-serif',
+    backgroundColor: '#eef2f7',
+    minHeight: '100vh',
+  };
+
+  const sidebarStyle = {
+    width: '230px',
+    backgroundColor: '#f3f6fb',
+    height: '100vh',
+    padding: '20px 15px',
+    boxShadow: '2px 0 5px rgba(0, 0, 0, 0.05)',
+  };
+
+  const sidebarHeaderStyle = {
+    fontSize: '20px',
+    fontWeight: 'bold',
+    marginBottom: '20px',
+    color: '#0078D4',
+  };
+
+  const sidebarLinkStyle = {
+    display: 'block',
+    padding: '10px',
+    margin: '5px 0',
+    textDecoration: 'none',
+    color: '#333',
+    borderRadius: '6px',
+    transition: '0.3s',
+  };
+
+
+  const activeHoverStyle = {
+    ...sidebarLinkStyle,
+
+    fontWeight: '500',
+  };
+
+  const mainContentStyle = {
+    flex: 1,
+    padding: '40px 50px',
+  };
+
+  const headingStyle = {
+    color: '#0a58ca',
+    fontSize: '24px',
+    marginBottom: '25px',
+    borderBottom: '2px solid #ccc',
+    paddingBottom: '10px',
+  };
+
+  const tableContainerStyle = {
+    overflowX: 'auto',
+    backgroundColor: '#fff',
+    padding: '20px',
+    borderRadius: '12px',
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
+  };
+
+  const tableStyle = {
+    width: '100%',
+    borderCollapse: 'collapse',
+  };
+
+  const thStyle = {
+    backgroundColor: '#f0f4f9',
+    color: '#333',
+    padding: '12px 14px',
+    textAlign: 'center',
+    fontWeight: '600',
+    borderBottom: '1px solid #ddd',
+  };
+
+  const tdStyle = {
+    padding: '12px 14px',
+    textAlign: 'center',
+    borderBottom: '1px solid #eee',
+    fontSize: '14px',
+    color: '#444',
+  };
 
   return (
-    <div style={{
-      margin: '30px auto',
-      maxWidth: '90%',
-      backgroundColor: '#f4f6f9',
-      border: '1px solid #d1dbe8',
-      padding: '20px',
-      borderRadius: '8px',
-      boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-    }}>
-      <h2 style={{
-        color: '#0078D4',
-        fontSize: '20px',
-        marginBottom: '15px',
-        borderBottom: '1px solid #ccc',
-        paddingBottom: '10px'
-      }}>
-        Employee Leave Balances
-      </h2>
-      <table style={{
-        width: '100%',
-        borderCollapse: 'collapse',
-        fontFamily: 'Segoe UI, sans-serif',
-        fontSize: '14px',
-        backgroundColor: '#fff'
-      }}>
-        <thead>
-          <tr style={{ backgroundColor: '#e1e9f3' }}>
-            <th style={thTdStyle}>Employee Name</th>
-            <th style={thTdStyle}>Public Festival Holiday</th>
-            <th style={thTdStyle}>Casual Leave</th>
-            <th style={thTdStyle}>Sick Leave</th>
-            <th style={thTdStyle}>Earned Leave</th>
-            <th style={thTdStyle}>Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          {balances.map((balance) => (
-            <tr key={balance.id}>
-              <td style={thTdStyle}>{balance.employee_name}</td>
-              <td style={thTdStyle}>{balance.public_festival_holiday}</td>
-              <td style={thTdStyle}>{balance.casual_leave}</td>
-              <td style={thTdStyle}>{balance.sick_leave}</td>
-              <td style={thTdStyle}>{balance.earned_leave}</td>
-              <td style={thTdStyle}>{balance.leave_balance}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div style={containerStyle}>
+      <div style={{ display: 'flex' }}>
+        <Sidebars />
+        <div style={{ flex: 1, overflow: 'auto' }}>
+          {/* Your page content here */}
+        </div>
+      </div>
+      <div style={mainContentStyle}>
+        <h2 style={headingStyle}>Employee Leave Balances</h2>
+        <div style={tableContainerStyle}>
+          <table style={tableStyle}>
+            <thead>
+              <tr>
+                <th style={thStyle}>Employee Name</th>
+                <th style={thStyle}>Public Festival Holiday</th>
+                <th style={thStyle}>Casual Leave</th>
+                <th style={thStyle}>Sick Leave</th>
+                <th style={thStyle}>Earned Leave</th>
+                <th style={thStyle}>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {balances.map((balance) => (
+                <tr key={balance.id}>
+                  <td style={tdStyle}>{balance.employee_name}</td>
+                  <td style={tdStyle}>{balance.public_festival_holiday}</td>
+                  <td style={tdStyle}>{balance.casual_leave}</td>
+                  <td style={tdStyle}>{balance.sick_leave}</td>
+                  <td style={tdStyle}>{balance.earned_leave}</td>
+                  <td style={tdStyle}>{balance.leave_balance}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
-};
-
-const thTdStyle = {
-  border: '1px solid #d1dbe8',
-  padding: '10px',
-  textAlign: 'center'
 };
 
 export default EmployeeLeaveBalance;

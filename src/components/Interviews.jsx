@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
+import Sidebars from './sidebars';
 
 const API_URL = "http://192.168.4.183:8000/api/employee/details/api/interviews/";
 
@@ -332,14 +333,14 @@ const Interviews = () => {
   const handleSelectedAsEmployee = (selectedInterview) => {
     console.log(selectedInterview); // Log to ensure data is correct
     navigate("/add-employee", {
-        state: {
-            name: selectedInterview.name,
-            position_for: selectedInterview.position_for,
-            email: selectedInterview.email,
-            phone: selectedInterview.phone,
-        },
+      state: {
+        name: selectedInterview.name,
+        position_for: selectedInterview.position_for,
+        email: selectedInterview.email,
+        phone: selectedInterview.phone,
+      },
     });
-};
+  };
 
 
 
@@ -762,35 +763,18 @@ const Interviews = () => {
     container: {
       display: "flex",
       fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-      height: "85vh",
+      height: "92vh",
       overflow: "hidden",
       backgroundColor: "#f0f0f0",
       color: "#333",
       fontSize: "16px",
       lineHeight: "1.5",
-      padding: "20px",
-      boxSizing: "border-box",
-      fontWeight: "400",
-      textAlign: "left",
-      margin: "0 auto",
-      maxWidth: "1200px",
-      border: "1px solid #ddd",
-      borderRadius: "10px",
+      
       boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
-
-      flexDirection: "row",
-      gap: "20px",
       justifyContent: "space-between",
-      alignItems: "flex-start",
-      position: "relative",
       zIndex: 1,
-
       overflowY: "auto",
-      overflowX: "hidden",
-      transition: "background-color 0.3s ease",
-      "&:hover": {
-        backgroundColor: "#f0f0f0",
-      },
+      overflowX: "hidden",    
     },
     sidebar: {
       width: "280px",
@@ -931,7 +915,7 @@ const Interviews = () => {
       color: "#2a2a2a",
     },
     containerr: {
-      width: "80%",
+      width: "85%",
       margin: "0 auto",
       padding: "20px",
       backgroundColor: "#fff",
@@ -992,10 +976,9 @@ const Interviews = () => {
       color: "#777",
     },
 
-    
+
 
   };
-
 
 
   return (
@@ -1006,6 +989,12 @@ const Interviews = () => {
         transition: "margin-left 0.7s ease", // Smooth transition effect
       }}
     >
+      <div style={{ display: 'flex' }}>
+        <Sidebars />
+        <div style={{ flex: 1, overflow: 'auto' }}>
+          {/* Your page content here */}
+        </div>
+      </div>
       <div style={style.sidebar}>
         <div style={style.sidebarHeader}>
           <h2>Interviews</h2>
@@ -1458,18 +1447,18 @@ const Interviews = () => {
               disabled={selectedInterview === null}
             />
           </div>
-          
+
 
         </form>
         <div>
-            <button
-              type="submit"
-              style={{ padding: '10px 20px', backgroundColor: 'blue', color: 'white' }}
-              onClick={handleInterviewAction}
-            >
-              {selectedInterview ? "Update Interview" : "Create Interview"}
-            </button>
-          </div>
+          <button
+            type="submit"
+            style={{ padding: '10px 20px', backgroundColor: 'blue', color: 'white' }}
+            onClick={handleInterviewAction}
+          >
+            {selectedInterview ? "Update Interview" : "Create Interview"}
+          </button>
+        </div>
       </div>
     </div >
   );

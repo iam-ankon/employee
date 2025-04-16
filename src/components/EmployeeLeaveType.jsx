@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import Sidebars from './sidebars';
 
 const EmployeeLeaveTypes = () => {
     const [leaveTypes, setLeaveTypes] = useState([]);
@@ -56,110 +57,129 @@ const EmployeeLeaveTypes = () => {
                     autoFocus
                     onChange={(e) => setEditValue(e.target.value)}
                     onBlur={handleBlur}
-                    style={{
-                        padding: '6px 10px',
-                        borderRadius: '4px',
-                        border: '1px solid #ccc',
-                        width: '80px',
-                        fontSize: '14px',
-                    }}
+                    style={editInputStyle}
                 />
             );
         }
         return (
             <span
                 onClick={() => handleFieldClick(leave.id, field, leave[field])}
-                style={{
-                    cursor: 'pointer',
-                    padding: '6px 10px',
-                    display: 'inline-block',
-                    color: '#333',
-                }}
+                style={cellStyle}
             >
                 {leave[field]}
             </span>
         );
     };
 
-    return (
-        <div style={{
-            fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif',
-            backgroundColor: '#f4f6f8',
-            padding: '30px',
-            minHeight: '100vh'
-        }}>
-            <div style={{
-                backgroundColor: '#fff',
-                padding: '20px 30px',
-                borderRadius: '8px',
-                boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
-                maxWidth: '800px',
-                margin: '0 auto'
-            }}>
-                <h2 style={{
-                    fontSize: '20px',
-                    color: '#0078D4',
-                    marginBottom: '20px',
-                    borderBottom: '1px solid #e0e0e0',
-                    paddingBottom: '10px'
-                }}>
-                    Employee Leave Types
-                </h2>
+    const containerStyle = {
+        display: 'flex',
+        fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif',
+        backgroundColor: '#f4f6f8',
+        minHeight: '100vh',
+    };
 
-                {leaveTypes.map((leave) => (
-                    <table
-                        key={leave.id}
-                        style={{
-                            width: '100%',
-                            borderCollapse: 'collapse',
-                            marginBottom: '30px'
-                        }}
-                    >
-                        <thead>
-                            <tr style={{ backgroundColor: '#f1f3f5' }}>
-                                <th style={thStyle}>Leave Type</th>
-                                <th style={thStyle}>Days</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td style={tdStyle}>Public Festival Holiday</td>
-                                <td style={tdStyle}>{renderCell(leave, 'public_festival_holiday')}</td>
-                            </tr>
-                            <tr>
-                                <td style={tdStyle}>Casual Leave</td>
-                                <td style={tdStyle}>{renderCell(leave, 'casual_leave')}</td>
-                            </tr>
-                            <tr>
-                                <td style={tdStyle}>Sick Leave</td>
-                                <td style={tdStyle}>{renderCell(leave, 'sick_leave')}</td>
-                            </tr>
-                            <tr>
-                                <td style={tdStyle}>Earned Leave</td>
-                                <td style={tdStyle}>{renderCell(leave, 'earned_leave')}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                ))}
+    const contentStyle = {
+        flex: 1,
+        padding: '30px',
+    };
+
+    const tableContainerStyle = {
+        backgroundColor: '#fff',
+        padding: '20px 30px',
+        borderRadius: '8px',
+        boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+        maxWidth: '800px',
+        margin: '0 auto',
+    };
+
+    const headingStyle = {
+        fontSize: '20px',
+        color: '#0078D4',
+        marginBottom: '20px',
+        borderBottom: '1px solid #e0e0e0',
+        paddingBottom: '10px',
+    };
+
+    const tableStyle = {
+        width: '100%',
+        borderCollapse: 'collapse',
+        marginBottom: '30px',
+    };
+
+    const thStyle = {
+        textAlign: 'left',
+        padding: '10px',
+        borderBottom: '2px solid #ddd',
+        fontWeight: 'bold',
+        color: '#333',
+        fontSize: '15px',
+    };
+
+    const tdStyle = {
+        padding: '10px',
+        borderBottom: '1px solid #eee',
+        fontSize: '14px',
+        color: '#444',
+    };
+
+    const cellStyle = {
+        cursor: 'pointer',
+        padding: '6px 10px',
+        display: 'inline-block',
+        color: '#333',
+    };
+
+    const editInputStyle = {
+        padding: '6px 10px',
+        borderRadius: '4px',
+        border: '1px solid #ccc',
+        width: '80px',
+        fontSize: '14px',
+    };
+
+    return (
+        <div style={containerStyle}>
+            <div style={{ display: 'flex' }}>
+                <Sidebars />
+                <div style={{ flex: 1, overflow: 'auto' }}>
+                    {/* Your page content here */}
+                </div>
+            </div>
+            <div style={contentStyle}>
+                <div style={tableContainerStyle}>
+                    <h2 style={headingStyle}>Employee Leave Types</h2>
+                    {leaveTypes.map((leave) => (
+                        <table key={leave.id} style={tableStyle}>
+                            <thead>
+                                <tr style={{ backgroundColor: '#f1f3f5' }}>
+                                    <th style={thStyle}>Leave Type</th>
+                                    <th style={thStyle}>Days</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style={tdStyle}>Public Festival Holiday</td>
+                                    <td style={tdStyle}>{renderCell(leave, 'public_festival_holiday')}</td>
+                                </tr>
+                                <tr>
+                                    <td style={tdStyle}>Casual Leave</td>
+                                    <td style={tdStyle}>{renderCell(leave, 'casual_leave')}</td>
+                                </tr>
+                                <tr>
+                                    <td style={tdStyle}>Sick Leave</td>
+                                    <td style={tdStyle}>{renderCell(leave, 'sick_leave')}</td>
+                                </tr>
+                                <tr>
+                                    <td style={tdStyle}>Earned Leave</td>
+                                    <td style={tdStyle}>{renderCell(leave, 'earned_leave')}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    ))}
+                </div>
             </div>
         </div>
     );
-};
-
-const thStyle = {
-    textAlign: 'left',
-    padding: '10px',
-    borderBottom: '2px solid #ddd',
-    fontWeight: 'bold',
-    color: '#333',
-    fontSize: '15px',
-};
-
-const tdStyle = {
-    padding: '10px',
-    borderBottom: '1px solid #eee',
-    fontSize: '14px',
-    color: '#444',
 };
 
 export default EmployeeLeaveTypes;

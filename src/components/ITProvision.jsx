@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getITProvisions, deleteITProvision, updateITProvision, addITProvision } from "../api/employeeApi"; // Adjust according to your file structure
+import Sidebars from './sidebars';
 
 const ITProvision = () => {
   const [provisions, setProvisions] = useState([]);
@@ -80,139 +81,152 @@ const ITProvision = () => {
   const filteredProvisions = provisions.filter((provision) =>
     provision.employee.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  const containerStyle = {
+    display: "flex",
+    fontFamily: "Segoe UI, sans-serif",
+    backgroundColor: "#f4f6f9",
+    minHeight: "100vh",
+  };
 
   return (
-    <div className="it-provision-container">
-      <h2 className="heading">IT Provision</h2>
-      
-      {/* Search Bar */}
-      <input
-        type="text"
-        placeholder="Search by employee name"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)} // Update search term
-        className="search-bar"
-      />
-
-      <button
-        onClick={() => setIsAddModalOpen(true)}
-        className="add-button"
-      >
-        Add New Provision
-      </button>
-
-      <div className="card-container">
-        {filteredProvisions.map((provision) => (
-          <div key={provision.id} className="card">
-            <h3 className="employee-name">{provision.employee}</h3>
-            <p className="provision-details">
-              ID Card: {provision.it_equipment ? "Yes" : "No"}
-            </p>
-            <p className="provision-details">
-              Laptop Provided: {provision.laptop ? "Yes" : "No"}
-            </p>
-            <button
-              onClick={() => handleEdit(provision)}
-              className="edit-button"
-            >
-              Edit
-            </button>
-            <button
-              onClick={() => handleDelete(provision.id)}
-              className="delete-button"
-            >
-              Delete
-            </button>
-          </div>
-        ))}
+    <div style={containerStyle}>
+      <div style={{ display: 'flex' }}>
+        <Sidebars />
+        <div style={{ flex: 1, overflow: 'auto' }}>
+          {/* Your page content here */}
+        </div>
       </div>
+      <div className="it-provision-container">
+        <h2 className="heading">IT Provision</h2>
 
-      {/* Edit Modal */}
-      {isModalOpen && editProvision && (
-        <div className="modal">
-          <div className="modal-content">
-            <h3>Edit IT Provision</h3>
-            <form onSubmit={handleEditSubmit}>
-              <label>
-                Employee Name:
-                <input
-                  type="text"
-                  name="employee"
-                  value={editProvision.employee || ""}
-                  onChange={handleInputChange}
-                />
-              </label>
-              <label>
-                ID Card:
-                <input
-                  type="checkbox"
-                  name="it_equipment"
-                  checked={editProvision.it_equipment || false}
-                  onChange={handleInputChange}
-                />
-              </label>
-              <label>
-                Laptop Provided:
-                <input
-                  type="checkbox"
-                  name="laptop"
-                  checked={editProvision.laptop || false}
-                  onChange={handleInputChange}
-                />
-              </label>
-              <button type="submit">Save Changes</button>
-              <button type="button" onClick={handleModalClose}>
-                Close
+        {/* Search Bar */}
+        <input
+          type="text"
+          placeholder="Search by employee name"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)} // Update search term
+          className="search-bar"
+        />
+
+        <button
+          onClick={() => setIsAddModalOpen(true)}
+          className="add-button"
+        >
+          Add New Provision
+        </button>
+
+        <div className="card-container">
+          {filteredProvisions.map((provision) => (
+            <div key={provision.id} className="card">
+              <h3 className="employee-name">{provision.employee}</h3>
+              <p className="provision-details">
+                ID Card: {provision.it_equipment ? "Yes" : "No"}
+              </p>
+              <p className="provision-details">
+                Laptop Provided: {provision.laptop ? "Yes" : "No"}
+              </p>
+              <button
+                onClick={() => handleEdit(provision)}
+                className="edit-button"
+              >
+                Edit
               </button>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* Add New IT Provision Modal */}
-      {isAddModalOpen && (
-        <div className="modal">
-          <div className="modal-content">
-            <h3>Add New IT Provision</h3>
-            <form onSubmit={handleAddSubmit}>
-              <label>
-                Employee Name:
-                <input
-                  type="text"
-                  name="employee"
-                  value={newProvision.employee}
-                  onChange={handleInputChange}
-                />
-              </label>
-              <label>
-                ID Card:
-                <input
-                  type="checkbox"
-                  name="it_equipment"
-                  checked={newProvision.it_equipment}
-                  onChange={handleInputChange}
-                />
-              </label>
-              <label>
-                Laptop Provided:
-                <input
-                  type="checkbox"
-                  name="laptop"
-                  checked={newProvision.laptop}
-                  onChange={handleInputChange}
-                />
-              </label>
-              <button type="submit">Add Provision</button>
-              <button type="button" onClick={handleAddModalClose}>
-                Close
+              <button
+                onClick={() => handleDelete(provision.id)}
+                className="delete-button"
+              >
+                Delete
               </button>
-            </form>
-          </div>
+            </div>
+          ))}
         </div>
-      )}
 
-      {/* CSS Styling */}
-      <style jsx>{`
+        {/* Edit Modal */}
+        {isModalOpen && editProvision && (
+          <div className="modal">
+            <div className="modal-content">
+              <h3>Edit IT Provision</h3>
+              <form onSubmit={handleEditSubmit}>
+                <label>
+                  Employee Name:
+                  <input
+                    type="text"
+                    name="employee"
+                    value={editProvision.employee || ""}
+                    onChange={handleInputChange}
+                  />
+                </label>
+                <label>
+                  ID Card:
+                  <input
+                    type="checkbox"
+                    name="it_equipment"
+                    checked={editProvision.it_equipment || false}
+                    onChange={handleInputChange}
+                  />
+                </label>
+                <label>
+                  Laptop Provided:
+                  <input
+                    type="checkbox"
+                    name="laptop"
+                    checked={editProvision.laptop || false}
+                    onChange={handleInputChange}
+                  />
+                </label>
+                <button type="submit">Save Changes</button>
+                <button type="button" onClick={handleModalClose}>
+                  Close
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Add New IT Provision Modal */}
+        {isAddModalOpen && (
+          <div className="modal">
+            <div className="modal-content">
+              <h3>Add New IT Provision</h3>
+              <form onSubmit={handleAddSubmit}>
+                <label>
+                  Employee Name:
+                  <input
+                    type="text"
+                    name="employee"
+                    value={newProvision.employee}
+                    onChange={handleInputChange}
+                  />
+                </label>
+                <label>
+                  ID Card:
+                  <input
+                    type="checkbox"
+                    name="it_equipment"
+                    checked={newProvision.it_equipment}
+                    onChange={handleInputChange}
+                  />
+                </label>
+                <label>
+                  Laptop Provided:
+                  <input
+                    type="checkbox"
+                    name="laptop"
+                    checked={newProvision.laptop}
+                    onChange={handleInputChange}
+                  />
+                </label>
+                <button type="submit">Add Provision</button>
+                <button type="button" onClick={handleAddModalClose}>
+                  Close
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* CSS Styling */}
+        <style jsx>{`
         .it-provision-container {
           display: flex;
           flex-direction: column;
@@ -383,6 +397,7 @@ const ITProvision = () => {
           color: white;
         }
       `}</style>
+      </div>
     </div>
   );
 };

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { getAdminProvisions, addAdminProvision, updateAdminProvision, deleteAdminProvision } from "../api/employeeApi"; 
+import { getAdminProvisions, addAdminProvision, updateAdminProvision, deleteAdminProvision } from "../api/employeeApi";
+import { Link } from "react-router-dom";
+import Sidebars from './sidebars';
 
 const AdminProvision = () => {
   const [provisions, setProvisions] = useState([]);
   const [filteredProvisions, setFilteredProvisions] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false); 
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editProvision, setEditProvision] = useState(null);
   const [newProvision, setNewProvision] = useState({
     employee: "",
@@ -40,7 +42,7 @@ const AdminProvision = () => {
 
   const handleEdit = (provision) => {
     setEditProvision(provision);
-    setIsModalOpen(true); 
+    setIsModalOpen(true);
   };
 
   const handleModalClose = () => {
@@ -93,158 +95,172 @@ const AdminProvision = () => {
       });
     }
   };
+  const containerStyle = {
+    display: "flex",
+    fontFamily: "Segoe UI, sans-serif",
+    backgroundColor: "#f4f6f9",
+    minHeight: "100vh",
+  };
+
 
   return (
-    <div className="main-content">
-      <h2 className="heading">Admin Provision</h2>
-      <div className="search-bar">
-        <input
-          type="text"
-          placeholder="Search by employee name"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
+    <div style={containerStyle}>
+      <div style={{ display: 'flex' }}>
+        <Sidebars />
+        <div style={{ flex: 1, overflow: 'auto' }}>
+          {/* Your page content here */}
+        </div>
       </div>
-      <button
-        onClick={() => setIsAddModalOpen(true)} 
-        className="add-button"
-      >
-        Add New Provision
-      </button>
-      <div className="card-container">
-        {filteredProvisions.map((provision) => (
-          <div key={provision.id} className="card">
-            <h3>{provision.employee}</h3>
-            <p>Bank Account Paper: {provision.bank_account_paper ? "Yes" : "No"}</p>
-            <p>SIM Card: {provision.sim_card ? "Yes" : "No"}</p>
-            <p>Visiting Card: {provision.visiting_card ? "Yes" : "No"}</p>
-            <p>Placement: {provision.placement ? "Yes" : "No"}</p>
-            <div className="button-container">
-              <button onClick={() => handleEdit(provision)} className="edit-button">Edit</button>
-              <button onClick={() => handleDelete(provision.id)} className="delete-button">Delete</button>
+      <div className="main-content">
+        <h2 className="heading">Admin Provision</h2>
+        <div className="search-bar">
+          <input
+            type="text"
+            placeholder="Search by employee name"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+        <button
+          onClick={() => setIsAddModalOpen(true)}
+          className="add-button"
+        >
+          Add New Provision
+        </button>
+        <div className="card-container">
+          {filteredProvisions.map((provision) => (
+            <div key={provision.id} className="card">
+              <h3>{provision.employee}</h3>
+              <p>Bank Account Paper: {provision.bank_account_paper ? "Yes" : "No"}</p>
+              <p>SIM Card: {provision.sim_card ? "Yes" : "No"}</p>
+              <p>Visiting Card: {provision.visiting_card ? "Yes" : "No"}</p>
+              <p>Placement: {provision.placement ? "Yes" : "No"}</p>
+              <div className="button-container">
+                <button onClick={() => handleEdit(provision)} className="edit-button">Edit</button>
+                <button onClick={() => handleDelete(provision.id)} className="delete-button">Delete</button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Edit Modal */}
+        {isModalOpen && editProvision && (
+          <div className="modal">
+            <div className="modal-content">
+              <h3>Edit Admin Provision</h3>
+              <form onSubmit={handleEditSubmit}>
+                <label>
+                  Employee Name:
+                  <input
+                    type="text"
+                    name="employee"
+                    value={editProvision.employee || ""}
+                    onChange={handleInputChange}
+                  />
+                </label>
+                <label>
+                  Bank Account Paper:
+                  <input
+                    type="checkbox"
+                    name="bank_account_paper"
+                    checked={editProvision.bank_account_paper || false}
+                    onChange={handleInputChange}
+                  />
+                </label>
+                <label>
+                  SIM Card:
+                  <input
+                    type="checkbox"
+                    name="sim_card"
+                    checked={editProvision.sim_card || false}
+                    onChange={handleInputChange}
+                  />
+                </label>
+                <label>
+                  Visiting Card:
+                  <input
+                    type="checkbox"
+                    name="visiting_card"
+                    checked={editProvision.visiting_card || false}
+                    onChange={handleInputChange}
+                  />
+                </label>
+                <label>
+                  Placement:
+                  <input
+                    type="checkbox"
+                    name="placement"
+                    checked={editProvision.placement || false}
+                    onChange={handleInputChange}
+                  />
+                </label>
+                <button type="submit">Save Changes</button>
+                <button type="button" onClick={handleModalClose}>Close</button>
+              </form>
             </div>
           </div>
-        ))}
-      </div>
+        )}
 
-      {/* Edit Modal */}
-      {isModalOpen && editProvision && (
-        <div className="modal">
-          <div className="modal-content">
-            <h3>Edit Admin Provision</h3>
-            <form onSubmit={handleEditSubmit}>
-              <label>
-                Employee Name:
-                <input
-                  type="text"
-                  name="employee"
-                  value={editProvision.employee || ""}
-                  onChange={handleInputChange}
-                />
-              </label>
-              <label>
-                Bank Account Paper:
-                <input
-                  type="checkbox"
-                  name="bank_account_paper"
-                  checked={editProvision.bank_account_paper || false}
-                  onChange={handleInputChange}
-                />
-              </label>
-              <label>
-                SIM Card:
-                <input
-                  type="checkbox"
-                  name="sim_card"
-                  checked={editProvision.sim_card || false}
-                  onChange={handleInputChange}
-                />
-              </label>
-              <label>
-                Visiting Card:
-                <input
-                  type="checkbox"
-                  name="visiting_card"
-                  checked={editProvision.visiting_card || false}
-                  onChange={handleInputChange}
-                />
-              </label>
-              <label>
-                Placement:
-                <input
-                  type="checkbox"
-                  name="placement"
-                  checked={editProvision.placement || false}
-                  onChange={handleInputChange}
-                />
-              </label>
-              <button type="submit">Save Changes</button>
-              <button type="button" onClick={handleModalClose}>Close</button>
-            </form>
+        {/* Add New Admin Provision Modal */}
+        {isAddModalOpen && (
+          <div className="modal">
+            <div className="modal-content">
+              <h3>Add New Admin Provision</h3>
+              <form onSubmit={handleAddSubmit}>
+                <label>
+                  Employee Name:
+                  <input
+                    type="text"
+                    name="employee"
+                    value={newProvision.employee}
+                    onChange={handleInputChange}
+                  />
+                </label>
+                <label>
+                  Bank Account Paper:
+                  <input
+                    type="checkbox"
+                    name="bank_account_paper"
+                    checked={newProvision.bank_account_paper}
+                    onChange={handleInputChange}
+                  />
+                </label>
+                <label>
+                  SIM Card:
+                  <input
+                    type="checkbox"
+                    name="sim_card"
+                    checked={newProvision.sim_card}
+                    onChange={handleInputChange}
+                  />
+                </label>
+                <label>
+                  Visiting Card:
+                  <input
+                    type="checkbox"
+                    name="visiting_card"
+                    checked={newProvision.visiting_card}
+                    onChange={handleInputChange}
+                  />
+                </label>
+                <label>
+                  Placement:
+                  <input
+                    type="checkbox"
+                    name="placement"
+                    checked={newProvision.placement}
+                    onChange={handleInputChange}
+                  />
+                </label>
+                <button type="submit">Add Provision</button>
+                <button type="button" onClick={handleAddModalClose}>Close</button>
+              </form>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Add New Admin Provision Modal */}
-      {isAddModalOpen && (
-        <div className="modal">
-          <div className="modal-content">
-            <h3>Add New Admin Provision</h3>
-            <form onSubmit={handleAddSubmit}>
-              <label>
-                Employee Name:
-                <input
-                  type="text"
-                  name="employee"
-                  value={newProvision.employee}
-                  onChange={handleInputChange}
-                />
-              </label>
-              <label>
-                Bank Account Paper:
-                <input
-                  type="checkbox"
-                  name="bank_account_paper"
-                  checked={newProvision.bank_account_paper}
-                  onChange={handleInputChange}
-                />
-              </label>
-              <label>
-                SIM Card:
-                <input
-                  type="checkbox"
-                  name="sim_card"
-                  checked={newProvision.sim_card}
-                  onChange={handleInputChange}
-                />
-              </label>
-              <label>
-                Visiting Card:
-                <input
-                  type="checkbox"
-                  name="visiting_card"
-                  checked={newProvision.visiting_card}
-                  onChange={handleInputChange}
-                />
-              </label>
-              <label>
-                Placement:
-                <input
-                  type="checkbox"
-                  name="placement"
-                  checked={newProvision.placement}
-                  onChange={handleInputChange}
-                />
-              </label>
-              <button type="submit">Add Provision</button>
-              <button type="button" onClick={handleAddModalClose}>Close</button>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* CSS Styling */}
-      <style jsx>{`
+        {/* CSS Styling */}
+        <style jsx>{`
         .main-content {
           display: flex;
           flex-direction: column;
@@ -404,6 +420,7 @@ const AdminProvision = () => {
           color: white;
         }
       `}</style>
+      </div>
     </div>
   );
 };

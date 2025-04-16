@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useParams,useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import Sidebars from './sidebars';
 
 const CVEdit = () => {
-  const { id } = useParams(); // Get the CV ID from the URL
+  const { id } = useParams();
   const [cv, setCv] = useState(null);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -49,7 +50,7 @@ const CVEdit = () => {
   const handleFileChange = (e) => {
     setFormData({
       ...formData,
-      cv_file: e.target.files[0], // Store the selected file
+      cv_file: e.target.files[0],
     });
   };
 
@@ -63,7 +64,7 @@ const CVEdit = () => {
     formDataToSubmit.append("reference", formData.reference);
     formDataToSubmit.append("email", formData.email);
     formDataToSubmit.append("phone", formData.phone);
-    
+
     if (formData.cv_file) {
       formDataToSubmit.append("cv_file", formData.cv_file);
     }
@@ -73,125 +74,125 @@ const CVEdit = () => {
         headers: { "Content-Type": "multipart/form-data" },
       });
       alert("CV updated successfully!");
+      navigate("/cv-list");
     } catch (error) {
       console.error("Error updating CV:", error);
       alert("Failed to update CV");
     }
   };
 
-  if (!cv) return <div>Loading...</div>; // Show loading while fetching data
+  if (!cv) return <div>Loading...</div>;
+
+  const containerStyle = {
+    display: "flex",
+    fontFamily: "Segoe UI, sans-serif",
+    backgroundColor: "#f4f6f9",
+    minHeight: "100vh",
+  };
+
+  const formContainerStyle = {
+    flex: 1,
+    padding: "20px",
+    backgroundColor: "#fff",
+    borderRadius: "8px",
+    margin: "20px",
+    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+  };
+
+  const formGridStyle = {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+    gap: "20px",
+  };
+
+  const formGroupStyle = {
+    display: "flex",
+    flexDirection: "column",
+  };
+
+  const labelStyle = {
+    fontWeight: "bold",
+    marginBottom: "6px",
+    fontSize: "14px",
+  };
+
+  const inputStyle = {
+    padding: "10px",
+    borderRadius: "5px",
+    border: "1px solid #ccc",
+    fontSize: "14px",
+  };
+
+  const submitButtonStyle = {
+    marginTop: "30px",
+    padding: "12px 20px",
+    fontSize: "1rem",
+    backgroundColor: "#3182ce",
+    color: "white",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
+    alignSelf: "start",
+    transition: "background-color 0.3s",
+  };
+
+  const submitButtonHoverStyle = {
+    backgroundColor: "#2b6cb0",
+  };
+
+  const buttonContainerStyle = {
+    display: "flex",
+    justifyContent: "flex-start",
+    marginTop: "20px",
+  };
 
   return (
-    <div className="container">
-      <div className="form-container">
+    <div style={containerStyle}>
+      <div style={{ display: 'flex' }}>
+        <Sidebars />
+        <div style={{ flex: 1, overflow: 'auto' }}>
+          {/* Your page content here */}
+        </div>
+      </div>
+      <div style={formContainerStyle}>
         <h2>Edit CV - {cv.name}</h2>
         <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label>Name</label>
-            <input type="text" name="name" value={formData.name} onChange={handleChange} required className="form-control" />
+          <div style={formGridStyle}>
+            <div style={formGroupStyle}>
+              <label style={labelStyle}>Name</label>
+              <input type="text" name="name" value={formData.name} onChange={handleChange} required style={inputStyle} />
+            </div>
+            <div style={formGroupStyle}>
+              <label style={labelStyle}>Position for</label>
+              <input type="text" name="position_for" value={formData.position_for} onChange={handleChange} required style={inputStyle} />
+            </div>
+            <div style={formGroupStyle}>
+              <label style={labelStyle}>Age</label>
+              <input type="number" name="age" value={formData.age} onChange={handleChange} required style={inputStyle} />
+            </div>
+            <div style={formGroupStyle}>
+              <label style={labelStyle}>Reference</label>
+              <input type="text" name="reference" value={formData.reference} onChange={handleChange} style={inputStyle} />
+            </div>
+            <div style={formGroupStyle}>
+              <label style={labelStyle}>Email</label>
+              <input type="email" name="email" value={formData.email} onChange={handleChange} required style={inputStyle} />
+            </div>
+            <div style={formGroupStyle}>
+              <label style={labelStyle}>Phone</label>
+              <input type="text" name="phone" value={formData.phone} onChange={handleChange} required style={inputStyle} />
+            </div>
+            <div style={formGroupStyle}>
+              <label style={labelStyle}>CV File (Leave empty to keep existing)</label>
+              <input type="file" name="cv_file" onChange={handleFileChange} style={inputStyle} />
+            </div>
           </div>
-
-          <div className="form-group">
-            <label>Position for</label>
-            <input type="text" name="name" value={formData.position_for} onChange={handleChange} required className="form-control" />
-          </div>
-
-          <div className="form-group">
-            <label>Age</label>
-            <input type="number" name="age" value={formData.age} onChange={handleChange} required className="form-control" />
-          </div>
-
-          <div className="form-group">
-            <label>Reference</label>
-            <input type="text" name="reference" value={formData.reference} onChange={handleChange} className="form-control" />
-          </div>
-
-          <div className="form-group">
-            <label>Email</label>
-            <input type="email" name="email" value={formData.email} onChange={handleChange} required className="form-control" />
-          </div>
-
-          <div className="form-group">
-            <label>Phone</label>
-            <input type="text" name="phone" value={formData.phone} onChange={handleChange} required className="form-control" />
-          </div>
-
-          <div className="form-group">
-            <label>CV File (Leave empty to keep existing)</label>
-            <input type="file" name="cv_file" onChange={handleFileChange} className="form-control" />
-          </div>
-
-          <button type="submit" className="btn-submit">Save</button>
-          <button type="button" onClick={() => navigate(-1)} className="btn-submit">Cancel</button>
         </form>
+        <div style={buttonContainerStyle}>
+          <button type="submit" onClick={handleSubmit} style={submitButtonStyle} onMouseEnter={(e) => (e.target.style.backgroundColor = submitButtonHoverStyle.backgroundColor)} onMouseLeave={(e) => (e.target.style.backgroundColor = submitButtonStyle.backgroundColor)}>Save</button>
+          <button type="button" onClick={() => navigate(-1)} style={{ ...submitButtonStyle, backgroundColor: '#ccc', marginLeft: '10px' }} onMouseEnter={(e) => (e.target.style.backgroundColor = '#bbb')} onMouseLeave={(e) => (e.target.style.backgroundColor = '#ccc')}>Cancel</button>
+        </div>
       </div>
-
-      {/* CSS Styles */}
-      <style jsx>{`
-        .container {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          min-height: 100vh;
-          background-color: #f7fafc;
-        }
-
-        .form-container {
-          background-color: white;
-          padding: 30px;
-          border-radius: 8px;
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-          width: 400px;
-          max-width: 100%;
-        }
-
-        .form-container h2 {
-          font-size: 1.5rem;
-          margin-bottom: 20px;
-          font-weight: 600;
-          text-align: center;
-        }
-
-        .form-group {
-          margin-bottom: 20px;
-        }
-
-        label {
-          display: block;
-          font-size: 1rem;
-          margin-bottom: 5px;
-        }
-
-        .form-control {
-          width: 100%;
-          padding: 10px;
-          font-size: 1rem;
-          border: 1px solid #ccc;
-          border-radius: 8px;
-        }
-
-        .form-control:focus {
-          outline: none;
-          border-color: #0078d4;
-          box-shadow: 0 0 0 3px rgba(0, 120, 212, 0.2);
-        }
-
-        .btn-submit {
-          width: 100%;
-          padding: 12px;
-          background-color: #0078d4;
-          color: white;
-          font-size: 1rem;
-          border: none;
-          border-radius: 8px;
-          cursor: pointer;
-          transition: background-color 0.3s ease;
-        }
-
-        .btn-submit:hover {
-          background-color: #005fa3;
-        }
-      `}</style>
     </div>
   );
 };

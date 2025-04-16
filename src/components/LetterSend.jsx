@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getLetterSend, deleteLetterSend } from "../api/employeeApi";
+import Sidebars from './sidebars';
 
 const LetterSend = () => {
   const [cvs, setCvs] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
+  const [currentPage, setCurrentPage] = useState(1);
+  const cvsPerPage = 6; // Adjust number of letters per page
 
   useEffect(() => {
     const fetchCVs = async () => {
@@ -39,6 +42,15 @@ const LetterSend = () => {
   const filteredCVs = cvs.filter((cv) =>
     cv.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const indexOfLastCV = currentPage * cvsPerPage;
+  const indexOfFirstCV = indexOfLastCV - cvsPerPage;
+  const currentCVs = filteredCVs.slice(indexOfFirstCV, indexOfLastCV);
+  const totalPages = Math.ceil(filteredCVs.length / cvsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   const styles = {
     container: {
@@ -100,8 +112,8 @@ const LetterSend = () => {
       marginBottom: "20px",
     },
     cardContainer: {
-      display: "grid",
-      gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+      display: "flex",
+      flexWrap: "wrap",
       gap: "20px",
     },
     card: {
@@ -109,6 +121,10 @@ const LetterSend = () => {
       padding: "20px",
       borderRadius: "8px",
       boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+      width: '48%', // Adjusted for side-by-side
+      display: 'inline-block', // Adjusted for side-by-side
+      verticalAlign: 'top', // Align cards to top
+      marginRight: '1%', // Add some space between cards
     },
     cardTitle: {
       fontSize: "20px",
@@ -144,26 +160,33 @@ const LetterSend = () => {
       borderRadius: "4px",
       cursor: "pointer",
     },
+    pagination: {
+      display: "flex",
+      justifyContent: "center",
+      marginTop: "20px",
+    },
+    pageButton: {
+      padding: "8px 12px",
+      margin: "0 5px",
+      border: "1px solid #ddd",
+      borderRadius: "4px",
+      cursor: "pointer",
+      backgroundColor: "white",
+    },
+    activePageButton: {
+      backgroundColor: "#0078D4",
+      color: "white",
+    },
   };
 
   return (
     <div style={styles.container}>
-      <div style={styles.sidebar}>
-        <div style={styles.sidebarHeader}>HR Work</div>
-        <a href="/cv-add" style={styles.sidebarLink}>Add CV</a>
-        <a href="/interviews" style={styles.sidebarLink}>Interviews</a>
-        <a href="/employee" style={styles.sidebarLink}>Employee</a>
-        <a href="/attendance" style={styles.sidebarLink}>Attendance</a>
-        <a href="/employee_leave" style={styles.sidebarLink}>Employee Leave</a>
-        <a href="/performanse_appraisal" style={styles.sidebarLink}>Performance Appraisal</a>
-        <a href="/finance-provision" style={styles.sidebarLink}>Finance Provision</a>
-        <a href="/employee-termination" style={styles.sidebarLink}>Employee Termination</a>
-        <a href="/letter-send" style={{ ...styles.sidebarLink, backgroundColor: "#e1eaff" }}>Send Letter</a>
-        <a href="/email-logs" style={styles.sidebarLink}>Email Logs</a>
-        <a href="/tad-groups" style={styles.sidebarLink}>TAD Groups</a>
-        
+      <div style={{ display: 'flex' }}>
+        <Sidebars />
+        <div style={{ flex: 1, overflow: 'auto' }}>
+          {/* Your page content here */}
+        </div>
       </div>
-
       <div style={styles.mainContent}>
         <h2 style={styles.heading}>Letter Send</h2>
 
@@ -180,7 +203,7 @@ const LetterSend = () => {
         </button>
 
         <div style={styles.cardContainer}>
-          {filteredCVs.map((cv) => (
+          {currentCVs.map((cv) => (
             <div key={cv.id} style={styles.card}>
               <h3 style={styles.cardTitle}>{cv.name}</h3>
               <p style={styles.cardText}>Email: {cv.email}</p>
@@ -215,6 +238,22 @@ const LetterSend = () => {
                 </button>
               </div>
             </div>
+          ))}
+        </div>
+
+        {/* Pagination */}
+        <div style={styles.pagination}>
+          {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNumber) => (
+            <button
+              key={pageNumber}
+              onClick={() => handlePageChange(pageNumber)}
+              style={{
+                ...styles.pageButton,
+                ...(currentPage === pageNumber && styles.activePageButton),
+              }}
+            >
+              {pageNumber}
+            </button>
           ))}
         </div>
       </div>

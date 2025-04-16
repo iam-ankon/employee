@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Sidebars from './sidebars'; 
 
 const EmployeeLeave = () => {
     const [leaves, setLeaves] = useState([]);
@@ -66,26 +67,19 @@ const EmployeeLeave = () => {
     if (loading) return <div style={{ padding: '20px' }}>Loading...</div>;
 
     return (
-        <div style={{ display: 'flex' }}>
+        <div style={styles.container}>
             {/* Sidebar */}
-            <div style={styles.sidebar}>
-                <div style={styles.sidebarHeader}>HR Work</div>
-                <a href="/cv-add" style={styles.sidebarLink}>Add CV</a>
-                <a href="/interviews" style={styles.sidebarLink}>Interviews</a>
-                <a href="/employee" style={styles.sidebarLink}>Employee</a>
-                <a href="/attendance" style={styles.sidebarLink}>Attendance</a>
-                <a href="/employee_leave" style={{ ...styles.sidebarLink, backgroundColor: "#e1eaff" }}>Employee Leave</a>
-                <a href="/performanse_appraisal" style={{ ...styles.sidebarLink}}>Performance Appraisal</a>
-                <a href="/finance-provision" style={styles.sidebarLink}>Finance Provision</a>
-                <a href="/employee-termination" style={styles.sidebarLink}>Employee Termination</a>
-                <a href="/letter-send" style={styles.sidebarLink}>Send Letter</a>
-                <a href="/email-logs" style={styles.sidebarLink}>Email Logs</a>
-                <a href="/tad-groups" style={styles.sidebarLink}>TAD Groups</a>
+            <div style={{ display: 'flex' }}>
+                <Sidebars />
+                <div style={{ flex: 1, overflow: 'auto' }}>
+                    {/* Your page content here */}
+                </div>
             </div>
 
             {/* Main Content */}
             <div style={{
-                margin: '30px auto',
+                margin: '1px auto',
+                marginLeft: '23px',
                 maxWidth: '90%',
                 backgroundColor: '#f3f6fb',
                 border: '1px solid #d1dbe8',
@@ -205,7 +199,14 @@ const EmployeeLeave = () => {
         </div>
     );
 };
-
+const styles = {
+    container: {
+        display: "flex",
+        minHeight: "100vh",
+        backgroundColor: "#f9fafb",
+        fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+    },
+};
 const cellStyle = {
     border: '1px solid #d1dbe8',
     padding: '10px',
@@ -255,32 +256,35 @@ const actionButton = {
     marginRight: '10px',
 };
 
-const styles = {
- 
+const sidebarStyle = {
+    container: {
+        display: "flex",
+        fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+    },
     sidebar: {
-      width: "230px",
-      backgroundColor: "#f3f6fb",
-      height: "100vh",
-      padding: "20px 15px",
-      boxShadow: "2px 0 5px rgba(0, 0, 0, 0.05)",
+        width: "230px",
+        backgroundColor: "#f3f6fb",
+        height: "115vh",
+        padding: "20px 15px",
+        boxShadow: "2px 0 5px rgba(0, 0, 0, 0.05)",
     },
     sidebarHeader: {
-      fontSize: "20px",
-      fontWeight: "bold",
-      marginBottom: "20px",
-      color: "#0078D4",
+        fontSize: "20px",
+        fontWeight: "bold",
+        marginBottom: "20px",
+        color: "#0078D4",
     },
     sidebarLink: {
-      display: "block",
-      padding: "10px",
-      margin: "5px 0",
-      textDecoration: "none",
-      color: "#333",
-      borderRadius: "6px",
-      transition: "0.3s",
+        display: "block",
+        padding: "10px",
+        margin: "5px 0",
+        textDecoration: "none",
+        color: "#333",
+        borderRadius: "6px",
+        transition: "0.3s",
     },
     sidebarLinkHover: {
-      backgroundColor: "#e1eaff",
+        backgroundColor: "#e1eaff",
     },
-  };
+};
 export default EmployeeLeave;

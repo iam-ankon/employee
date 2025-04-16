@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Sidebars from './sidebars';
 
 const TADGroups = () => {
   const [tadGroups, setTadGroups] = useState([]);
@@ -14,21 +15,12 @@ const TADGroups = () => {
   return (
     <div style={styles.appContainer}>
       {/* Sidebar */}
-      <div style={styles.sidebar}>
-        <div style={styles.sidebarHeader}>HR Work</div>
-        <a href="/cv-add" style={styles.sidebarLink}>Add CV</a>
-        <a href="/interviews" style={styles.sidebarLink}>Interviews</a>
-        <a href="/employee" style={styles.sidebarLink}>Employee</a>
-        <a href="/attendance" style={styles.sidebarLink}>Attendance</a>
-        <a href="/employee_leave" style={styles.sidebarLink}>Employee Leave</a>
-        <a href="/performanse_appraisal" style={styles.sidebarLink}>Performance Appraisal</a>
-        <a href="/finance-provision" style={styles.sidebarLink}>Finance Provision</a>
-        <a href="/employee-termination" style={styles.sidebarLink}>Employee Termination</a>
-        <a href="/letter-send" style={styles.sidebarLink}>Send Letter</a>
-        <a href="/email-logs" style={styles.sidebarLink}>Email Logs</a>
-        <a href="/tad-groups" style={{ ...styles.sidebarLink, backgroundColor: "#e1eaff" }}>TAD Groups</a>
+      <div style={{ display: 'flex' }}>
+        <Sidebars />
+        <div style={{ flex: 1, overflow: 'auto' }}>
+          {/* Your page content here */}
+        </div>
       </div>
-
       {/* Main Content */}
       <div style={styles.outlookContainer}>
         <div style={styles.outlookHeader}>

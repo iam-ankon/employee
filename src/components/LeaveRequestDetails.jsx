@@ -1,6 +1,7 @@
-import React, { useEffect, useState,useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import Sidebars from './sidebars';
 
 const LeaveRequestDetails = () => {
     const { id } = useParams();
@@ -17,12 +18,12 @@ const LeaveRequestDetails = () => {
         earned_leave: 0
     });
     const [loading, setLoading] = useState(true);
-     const formRef = useRef();
+    const formRef = useRef();
     useEffect(() => {
         const fetchData = async () => {
             try {
                 setLoading(true);
-                
+
                 // Fetch all required data
                 const [leaveRes, balancesRes, typesRes] = await Promise.all([
                     axios.get(`http://192.168.4.183:8000/api/employee/details/api/employee_leaves/${id}/`),
@@ -316,188 +317,207 @@ const LeaveRequestDetails = () => {
         }
     };
 
+    const contentStyle = {
+        flex: 1,
+        padding: '24px',
+        maxWidth: '1200px',
+        margin: '0 auto'
+    };
+    const containerStyle = {
+        display: 'flex',
+        minHeight: '100vh',
+        backgroundColor: '#f8fafc'
+    };
+
     return (
-        <div>
-            <div ref={formRef} style={styles.formContainer}>
-                <h1 style={styles.header}>LEAVE APPLICATION FORM</h1>
-
-                {/* Employee Information - Two Column Layout */}
-
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '10px' }}>
-                    <div style={{ flex: '1', minWidth: '250px' }}>
-                        <div style={styles.formRow}>
-                            <label style={styles.label}>Date:</label>
-                            <div style={styles.field}>{new Date().toLocaleDateString()}</div>
-                        </div>
-                        <div style={styles.formRow}>
-                            <label style={styles.label}>Employee ID:</label>
-                            <div style={styles.field}>{leave.employee_code}</div>
-                        </div>
-                        <div style={styles.formRow}>
-                            <label style={styles.label}>Joining Date:</label>
-                            <div style={styles.field}>{leave.joining_date}</div>
-                        </div>
-                        <div style={styles.formRow}>
-                            <label style={styles.label}>To:</label>
-                            <div style={styles.field}>{leave.to || 'HR Department'}</div>
-                        </div>
-                    </div>
-                    <div style={{ flex: '1', minWidth: '250px' }}>
-                        <div style={styles.formRow}>
-                            <label style={styles.label}>Name of applicant:</label>
-                            <div style={styles.field}>{leave.employee_name}</div>
-                        </div>
-                        <div style={styles.formRow}>
-                            <label style={styles.label}>Designation:</label>
-                            <div style={styles.field}>{leave.designation}</div>
-                        </div>
-                        <div style={styles.formRow}>
-                            <label style={styles.label}>Company:</label>
-                            <div style={styles.field}>{leave.company_name}</div>
-                        </div>
-                        <div style={styles.formRow}>
-                            <label style={styles.label}>Department:</label>
-                            <div style={styles.field}>{leave.department}</div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Compact Leave Duration Row */}
-                <div style={styles.compactRow}>
-                    <span>I wish to apply for</span>
-                    <div style={{ ...styles.compactField, width: '30px', textAlign: 'center' }}>{leave.leave_days}</div>
-                    <span>days</span>
-                    <div style={{ ...styles.compactField, minWidth: '80px' }}>{leave.leave_type}</div>
-                    <span>from</span>
-                    <div style={{ ...styles.compactField, minWidth: '80px' }}>{leave.start_date}</div>
-                    <span>to</span>
-                    <div style={{ ...styles.compactField, minWidth: '80px' }}>{leave.end_date}</div>
-                </div>
-
-                <div style={styles.formRow}>
-                    <label style={styles.label}>Reason for leave:</label>
-                    <div style={styles.textAreaField}>{leave.reason || 'N/A'}</div>
-                </div>
-
-                <div style={styles.formRow}>
-                    <label style={styles.label}>Whereabouts:</label>
-                    <div style={styles.field}>{leave.whereabouts || 'N/A'}</div>
-                </div>
-
-                <div style={styles.divider}></div>
-
-                {/* Contact Info */}
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-                    <div style={{ flex: '1', minWidth: '250px' }}>
-                        <div style={styles.formRow}>
-                            <label style={styles.label}>Mobile no:</label>
-                            <div style={styles.field}>{leave.personal_phone}</div>
-                        </div>
-                    </div>
-                    <div style={{ flex: '1', minWidth: '250px' }}>
-                        <div style={styles.formRow}>
-                            <label style={styles.label}>Substitute person:</label>
-                            <div style={styles.field}>{leave.sub_person}</div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Signature Section */}
-                <div style={{ marginTop: '15px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', gap: '10px' }}>
-                        <div style={{ width: '48%' }}>
-                            <div>Signature of Substitute:</div>
-                            <div style={styles.signatureBox}></div>
-                        </div>
-                        <div style={{ width: '48%' }}>
-                            <div>Signature of Applicant:</div>
-                            <div style={styles.signatureBox}></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div style={styles.divider}></div>
-
-                {/* Leave Status Table */}
-                <h2 style={styles.sectionHeader}>Leave Status (for official use)</h2>
-                <table style={styles.table}>
-                    <thead>
-                        <tr>
-                            <th style={{ ...styles.tableCell, ...styles.tableHeader }}></th>
-                            <th style={{ ...styles.tableCell, ...styles.tableHeader }}>Earned Leave</th>
-                            <th style={{ ...styles.tableCell, ...styles.tableHeader }}>Casual Leave</th>
-                            <th style={{ ...styles.tableCell, ...styles.tableHeader }}>Sick Leave</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td style={styles.tableCell}>Leave entitled</td>
-                            <td style={styles.tableCell}>{getEntitledLeaveDays('earned_leave')}</td>
-                            <td style={styles.tableCell}>{getEntitledLeaveDays('casual_leave')}</td>
-                            <td style={styles.tableCell}>{getEntitledLeaveDays('sick_leave')}</td>
-                        </tr>
-                        <tr>
-                            <td style={styles.tableCell}>Leave availed</td>
-                            <td style={styles.tableCell}>{calculateLeaveAvailed('earned_leave')}</td>
-                            <td style={styles.tableCell}>{calculateLeaveAvailed('casual_leave')}</td>
-                            <td style={styles.tableCell}>{calculateLeaveAvailed('sick_leave')}</td>
-                        </tr>
-                        <tr>
-                            <td style={styles.tableCell}>Balance</td>
-                            <td style={styles.tableCell}>{getBalance('earned_leave')}</td>
-                            <td style={styles.tableCell}>{getBalance('casual_leave')}</td>
-                            <td style={styles.tableCell}>{getBalance('sick_leave')}</td>
-                        </tr>
-                        <tr>
-                            <td style={styles.tableCell}>Applied for</td>
-                            <td style={styles.tableCell}>{getAppliedFor('earned_leave')}</td>
-                            <td style={styles.tableCell}>{getAppliedFor('casual_leave')}</td>
-                            <td style={styles.tableCell}>{getAppliedFor('sick_leave')}</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <div style={styles.formRow}>
-                    <label style={styles.label}>Comments:</label>
-                    <div style={{ ...styles.textAreaField, minHeight: '40px' }}>{leave.comment || 'N/A'}</div>
-                </div>
-
-                <div style={styles.signatureLine}>
-                    <span style={styles.signature}>Head of Department</span>
-                    <span style={styles.signature}>HR & Admin</span>
-                    <span style={styles.signature}>Authorized Signature</span>
-                </div>
-
-                <div style={styles.divider}></div>
-
-                {/* Post-Leave Report */}
-                <h2 style={styles.sectionHeader}>Report on joining after leave</h2>
-                <div style={styles.formRow}>
-                    <label style={styles.label}>Scheduled joining date:</label>
-                    <div style={styles.field}>{leave.date_of_joining_after_leave || 'N/A'}</div>
-                </div>
-                <div style={styles.formRow}>
-                    <label style={styles.label}>Actual joining date:</label>
-                    <div style={styles.field}>{leave.actual_date_of_joining || 'N/A'}</div>
-                </div>
-                <div style={styles.formRow}>
-                    <label style={styles.label}>Reason for delay:</label>
-                    <div style={{ ...styles.textAreaField, minHeight: '40px' }}>{leave.reson_for_delay || 'N/A'}</div>
-                </div>
-
-                <div style={styles.signatureLine}>
-                    <span style={styles.signature}>Applicant Signature</span>
-                    <span style={styles.signature}>HR & Admin</span>
-                    <span style={styles.signature}>Authorized Signature</span>
+        <div style={containerStyle}>
+            <div style={{ display: 'flex' }}>
+                <Sidebars />
+                <div style={{ flex: 1, overflow: 'auto' }}>
+                    {/* Your page content here */}
                 </div>
             </div>
+            <div style={contentStyle}>
+                <div ref={formRef} style={styles.formContainer}>
+                    <h1 style={styles.header}>LEAVE APPLICATION FORM</h1>
 
-            <button
-                style={styles.printButton}
-                onClick={handlePrint}
-            >
-                Print Form
-            </button>
+                    {/* Employee Information - Two Column Layout */}
+
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '10px' }}>
+                        <div style={{ flex: '1', minWidth: '250px' }}>
+                            <div style={styles.formRow}>
+                                <label style={styles.label}>Date:</label>
+                                <div style={styles.field}>{new Date().toLocaleDateString()}</div>
+                            </div>
+                            <div style={styles.formRow}>
+                                <label style={styles.label}>Employee ID:</label>
+                                <div style={styles.field}>{leave.employee_code}</div>
+                            </div>
+                            <div style={styles.formRow}>
+                                <label style={styles.label}>Joining Date:</label>
+                                <div style={styles.field}>{leave.joining_date}</div>
+                            </div>
+                            <div style={styles.formRow}>
+                                <label style={styles.label}>To:</label>
+                                <div style={styles.field}>{leave.to || 'HR Department'}</div>
+                            </div>
+                        </div>
+                        <div style={{ flex: '1', minWidth: '250px' }}>
+                            <div style={styles.formRow}>
+                                <label style={styles.label}>Name of applicant:</label>
+                                <div style={styles.field}>{leave.employee_name}</div>
+                            </div>
+                            <div style={styles.formRow}>
+                                <label style={styles.label}>Designation:</label>
+                                <div style={styles.field}>{leave.designation}</div>
+                            </div>
+                            <div style={styles.formRow}>
+                                <label style={styles.label}>Company:</label>
+                                <div style={styles.field}>{leave.company_name}</div>
+                            </div>
+                            <div style={styles.formRow}>
+                                <label style={styles.label}>Department:</label>
+                                <div style={styles.field}>{leave.department}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Compact Leave Duration Row */}
+                    <div style={styles.compactRow}>
+                        <span>I wish to apply for</span>
+                        <div style={{ ...styles.compactField, width: '30px', textAlign: 'center' }}>{leave.leave_days}</div>
+                        <span>days</span>
+                        <div style={{ ...styles.compactField, minWidth: '80px' }}>{leave.leave_type}</div>
+                        <span>from</span>
+                        <div style={{ ...styles.compactField, minWidth: '80px' }}>{leave.start_date}</div>
+                        <span>to</span>
+                        <div style={{ ...styles.compactField, minWidth: '80px' }}>{leave.end_date}</div>
+                    </div>
+
+                    <div style={styles.formRow}>
+                        <label style={styles.label}>Reason for leave:</label>
+                        <div style={styles.textAreaField}>{leave.reason || 'N/A'}</div>
+                    </div>
+
+                    <div style={styles.formRow}>
+                        <label style={styles.label}>Whereabouts:</label>
+                        <div style={styles.field}>{leave.whereabouts || 'N/A'}</div>
+                    </div>
+
+                    <div style={styles.divider}></div>
+
+                    {/* Contact Info */}
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                        <div style={{ flex: '1', minWidth: '250px' }}>
+                            <div style={styles.formRow}>
+                                <label style={styles.label}>Mobile no:</label>
+                                <div style={styles.field}>{leave.personal_phone}</div>
+                            </div>
+                        </div>
+                        <div style={{ flex: '1', minWidth: '250px' }}>
+                            <div style={styles.formRow}>
+                                <label style={styles.label}>Substitute person:</label>
+                                <div style={styles.field}>{leave.sub_person}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Signature Section */}
+                    <div style={{ marginTop: '15px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', gap: '10px' }}>
+                            <div style={{ width: '48%' }}>
+                                <div>Signature of Substitute:</div>
+                                <div style={styles.signatureBox}></div>
+                            </div>
+                            <div style={{ width: '48%' }}>
+                                <div>Signature of Applicant:</div>
+                                <div style={styles.signatureBox}></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style={styles.divider}></div>
+
+                    {/* Leave Status Table */}
+                    <h2 style={styles.sectionHeader}>Leave Status (for official use)</h2>
+                    <table style={styles.table}>
+                        <thead>
+                            <tr>
+                                <th style={{ ...styles.tableCell, ...styles.tableHeader }}></th>
+                                <th style={{ ...styles.tableCell, ...styles.tableHeader }}>Earned Leave</th>
+                                <th style={{ ...styles.tableCell, ...styles.tableHeader }}>Casual Leave</th>
+                                <th style={{ ...styles.tableCell, ...styles.tableHeader }}>Sick Leave</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style={styles.tableCell}>Leave entitled</td>
+                                <td style={styles.tableCell}>{getEntitledLeaveDays('earned_leave')}</td>
+                                <td style={styles.tableCell}>{getEntitledLeaveDays('casual_leave')}</td>
+                                <td style={styles.tableCell}>{getEntitledLeaveDays('sick_leave')}</td>
+                            </tr>
+                            <tr>
+                                <td style={styles.tableCell}>Leave availed</td>
+                                <td style={styles.tableCell}>{calculateLeaveAvailed('earned_leave')}</td>
+                                <td style={styles.tableCell}>{calculateLeaveAvailed('casual_leave')}</td>
+                                <td style={styles.tableCell}>{calculateLeaveAvailed('sick_leave')}</td>
+                            </tr>
+                            <tr>
+                                <td style={styles.tableCell}>Balance</td>
+                                <td style={styles.tableCell}>{getBalance('earned_leave')}</td>
+                                <td style={styles.tableCell}>{getBalance('casual_leave')}</td>
+                                <td style={styles.tableCell}>{getBalance('sick_leave')}</td>
+                            </tr>
+                            <tr>
+                                <td style={styles.tableCell}>Applied for</td>
+                                <td style={styles.tableCell}>{getAppliedFor('earned_leave')}</td>
+                                <td style={styles.tableCell}>{getAppliedFor('casual_leave')}</td>
+                                <td style={styles.tableCell}>{getAppliedFor('sick_leave')}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div style={styles.formRow}>
+                        <label style={styles.label}>Comments:</label>
+                        <div style={{ ...styles.textAreaField, minHeight: '40px' }}>{leave.comment || 'N/A'}</div>
+                    </div>
+
+                    <div style={styles.signatureLine}>
+                        <span style={styles.signature}>Head of Department</span>
+                        <span style={styles.signature}>HR & Admin</span>
+                        <span style={styles.signature}>Authorized Signature</span>
+                    </div>
+
+                    <div style={styles.divider}></div>
+
+                    {/* Post-Leave Report */}
+                    <h2 style={styles.sectionHeader}>Report on joining after leave</h2>
+                    <div style={styles.formRow}>
+                        <label style={styles.label}>Scheduled joining date:</label>
+                        <div style={styles.field}>{leave.date_of_joining_after_leave || 'N/A'}</div>
+                    </div>
+                    <div style={styles.formRow}>
+                        <label style={styles.label}>Actual joining date:</label>
+                        <div style={styles.field}>{leave.actual_date_of_joining || 'N/A'}</div>
+                    </div>
+                    <div style={styles.formRow}>
+                        <label style={styles.label}>Reason for delay:</label>
+                        <div style={{ ...styles.textAreaField, minHeight: '40px' }}>{leave.reson_for_delay || 'N/A'}</div>
+                    </div>
+
+                    <div style={styles.signatureLine}>
+                        <span style={styles.signature}>Applicant Signature</span>
+                        <span style={styles.signature}>HR & Admin</span>
+                        <span style={styles.signature}>Authorized Signature</span>
+                    </div>
+                    <button
+                        style={styles.printButton}
+                        onClick={handlePrint}
+                    >
+                        Print Form
+                    </button>
+                </div>
+            </div>
         </div>
     );
 };

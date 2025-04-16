@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
+import Sidebars from './sidebars';
 
 const AddEmployee = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    // console.log("Location state:", location.state); // Debugging the data passed
     const { name, position_for, email, phone } = location.state || {};
 
     const [formData, setFormData] = useState({
@@ -32,21 +32,18 @@ const AddEmployee = () => {
 
     const [companies, setCompanies] = useState([]);
     const [successMessage, setSuccessMessage] = useState("");
-    const [showPopup, setShowPopup] = useState(false); // Add this line to define showPopup
-    const [isHovered, setIsHovered] = useState(false); // Define isHovered for hover effect
+    const [showPopup, setShowPopup] = useState(false);
+    const [isHovered, setIsHovered] = useState(false);
 
-    // Fetch companies from backend API
     useEffect(() => {
         const fetchCompanies = async () => {
             try {
                 const response = await axios.get("http://192.168.4.183:8000/api/employee/details/api/tad_groups/");
-                // console.log("Fetched companies:", response.data); // Check fetched data
                 setCompanies(response.data);
             } catch (error) {
                 console.error("Error fetching companies:", error);
             }
         };
-
         fetchCompanies();
     }, []);
 
@@ -61,27 +58,29 @@ const AddEmployee = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-
         const employeeFormData = new FormData();
         Object.keys(formData).forEach((key) => {
-            employeeFormData.append(key, formData[key]);
+            if (key === "image1" && formData[key]) {
+                employeeFormData.append(key, formData[key], formData[key].name);
+            } else {
+                employeeFormData.append(key, formData[key]);
+            }
         });
 
         try {
             const response = await axios.post("http://192.168.4.183:8000/api/employee/details/api/employees/", employeeFormData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
-            console.log('Employee added:', response.data);
             setSuccessMessage("Employee saved successfully!");
             setFormData({
                 employee_id: "",
                 name: "",
                 designation: "",
+                email: "",
+                personal_phone: "",
                 joining_date: "",
                 date_of_birth: "",
-                email: "",
                 mail_address: "",
-                personal_phone: "",
                 office_phone: "",
                 reference_phone: "",
                 job_title: "",
@@ -94,10 +93,18 @@ const AddEmployee = () => {
                 image1: null,
                 permanent_address: "",
             });
-            setShowPopup(true); // Show success popup
-            setTimeout(() => setShowPopup(false), 3000); // Hide popup after 3 seconds
+            setShowPopup(true);
+            setTimeout(() => setShowPopup(false), 3000);
         } catch (error) {
             console.error('Error saving employee data:', error);
+            if (error.response) {
+                console.error('Server responded with:', error.response.data);
+                console.error('Status code:', error.response.status);
+            } else if (error.request) {
+                console.error('No response received:', error.request);
+            } else {
+                console.error('Error setting up the request:', error.message);
+            }
             setSuccessMessage("Error saving employee data. Please try again.");
         }
     };
@@ -107,7 +114,7 @@ const AddEmployee = () => {
         input: { width: "100%", padding: "8px", marginBottom: "10px" },
         button: {
             padding: "10px",
-            backgroundColor: "#0078D4",
+            backgroundColor: isHovered ? "#005ea6" : "#0078D4",
             color: "#fff",
             border: "none",
             borderRadius: "5px",
@@ -119,21 +126,9 @@ const AddEmployee = () => {
             width: '30%',
             marginTop: "50px",
         },
-        buttonHover: {
-            backgroundColor: "#005ea6",
-            transform: "scale(1.05)",
-        },
         successMessage: {
             padding: "10px",
             backgroundColor: "#4CAF50",
-            color: "#fff",
-            marginBottom: "20px",
-            borderRadius: "5px",
-            textAlign: "center",
-        },
-        errorMessage: {
-            padding: "10px",
-            backgroundColor: "#f44336",
             color: "#fff",
             marginBottom: "20px",
             borderRadius: "5px",
@@ -160,175 +155,101 @@ const AddEmployee = () => {
         fileInput: { padding: "10px", border: "1px solid #ddd", marginBottom: "10px" }
     };
 
+    const sidebarStyle = {
+        container: {
+            display: "flex",
+            fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+            backgroundColor: "#f4f4f4",
+            minHeight: "100vh",
+        },
+
+    };
+
     return (
-        <div style={styles.container}>
-            <h2>Add Employee</h2>
-
-            {successMessage && <div style={styles.successMessage}>{successMessage}</div>}
-
-            <form onSubmit={handleSubmit} style={styles.form}>
-                <div>
-                    <label style={styles.label}>Employee ID <span style={{ color: "red" }}>*</span></label>
-                    <input type="text" name="employee_id" required onChange={handleChange} style={styles.input} value={formData.employee_id} />
+        <div style={sidebarStyle.container}>
+            <div style={{ display: 'flex' }}>
+                <Sidebars />
+                <div style={{ flex: 1, overflow: 'auto' }}>
+                    {/* Your page content here */}
                 </div>
+            </div>
 
-                <div>
-                    <label style={styles.label}>Name <span style={{ color: "red" }}>*</span></label>
-                    <input
-                        type="text"
-                        name="name"
-                        required
-                        onChange={handleChange}
-                        style={styles.input}
-                        value={formData.name|| ""}
-                    />
-                </div>
+            <div style={{ flexGrow: 1, padding: "20px" }}>
+                <h2>Add Employee</h2>
+                {successMessage && <div style={styles.successMessage}>{successMessage}</div>}
+                <div style={styles.popup}>{successMessage}</div>
+                <form onSubmit={handleSubmit} style={styles.form}>
+                    {[
+                        { name: "employee_id", label: "Employee ID", required: true },
+                        { name: "name", label: "Name", required: true },
+                        { name: "designation", label: "Designation", required: true },
+                        { name: "email", label: "Email", required: true },
+                        { name: "personal_phone", label: "Personal Phone" },
+                        { name: "joining_date", label: "Joining Date", required: true, type: "date" },
+                        { name: "date_of_birth", label: "Date of Birth", required: true, type: "date" },
+                        { name: "mail_address", label: "Mail Address" },
+                        { name: "office_phone", label: "Office Phone" },
+                        { name: "reference_phone", label: "Reference Phone" },
+                        { name: "job_title", label: "Job Title" },
+                        { name: "department", label: "Department" },
+                        {
+                            name: "company", label: "Company", type: "select", options: companies.map((c) => ({
+                                label: c.company_name,
+                                value: c.id,
+                            }))
+                        },
+                        { name: "salary", label: "Salary" },
+                        { name: "reporting_leader", label: "Reporting Leader" },
+                        { name: "special_skills", label: "Special Skills" },
+                        { name: "remarks", label: "Remarks" },
+                        { name: "permanent_address", label: "Permanent Address" },
+                    ].map(({ name, label, type = "text", options, required = false }) => (
+                        <div key={name}>
+                            <label style={styles.label}>
+                                {label}
+                                {required && <span style={{ color: "red" }}>*</span>}
+                            </label>
+                            {type === "select" ? (
+                                <select
+                                    name={name}
+                                    onChange={handleChange}
+                                    style={styles.input}
+                                    value={formData[name]}
+                                    required={required}
+                                >
+                                    <option value="">Select {label}</option>
+                                    {options.map((opt, idx) => (
+                                        <option key={idx} value={opt.value}>{opt.label}</option>
+                                    ))}
+                                </select>
+                            ) : (
+                                <input
+                                    type={type}
+                                    name={name}
+                                    onChange={handleChange}
+                                    style={styles.input}
+                                    value={formData[name] || ""}
+                                    required={required}
+                                />
+                            )}
+                        </div>
+                    ))}
 
-                <div>
-                    <label style={styles.label}>Designation <span style={{ color: "red" }}>*</span></label>
-                    <input
-                        type="text"
-                        name="designation"
-                        required
-                        onChange={handleChange}
-                        style={styles.input}
-                        value={formData.designation|| ""}
-                    />
-                </div>
+                    <div>
+                        <label style={styles.label}>Upload Image</label>
+                        <input type="file" name="image1" accept="image/*" onChange={handleFileChange} style={styles.fileInput} />
+                    </div>
 
-                <div>
-                    <label style={styles.label}>Email <span style={{ color: "red" }}>*</span></label>
-                    <input
-                        type="email"
-                        name="email"
-                        required
-                        onChange={handleChange}
-                        style={styles.input}
-                        value={formData.email|| ""}
-                    />
-                </div>
-
-                <div>
-                    <label style={styles.label}>Personal Phone <span style={{ color: "red" }}>*</span></label>
-                    <input
-                        type="text"
-                        name="personal_phone"
-                        required
-                        onChange={handleChange}
-                        style={styles.input}
-                        value={formData.personal_phone|| ""}
-                    />
-                </div>
-
-                <div>
-                    <label style={styles.label}>Joining Date <span style={{ color: "red" }}>*</span></label>
-                    <input type="date" name="joining_date" required onChange={handleChange} style={styles.input} value={formData.joining_date} />
-                </div>
-
-                <div>
-                    <label style={styles.label}>Date of Birth <span style={{ color: "red" }}>*</span></label>
-                    <input type="date" name="date_of_birth" required onChange={handleChange} style={styles.input} value={formData.date_of_birth} />
-                </div>
-
-                <div>
-                    <label style={styles.label}>Mail Address <span style={{ color: "red" }}>*</span></label>
-                    <input type="text" name="mail_address" required onChange={handleChange} style={styles.input} value={formData.mail_address} />
-                </div>
-
-
-
-                <div>
-                    <label style={styles.label}>Office Phone <span style={{ color: "red" }}>*</span></label>
-                    <input type="text" name="office_phone" required onChange={handleChange} style={styles.input} value={formData.office_phone} />
-                </div>
-
-                <div>
-                    <label style={styles.label}>Reference Phone</label>
-                    <input type="text" name="reference_phone" onChange={handleChange} style={styles.input} value={formData.reference_phone} />
-                </div>
-
-                <div>
-                    <label style={styles.label}>Job Title <span style={{ color: "red" }}>*</span></label>
-                    <input type="text" name="job_title" required onChange={handleChange} style={styles.input} value={formData.job_title} />
-                </div>
-
-                <div>
-                    <label style={styles.label}>Department <span style={{ color: "red" }}>*</span></label>
-                    <input type="text" name="department" required onChange={handleChange} style={styles.input} value={formData.department} />
-                </div>
-                <div>
-                    <label style={styles.label}>Company <span style={{ color: "red" }}>*</span></label>
-                    <select
-                        name="company"
-                        required
-                        onChange={handleChange}
-                        style={styles.input}
-                        value={formData.company}
+                    <button
+                        type="submit"
+                        style={styles.button}
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}
                     >
-                        <option value="">Select Company</option>
-                        {companies.map((company) => (
-                            <option key={company.id} value={company.id}>
-                                {company.id} - {company.company_name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-                <div>
-                    <label style={styles.label}>Salary <span style={{ color: "red" }}>*</span></label>
-                    <input type="number" name="salary" required onChange={handleChange} style={styles.input} value={formData.salary} />
-                </div>
-
-                <div>
-                    <label style={styles.label}>Reporting Leader <span style={{ color: "red" }}>*</span></label>
-                    <input type="text" name="reporting_leader" required onChange={handleChange} style={styles.input} value={formData.reporting_leader} />
-                </div>
-
-                <div>
-                    <label style={styles.label}>Special Skills</label>
-                    <input type="text" name="special_skills" onChange={handleChange} style={styles.input} value={formData.special_skills} />
-                </div>
-
-                <div>
-                    <label style={styles.label}>Remarks</label>
-                    <textarea name="remarks" onChange={handleChange} style={styles.input} value={formData.remarks}></textarea>
-                </div>
-
-                <div>
-                    <label style={styles.label}>Permanent Address <span style={{ color: "red" }}>*</span></label>
-                    <textarea name="permanent_address" required onChange={handleChange} style={styles.input} value={formData.permanent_address}></textarea>
-                </div>
-
-                <div>
-                    <label style={styles.label}>Profile Picture <span style={{ color: "red" }}>*</span></label>
-                    <input type="file" name="image1" required onChange={handleFileChange} style={styles.fileInput} />
-                </div>
-
-                <button
-                    type="submit"
-                    style={{
-                        ...styles.button,
-                        ...(isHovered ? styles.buttonHover : {})
-                    }}
-                    onMouseEnter={() => setIsHovered(true)}
-                    onMouseLeave={() => setIsHovered(false)}
-                >
-                    Submit
-                </button>
-                <button
-                    type="back"
-                    onClick={() => navigate("/employees")}
-                    style={{
-                        ...styles.button,
-                        ...(isHovered ? styles.buttonHover : {})
-                    }}
-                    onMouseEnter={() => setIsHovered(true)}
-                    onMouseLeave={() => setIsHovered(false)}
-                >
-                    Back
-                </button>
-            </form>
-
-            <div style={styles.popup}>{successMessage}</div>
+                        Submit
+                    </button>
+                </form>
+            </div>
         </div>
     );
 };

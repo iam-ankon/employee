@@ -67,7 +67,7 @@ const AppContent = () => {
           <Route path="/" element={<AuthRoute><LoginPage /></AuthRoute>} />
           <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
           <Route path="/hr-work" element={<ProtectedRoute><HRWorkPage /></ProtectedRoute>} />
-          <Route path="/employee" element={<ProtectedRoute><EmployeeDetails /></ProtectedRoute>} />
+          <Route path="/employees" element={<ProtectedRoute><EmployeeDetails /></ProtectedRoute>} />
           <Route path="/employee/:id" element={<ProtectedRoute><EmployeeDetailPage /></ProtectedRoute>} />
           <Route path="/edit-employee/:id" element={<ProtectedRoute><EditEmployeePage /></ProtectedRoute>} />
           <Route path="/performanse_appraisal" element={<ProtectedRoute><PerformanseAppraisal /></ProtectedRoute>} />

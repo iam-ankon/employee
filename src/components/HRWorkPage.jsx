@@ -1,654 +1,310 @@
-// import React from 'react';
-// import { Link } from 'react-router-dom';
-
-// const HRWorkPage = () => {
-//   return (
-//     <div className="flex h-screen bg-gray-100">
-//       {/* Sidebar */}
-//       <div className="sidebar">
-//         <h2>HR Work</h2>
-//         <ul>
-//           <li>
-//             <Link to="/employees" className="flex items-center py-2 hover:text-gray-300">
-//               Employees
-//             </Link>
-//           </li>
-//           <li>
-//             <Link to="/performanse_appraisal" className="flex items-center py-2 hover:text-gray-300">
-//               Performance Appraisal
-//             </Link>
-//           </li>
-//           <li>
-//             <Link to="/employee_leave" className="flex items-center py-2 hover:text-gray-300">
-//               EmployeeLeave
-//             </Link>
-//           </li>
-//           <li>
-//             <Link to="/employee_leave_balance" className="flex items-center py-2 hover:text-gray-300">
-//               Employee Leave Balance
-//             </Link>
-//           </li>
-//           <li>
-//             <Link to="/employee_leave_type" className="flex items-center py-2 hover:text-gray-300">
-//               Employee Leave Type
-//             </Link>
-//           </li>
-//           <li>
-//             <Link to="/attendance" className="flex items-center py-2 hover:text-gray-300">
-//               Attendance
-//             </Link>
-//           </li>
-//           <li>
-//             <Link to="/email-logs" className="flex items-center py-2 hover:text-gray-300">
-//               Email Logs
-//             </Link>
-//           </li>
-//           <li>
-//             <Link to="/interviews" className="flex items-center py-2 hover:text-gray-300">
-//               Interviews
-//             </Link>
-//           </li>
-//           <li>
-//             <Link to="/finance-provision" className="flex items-center py-2 hover:text-gray-300">
-//               Finance Provision
-//             </Link>
-//           </li>
-//           <li>
-//             <Link to="/admin-provision" className="flex items-center py-2 hover:text-gray-300">
-//               Admin Provision
-//             </Link>
-//           </li>
-//           <li>
-//             <Link to="/it-provision" className="flex items-center py-2 hover:text-gray-300">
-//               IT Provision
-//             </Link>
-//           </li>
-//           <li>
-//             <Link to="/cv-add" className="flex items-center py-2 hover:text-gray-300">
-//               Add CV
-//             </Link>
-//           </li>
-//           <li>
-//             <Link to="/letter-send" className="flex items-center py-2 hover:text-gray-300">
-//               Letter Send
-//             </Link>
-//           </li>
-//           <li>
-//             <Link to="/tad-groups" className="flex items-center py-2 hover:text-gray-300">
-//               Tad Groups
-//             </Link>
-//           </li>
-//           <li>
-//             <Link to="/tad-groups" className="flex items-center py-2 hover:text-gray-300">
-//               Employee Termination Process
-//             </Link>
-//           </li>
-//         </ul>
-
-//       </div>
-
-//       {/* Main Content Area */}
-//       <div className="main-content">
-//         <h2 className="text-3xl font-bold mb-6">HR Work Dashboard</h2>
-
-//         {/* Cards section */}
-//         <div className="card-container">
-//           <div className="card">
-//             <h3>📑 Add CV</h3>
-//             <p>Upload CV files, enter applicant details, and submit candidate profiles.</p>
-//             <Link to="/cv-list">Go to Add CV</Link>
-//           </div>
-//           <div className="card">
-//             <h3>💼 Interviews</h3>
-//             <p>Manage interview schedules, view past interviews, and make decisions.</p>
-//             <Link to="/interviews">Go to Interviews</Link>
-//           </div>
-//           <div className="card">
-//             <h3> 👥  Employees</h3>
-//             <p>Manage employee data, view lists, and perform actions on employee records.</p>
-//             <Link to="/employees">Go to Employees</Link>
-//           </div>
-//           <div className="card">
-//             <h3> 📝 Attendance</h3>
-//             <p>Track employee attendance, review reports, and manage leave requests.</p>
-//             <Link to="/attendance">Go to Attendance</Link>
-//           </div>
-          
-//           <div className="card">
-//             <h3>Employee Leave Request/Type/Balance</h3 >
-//             <p>Public/Festival Holiday,Casual Leave,Sick Leave,Earned Leave.</p>
-//             <Link to="/employee_leave">Go to Employee Leave</Link>
-//           </div>
-          
-//           <div className="card">
-//             <h3> 📈 Performance Appraisal</h3 >
-//             <p>Conduct performance reviews, manage appraisals, and track employee progress.</p>
-//             <Link to="/performanse_appraisal">Go to Performance Appraisal</Link>
-//           </div>
-//           <div className="card">
-//             <h3>🔴 Employee Termination Process</h3>
-//             <p>Add An Employee Termination Process.</p>
-//             <Link to="/employee-termination">Go to Tad Groups</Link>
-//           </div>
-          
-
-//           <div className="card">
-//             <h3>📊 Finance/IT/Admin Provision</h3>
-//             <p>Manage financial resources, allocate budgets,tasks, user roles,IT resources, provision hardware, and assign software licenses and track expenses.</p>
-//             <Link to="/finance-provision">Go to Finance Provision</Link>
-//           </div>
-          
-//           <div className="card">
-//             <h3>📮 Letter Send</h3>
-//             <p>Manage letter submissions, review applications, and send offer letters.</p>
-//             <Link to="/letter-send">Go to Letter Send</Link>
-//           </div>
-//           <div className="card">
-//             <h3>📧 Email Logs</h3>
-//             <p>View email communication logs and track messages sent to employees.</p>
-//             <Link to="/email-logs">Go to Email Logs</Link>
-//           </div>
-//           <div className="card">
-//             <h3>🌐 Tad Groups</h3>
-//             <p>Upload company names only.</p>
-//             <Link to="/tad-groups">Go to Tad Groups</Link>
-//           </div>
-          
-//         </div>
-//       </div>
-
-//       {/* Styles for the HRWorkPage */}
-//       <style jsx>{`
-//         /* Sidebar Styles */
-//         .sidebar {
-//           // background-color: #2d3748; 
-//           // color: white;
-//           // padding: 20px;
-//           // width: 250px;
-//           // height: 100vh;
-//         }
-
-//         .sidebar h2 {
-//           font-size: 1.5rem;
-//           font-weight: 600;
-//           text-align: center;
-//           margin-bottom: 20px;
-//         }
-
-//         .sidebar ul {
-//           list-style-type: none;
-//           padding: 0;
-//         }
-
-//         .sidebar ul li {
-//           margin-bottom: 15px;
-//         }
-
-//         .sidebar ul li a {
-//           display: flex;
-//           align-items: center;
-//           padding: 10px 20px;
-//           border-radius: 8px;
-//           text-decoration: none;
-//           color: white;
-//           transition: background-color 0.2s ease, color 0.2s ease;
-//         }
-
-//         .sidebar ul li a:hover {
-//           background-color: #4a5568; /* Darker gray on hover */
-//           color: #edf2f7; /* Light color on hover */
-//         }
-
-//         /* Main Content Area */
-//         .main-content {
-//           flex: 1;
-//           padding: 30px;
-//           background-color: #f7fafc;
-//           overflow: auto;
-//         }
-
-//         .main-content h2 {
-//           font-size: 2.25rem;
-//           font-weight: 700;
-//           margin-bottom: 30px;
-//         }
-
-//         /* Card Styles */
-//         .card-container {
-//           display: grid;
-//           grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-//           gap: 30px;
-//         }
-
-//         .card {
-//           background-color: white;
-//           padding: 20px;
-//           border-radius: 30px;
-//           box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-//           text-align: center;
-//           transition: transform 0.3s ease, box-shadow 0.3s ease;
-//           display: flex;
-//           flex-direction: column;
-//           align-items: center;
-//           justify-content: space-between;
-//         }
-
-//         .card:hover {
-//           transform: translateY(-15px);
-//           box-shadow: 0 6px 15px rgba(86, 59, 210, 0.31);
-//         }
-
-//         .card h3 {
-//           font-size: 1.25rem;
-//           font-weight: 600;
-//           margin-bottom: 20px;
-//         }
-
-//         .card p {
-//           font-size: 1rem;
-//           color: #4a5568;
-//           margin-bottom: 20px;
-//         }
-
-//         .card a {
-//           font-size: 1rem;
-//           color: #3182ce;
-//           text-decoration: none;
-//           transition: color 0.2s ease;
-//         }
-
-//         .card a:hover {
-//           color: #2b6cb0;
-//         }
-
-//         /* Media Queries for Responsiveness */
-//         @media (max-width: 768px) {
-//           .sidebar {
-//             width: 200px;
-//             padding: 15px;
-//           }
-
-//           .main-content {
-//             padding: 20px;
-//           }
-
-//           .card-container {
-//             grid-template-columns: 1fr;
-//           }
-//         }
-//       `}</style>
-//     </div>
-//   );
-// };
-
-// export default HRWorkPage;
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { FiUsers, FiCalendar, FiMail, FiFileText, FiDollarSign, FiTerminal, FiSend, FiLogOut, FiPieChart, FiBriefcase, FiClock, FiHome, FiVoicemail } from 'react-icons/fi';
+import axios from 'axios'; // Import axios
+import Sidebars from './sidebars';
 
 const HRWorkPage = () => {
-  // Mock data
+  const navigate = useNavigate();
+  const [employeeCount, setEmployeeCount] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [upcomingInterviews, setUpcomingInterviews] = useState([]);
+  const [leaveRequests, setLeaveRequests] = useState([]);
+  const [cvCount, setCvCount] = useState(0);
+  const [recentActivities, setRecentActivities] = useState([]);
+
+  useEffect(() => {
+    const fetchEmployeeCount = async () => {
+      try {
+        const response = await axios.get('http://192.168.4.183:8000/api/employee/details/api/employees/');
+        setEmployeeCount(response.data.length || 0);
+      } catch (err) {
+        console.error('Fetch error:', err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const fetchInterviews = async () => {
+      try {
+        const response = await axios.get('http://192.168.4.183:8000/api/employee/details/api/interviews/');
+        setUpcomingInterviews(response.data);
+      } catch (error) {
+        console.error('Error fetching interviews:', error);
+      }
+    };
+
+    const fetchLeaveRequests = async () => {
+      try {
+        const response = await axios.get('http://192.168.4.183:8000/api/employee/details/api/employee_leaves/');
+        setLeaveRequests(response.data);
+        console.log("Leave Requests:", response.data)
+      } catch (error) {
+        console.error('Error fetching leave requests:', error);
+      }
+    };
+
+    const fetchCVCount = async () => {
+      try {
+        const response = await axios.get('http://192.168.4.183:8000/api/employee/details/api/CVAdd/');
+        setCvCount(response.data.length || 0);
+      } catch (error) {
+        console.error('Error fetching CV count:', error)
+      }
+    }
+
+    fetchEmployeeCount();
+    fetchInterviews();
+    fetchLeaveRequests();
+    fetchCVCount();
+  }, []);
+  useEffect(() => {
+    const trackablePages = ['/employees', '/interviews', '/employee_leave', '/cv-list', '/attendance'];
+
+    if (trackablePages.includes(location.pathname)) {
+      trackActivity(location.pathname);
+      // Retrieve recent activities only if it's a trackable page
+      const storedActivities = JSON.parse(localStorage.getItem('recentActivities')) || [];
+      setRecentActivities(storedActivities);
+    } else {
+      //if it is not a trackable page, still try to retrieve from local storage.
+      const storedActivities = JSON.parse(localStorage.getItem('recentActivities')) || [];
+      setRecentActivities(storedActivities);
+    }
+
+  }, [location.pathname]);
+
+  const trackActivity = (page) => {
+    const newActivity = {
+      page: page,
+      timestamp: new Date().toISOString(),
+    };
+
+    const storedActivities = JSON.parse(localStorage.getItem('recentActivities')) || [];
+    const updatedActivities = [newActivity, ...storedActivities.slice(0, 4)]; // Keep last 5
+
+    localStorage.setItem('recentActivities', JSON.stringify(updatedActivities));
+  };
+
+  const getActivityDescription = (page) => {
+    switch (page) {
+      case '/employees':
+        return 'Visited Employees Page';
+      case '/interviews':
+        return 'Visited Interviews Page';
+      case '/employee_leave':
+        return 'Visited Leave Management Page';
+      case '/cv-list':
+        return 'Visited CV list Page';
+      case '/attendance':
+        return 'Visited Attendance Page';
+      default:
+        return `Visited ${page}`;
+    }
+  };
+
+  const getActivityIcon = (page) => {
+    switch (page) {
+      case '/employees':
+        return <FiUsers />;
+      case '/interviews':
+        return <FiBriefcase />;
+      case '/employee_leave':
+        return <FiCalendar />;
+      case '/cv-list':
+        return <FiFileText />;
+      case '/attendance':
+        return <FiClock />;
+      default:
+        return <FiMail />;
+    }
+  }
   const today = new Date();
-  const formattedDate = today.toLocaleDateString('en-US', { 
-    weekday: 'long', 
-    day: 'numeric', 
-    month: 'long', 
-    year: 'numeric' 
+  const formattedDate = today.toLocaleDateString('en-US', {
+    weekday: 'long',
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
   });
 
-  const jobPositions = [
-    { title: 'Design Head', total: '88', g1: '1G Candidates', g3: '3C Candidates', g2: '2C Candidates' },
-    { title: 'Art Lead', total: '88', g1: '1G Candidates', g3: '3C Candidates', g2: '2C Candidates' },
-    { title: 'Product Designer', total: '88', g1: '1G Candidates', g3: '3C Candidates', g2: '2C Candidates' },
-    { title: 'Junior UI Designer', total: '88', g1: '1G Candidates', g3: '3C Candidates', g2: '2C Candidates' },
-    { title: '3D Artist', total: '88', g1: '1G Candidates', g3: '3C Candidates', g2: '2C Candidates' },
-    { title: 'UX Researcher', total: '88', g1: '1G Candidates', g3: '3C Candidates', g2: '2C Candidates' },
+  const stats = [
+    { title: 'Total Employees', value: employeeCount, icon: <FiUsers size={24} />, link: '/employees' },
+    { title: 'Interviews', value: upcomingInterviews.length, icon: <FiBriefcase size={24} />, link: '/interviews' },
+    { title: 'Pending Leave Requests', value: leaveRequests.filter(req => req.status === 'pending').length, icon: <FiCalendar size={24} />, link: '/employee_leave' },
+    { title: 'CV Bank', value: cvCount, icon: <FiFileText size={24} />, link: '/cv-list' },
   ];
 
-  const tasks = [
-    { time: '09:00 - 10:00 AM', description: 'Interview with candidates from product designer application' },
-    { time: '10:30 - 12:00 AM', description: 'UI Design candidate screening' },
-    { time: '13:30 - 14:00 PM', description: 'Submit freelance recruitment result' },
-    { time: '14:00 - 16:00 PM', description: 'Make new career vacancy' },
-    { time: '16:30 - 18:00 PM', description: 'Conduct test for UX Researcher candidates' },
+  const quickActions = [
+    { title: 'Add New Employee', icon: <FiUsers size={20} />, link: '/add-employee' },
+    { title: 'Schedule Interview', icon: <FiBriefcase size={20} />, link: '/interviews/schedule' },
+    { title: 'Process Payroll', icon: <FiDollarSign size={20} />, link: '/finance-provision' },
+    { title: 'Send Announcement', icon: <FiSend size={20} />, link: '/letter-send' },
   ];
-
-  const teams = [
-    { name: 'Design Team', total: 'TOTAL ADVERTISER' },
-    { name: 'Development Team', total: 'TOTAL WORKSHIPS' },
-    { name: 'Finance Team', total: 'TOTAL WORKSHIPS' },
-    { name: 'Sales Team', total: 'TOTAL WORKSHIPS' },
-  ];
-
   return (
-    <div style={{ 
-      display: 'flex', 
-      minHeight: '100vh', 
-      backgroundColor: '#f9fafb',
-      fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif'
-    }}>
+    <div style={{ display: 'flex', height: '100vh', backgroundColor: '#f9fafb' }}>
       {/* Sidebar */}
-      <div style={{ 
-        width: '250px', 
-        backgroundColor: '#1f2937', 
-        color: 'white', 
-        padding: '1rem'
-      }}>
-        <h2 style={{ 
-          fontSize: '1.25rem', 
-          fontWeight: 'bold', 
-          marginBottom: '1.5rem'
-        }}>HR DASHBOARD</h2>
-        
-        <ul style={{ listStyle: 'none', padding: 0 }}>
-        <li style={{ marginBottom: '0.5rem' }}>
-            <Link 
-              to="/cv-add" 
-              style={{ 
-                display: 'block', 
-                padding: '0.5rem 0.75rem', 
-                borderRadius: '0.375rem',
-                color: 'white',
-                textDecoration: 'none'
-              }}
-              hoverStyle={{ backgroundColor: '#374151' }}
-            >
-              Add CV
-            </Link>
-          </li>
-          <li style={{ marginBottom: '0.5rem' }}>
-            <Link 
-              to="/interviews" 
-              style={{ 
-                display: 'block', 
-                padding: '0.5rem 0.75rem', 
-                borderRadius: '0.375rem',
-                color: 'white',
-                textDecoration: 'none'
-              }}
-              hoverStyle={{ backgroundColor: '#374151' }}
-            >
-              Interviews
-            </Link>
-          </li>
-          <li style={{ marginBottom: '0.5rem' }}>
-            <Link 
-              to="/employees" 
-              style={{ 
-                display: 'block', 
-                padding: '0.5rem 0.75rem', 
-                borderRadius: '0.375rem',
-                color: 'white',
-                textDecoration: 'none'
-              }}
-              hoverStyle={{ backgroundColor: '#374151' }}
-            >
-              Employees
-            </Link>
-          </li>
-          <li style={{ marginBottom: '0.5rem' }}>
-            <Link 
-              to="/attendance" 
-              style={{ 
-                display: 'block', 
-                padding: '0.5rem 0.75rem', 
-                borderRadius: '0.375rem',
-                color: 'white',
-                textDecoration: 'none'
-              }}
-              hoverStyle={{ backgroundColor: '#374151' }}
-            >
-              Attendance
-            </Link>
-          </li>
-          <li style={{ marginBottom: '0.5rem' }}>
-            <Link 
-              to="/employee_leave" 
-              style={{ 
-                display: 'block', 
-                padding: '0.5rem 0.75rem', 
-                borderRadius: '0.375rem',
-                color: 'white',
-                textDecoration: 'none'
-              }}
-              hoverStyle={{ backgroundColor: '#374151' }}
-            >
-              Employee Leave
-            </Link>
-          </li>
-          <li style={{ marginBottom: '0.5rem' }}>
-            <Link 
-              to="/performanse_appraisal" 
-              style={{ 
-                display: 'block', 
-                padding: '0.5rem 0.75rem', 
-                borderRadius: '0.375rem',
-                color: 'white',
-                textDecoration: 'none'
-              }}
-              hoverStyle={{ backgroundColor: '#374151' }}
-            >
-              Performance Appraisal
-            </Link>
-          </li>
-
-          <li style={{ marginBottom: '0.5rem' }}>
-            <Link 
-              to="/finance-provision" 
-              style={{ 
-                display: 'block', 
-                padding: '0.5rem 0.75rem', 
-                borderRadius: '0.375rem',
-                color: 'white',
-                textDecoration: 'none'
-              }}
-              hoverStyle={{ backgroundColor: '#374151' }}
-            >
-              Finance Provision
-            </Link>
-          </li>
-          <li style={{ marginBottom: '0.5rem' }}>
-            <Link
-              to="/letter-send" 
-              style={{ 
-                display: 'block', 
-                padding: '0.5rem 0.75rem', 
-                borderRadius: '0.375rem',
-                color: 'white',
-                textDecoration: 'none'
-              }}
-              hoverStyle={{ backgroundColor: '#374151' }}
-            >
-              Send Letter
-            </Link>
-          </li>
-        </ul>
+      <div style={{ display: 'flex' }}>
+        <Sidebars />
+        <div style={{ flex: 1, overflow: 'auto' }}>
+          {/* Your page content here */}
+        </div>
       </div>
-
       {/* Main Content */}
-      <div style={{ 
-        flex: 1, 
-        padding: '1.5rem',
-        backgroundColor: '#f9fafb'
-      }}>
-        <h1 style={{ 
-          fontSize: '1.5rem', 
-          fontWeight: 'bold', 
-          marginBottom: '0.5rem'
-        }}>NTO-HUB</h1>
-        <h2 style={{ 
-          fontSize: '1.25rem', 
-          marginBottom: '1.5rem'
-        }}>Dashboard</h2>
-        <p style={{ marginBottom: '2rem' }}>Today is {formattedDate}</p>
-
-        {/* Grid Layout */}
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
-          gap: '1.5rem', 
-          marginBottom: '2rem'
-        }}>
-          {/* Hiring Section */}
-          <div style={{ 
-            backgroundColor: 'white', 
-            padding: '1rem', 
-            borderRadius: '0.375rem',
-            boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)'
-          }}>
-            <h3 style={{ 
-              fontWeight: 'bold', 
-              marginBottom: '0.75rem'
-            }}>Hiring</h3>
-            <div style={{ marginTop: '0.5rem' }}>
-              <div style={{ fontWeight: '600' }}>Jobs</div>
-              <ul style={{ 
-                listStyleType: 'disc', 
-                paddingLeft: '1.25rem',
-                marginTop: '0.25rem'
-              }}>
-                <li>New Age/final</li>
-                <li>Screening</li>
-                <li>Interview</li>
-                <li>Text</li>
-              </ul>
-            </div>
+      <div style={{ flex: 1, overflow: 'auto' }}>
+        {/* Header */}
+        <header style={{ backgroundColor: 'white', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)' }}>
+          <div style={{ padding: '1rem 1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#374151' }}>HR Dashboard</h1>
+            <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>{formattedDate}</div>
           </div>
+        </header>
 
-          {/* Job Positions */}
-          <div style={{ 
-            backgroundColor: 'white', 
-            padding: '1rem', 
-            borderRadius: '0.375rem',
-            boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-            gridColumn: 'span 2'
-          }}>
-            <div style={{ 
-              display: 'grid', 
-              gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', 
-              gap: '1rem'
-            }}>
-              {jobPositions.map((job, index) => (
-                <div key={index} style={{ 
-                  border: '1px solid #e5e7eb', 
-                  padding: '0.75rem', 
-                  borderRadius: '0.375rem'
-                }}>
-                  <h4 style={{ fontWeight: 'bold' }}>{job.title}</h4>
-                  <div style={{ fontSize: '0.875rem', marginTop: '0.5rem' }}>
-                    <div>TOTAL APP: {job.total}</div>
-                    <div>{job.g1}</div>
-                    <div>{job.g3}</div>
-                    <div>{job.g2}</div>
+        {/* Dashboard Content */}
+        <main style={{ padding: '1.5rem' }}>
+          {/* Stats Cards */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
+            {stats.map((stat, index) => (
+              <div
+                key={index}
+                style={{ backgroundColor: 'white', padding: '1.5rem', borderRadius: '0.5rem', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)', border: '1px solid #e5e7eb', transition: 'box-shadow 0.3s ease-in-out', cursor: 'pointer', ':hover': { boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' } }}
+                onClick={() => navigate(stat.link)}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <div>
+                    <p style={{ fontSize: '0.875rem', fontWeight: 500, color: '#6b7280' }}>{stat.title}</p>
+                    {loading && stat.title === 'Total Employees' ? (
+                      <div style={{ height: '2rem', width: '4rem', marginTop: '0.5rem', backgroundColor: '#e5e7eb', borderRadius: '0.25rem', animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite' }}></div>
+                    ) : error && stat.title === 'Total Employees' ? (
+                      <p style={{ color: '#ef4444', marginTop: '0.5rem' }}>Error loading</p>
+                    ) : (
+                      <p style={{ fontSize: '1.5rem', fontWeight: 700, marginTop: '0.25rem' }}>{stat.value}</p>
+                    )}
+                  </div>
+                  <div style={{ padding: '0.5rem', backgroundColor: '#eff6ff', borderRadius: '0.375rem', color: '#2563eb' }}>
+                    {stat.icon}
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Second Row */}
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
-          gap: '1.5rem', 
-          marginBottom: '2rem'
-        }}>
-          {/* Job Summary */}
-          <div style={{ 
-            backgroundColor: 'white', 
-            padding: '1rem', 
-            borderRadius: '0.375rem',
-            boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)'
-          }}>
-            <h3 style={{ 
-              fontWeight: 'bold', 
-              marginBottom: '0.75rem'
-            }}>Job Summary</h3>
-            <div style={{ marginTop: '0.75rem' }}>
-              <div>
-                <div style={{ fontWeight: '600' }}>Hand</div>
-                <div>133</div>
-                <div style={{ fontSize: '0.875rem' }}>- TOTAL JOBS</div>
-              </div>
-              <div style={{ marginTop: '0.75rem' }}>
-                <div style={{ fontWeight: '600' }}>80 PRUSHED</div>
-                <div style={{ fontSize: '0.875rem' }}>18 INTERNAL</div>
-              </div>
-              <div style={{ marginTop: '0.75rem' }}>
-                <div style={{ fontWeight: '600' }}>20 CHICLD</div>
-                <div style={{ fontSize: '0.875rem' }}>15 CLOSED</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Employee */}
-          <div style={{ 
-            backgroundColor: 'white', 
-            padding: '1rem', 
-            borderRadius: '0.375rem',
-            boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)'
-          }}>
-            <h3 style={{ 
-              fontWeight: 'bold', 
-              marginBottom: '0.75rem'
-            }}>Employee</h3>
-            <ul style={{ listStyle: 'none', padding: 0 }}>
-              <li>Structure</li>
-              <li style={{ marginTop: '0.5rem' }}>Report</li>
-              <li style={{ marginTop: '0.5rem' }}>Setting</li>
-            </ul>
-          </div>
-
-          {/* My Task */}
-          <div style={{ 
-            backgroundColor: 'white', 
-            padding: '1rem', 
-            borderRadius: '0.375rem',
-            boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)'
-          }}>
-            <h3 style={{ 
-              fontWeight: 'bold', 
-              marginBottom: '0.75rem'
-            }}>My Task</h3>
-            <div style={{ marginBottom: '0.75rem' }}>
-              <div>Today</div>
-              <div style={{ fontSize: '0.875rem' }}>Feb 8 - Nov 16</div>
-            </div>
-            <div style={{ marginTop: '1rem' }}>
-              {tasks.map((task, index) => (
-                <div key={index} style={{ marginBottom: '1rem' }}>
-                  <div style={{ fontWeight: '600' }}>{task.time}</div>
-                  <div style={{ fontSize: '0.875rem' }}>{task.description}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Teams Section */}
-        <div style={{ 
-          backgroundColor: 'white', 
-          padding: '1rem', 
-          borderRadius: '0.375rem',
-          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)'
-        }}>
-          <h3 style={{ 
-            fontWeight: 'bold', 
-            marginBottom: '0.75rem'
-          }}>Employee</h3>
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
-            gap: '1rem'
-          }}>
-            {teams.map((team, index) => (
-              <div key={index}>
-                <div style={{ fontWeight: '600' }}>{team.name}</div>
-                <div style={{ fontSize: '0.875rem' }}>{team.total}</div>
               </div>
             ))}
           </div>
-        </div>
+
+          {/* Quick Actions */}
+          <div style={{ marginBottom: '2rem' }}>
+            <h2 style={{ fontSize: '1.125rem', fontWeight: 600, color: '#374151', marginBottom: '1rem' }}>Quick Actions</h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+              {quickActions.map((action, index) => (
+                <Link
+                  key={index}
+                  to={action.link}
+                  style={{ backgroundColor: 'white', padding: '1rem', borderRadius: '0.5rem', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)', border: '1px solid #e5e7eb', transition: 'box-shadow 0.3s ease-in-out', display: 'flex', alignItems: 'center', textDecoration: 'none', color: 'inherit', ':hover': { boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' } }}
+                >
+                  <div style={{ marginRight: '0.75rem', padding: '0.5rem', backgroundColor: '#eff6ff', borderRadius: '0.375rem', color: '#2563eb' }}>
+                    {action.icon}
+                  </div>
+                  <span style={{ fontWeight: 500 }}>{action.title}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Upcoming Interviews */}
+          <div style={{ backgroundColor: 'white', borderRadius: '0.5rem', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)', border: '1px solid #e5e7eb', marginBottom: '2rem' }}>
+            <div style={{ padding: '1rem', borderBottom: '1px solid #e5e7eb' }}>
+              <h2 style={{ fontSize: '1.125rem', fontWeight: 600, color: '#374151' }}>Interviews</h2>
+            </div>
+            <div style={{ borderTop: '1px solid #e5e7eb' }}>
+              {upcomingInterviews.map((interview) => (
+                <div key={interview.id} style={{ padding: '1rem', borderBottom: '1px solid #e5e7eb', cursor: 'pointer', ':hover': { backgroundColor: '#f9fafb' } }} onClick={() => navigate(`/interviews/${interview.id}`)}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                      <h3 style={{ fontWeight: 500 }}>{interview.name || 'No Candidate'}</h3>
+                      <p style={{ fontSize: '0.875rem', color: '#6b7280' }}>{interview.position_for || 'No Position'}</p>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      <p style={{ fontWeight: 500 }}>{interview.time}</p>
+                      <p style={{ fontSize: '0.875rem', color: '#6b7280' }}>{interview.interview_date}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              {upcomingInterviews.length === 0 && (
+                <div style={{ padding: '1rem', textAlign: 'center', color: '#6b7280' }}>
+                  No upcoming interviews scheduled
+                </div>
+              )}
+            </div>
+            <div style={{ padding: '1rem', borderTop: '1px solid #e5e7eb', textAlign: 'right' }}>
+              <Link to="/interviews" style={{ color: '#2563eb', textDecoration: 'none', fontWeight: 500, ':hover': { color: '#1d4ed8' } }}>
+                View All Interviews →
+              </Link>
+            </div>
+          </div>
+
+          {/* Pending Leave Requests */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '2rem' }}>
+            <div style={{ backgroundColor: 'white', borderRadius: '0.5rem', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)', border: '1px solid #e5e7eb' }}>
+              <div style={{ padding: '1rem', borderBottom: '1px solid #e5e7eb' }}>
+                <h2 style={{ fontSize: '1.125rem', fontWeight: 600, color: '#374151' }}>Pending Leave Requests</h2>
+              </div>
+              <div style={{ borderTop: '1px solid #e5e7eb' }}>
+                {leaveRequests.filter(req => req.status === 'pending').map((request) => (
+                  <div key={request.id} style={{ padding: '1rem', borderBottom: '1px solid #e5e7eb', cursor: 'pointer', ':hover': { backgroundColor: '#f9fafb' } }} onClick={() => navigate(`/leave-request-details/${request.id}`)}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div>
+                        <h3 style={{ fontWeight: 500 }}>{request.employee_name}</h3>
+                        <p style={{ fontSize: '0.875rem', color: '#6b7280' }}>{request.leave_type}</p>
+                      </div>
+                      <div style={{ textAlign: 'right' }}>
+                        <p style={{ fontWeight: 500 }}>{request.start_date} to {request.end_date}</p>
+                        <span style={{ display: 'inline-block', padding: '0.25rem 0.5rem', fontSize: '0.75rem', fontWeight: 500, backgroundColor: '#fffbeb', color: '#d97706', borderRadius: '9999px' }}>
+                          {request.status}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                {leaveRequests.filter(req => req.status === 'pending').length === 0 && (
+                  <div style={{ padding: '1rem', textAlign: 'center', color: '#6b7280' }}>
+                    No pending leave requests
+                  </div>
+                )}
+              </div>
+              <div style={{ padding: '1rem', borderTop: '1px solid #e5e7eb', textAlign: 'right' }}>
+                <Link to="/employee_leave" style={{ color: '#2563eb', textDecoration: 'none', fontWeight: 500, ':hover': { color: '#1d4ed8' } }}>
+                  View All Leave Requests →
+                </Link>
+              </div>
+            </div>
+
+            {/* Recent Activities */}
+            <div style={{ backgroundColor: 'white', borderRadius: '0.5rem', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)', border: '1px solid #e5e7eb' }}>
+              <div style={{ padding: '1rem', borderBottom: '1px solid #e5e7eb' }}>
+                <h2 style={{ fontSize: '1.125rem', fontWeight: 600, color: '#374151' }}>Recent Activities</h2>
+              </div>
+              <div style={{ borderTop: '1px solid #e5e7eb' }}>
+                {recentActivities.map((activity, index) => (
+                  <div key={index} style={{ padding: '1rem', borderBottom: '1px solid #e5e7eb' }}>
+                    <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+                      <div style={{ marginRight: '0.75rem', padding: '0.5rem', backgroundColor: '#dcfce7', borderRadius: '0.375rem', color: '#16a34a' }}>
+                        {getActivityIcon(activity.page)}
+                      </div>
+                      <div>
+                        <p style={{ fontWeight: 500 }}>{getActivityDescription(activity.page)}</p>
+                        <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.25rem' }}>{new Date(activity.timestamp).toLocaleString()}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+            </div>
+
+          </div>
+        </main>
       </div>
     </div>
   );

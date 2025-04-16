@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { getEmployees, deleteEmployee } from "../api/employeeApi";
+import Sidebars from './sidebars';
 
 const EmployeeDetails = () => {
   const [employees, setEmployees] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
+  const [currentPage, setCurrentPage] = useState(1);
+  const employeesPerPage = 5;
 
   useEffect(() => {
     fetchEmployees();
@@ -48,6 +51,16 @@ const EmployeeDetails = () => {
       employee.department.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const indexOfLastEmployee = currentPage * employeesPerPage;
+  const indexOfFirstEmployee = indexOfLastEmployee - employeesPerPage;
+  const currentEmployees = filteredEmployees.slice(indexOfFirstEmployee, indexOfLastEmployee);
+
+  const totalPages = Math.ceil(filteredEmployees.length / employeesPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   // Styles
   const containerStyle = {
     display: "flex",
@@ -56,30 +69,6 @@ const EmployeeDetails = () => {
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
   };
 
-  const sidebarStyle = {
-    width: "230px",
-    backgroundColor: "#f3f6fb",
-    padding: "20px 15px",
-    boxShadow: "2px 0 5px rgba(0, 0, 0, 0.05)",
-    flexShrink: 0
-  };
-
-  const sidebarHeaderStyle = {
-    fontSize: "20px",
-    fontWeight: "bold",
-    marginBottom: "20px",
-    color: "#0078D4"
-  };
-
-  const sidebarLinkStyle = {
-    display: "block",
-    padding: "10px",
-    margin: "5px 0",
-    textDecoration: "none",
-    color: "#333",
-    borderRadius: "6px",
-    transition: "0.3s"
-  };
 
   const mainContentStyle = {
     flex: 1,
@@ -175,22 +164,36 @@ const EmployeeDetails = () => {
     color: "white"
   };
 
+  const paginationStyle = {
+    display: "flex",
+    justifyContent: "center",
+    marginTop: "20px"
+  };
+
+  const pageButtonStyle = {
+    padding: "8px 12px",
+    margin: "0 5px",
+    border: "1px solid #ccc",
+    borderRadius: "4px",
+    cursor: "pointer",
+    backgroundColor: "#fff"
+  };
+
+  const activePageButtonStyle = {
+    ...pageButtonStyle,
+    backgroundColor: "#0078d4",
+    color: "#fff",
+    border: "1px solid #0078d4"
+  };
+
   return (
     <div style={containerStyle}>
       {/* Sidebar */}
-      <div style={sidebarStyle}>
-        <div style={sidebarHeaderStyle}>HR Work</div>
-        <Link to="/cv-add" style={sidebarLinkStyle}>Add CV</Link>
-        <Link to="/interviews" style={sidebarLinkStyle}>Interviews</Link>
-        <Link to="/employee" style={{ ...sidebarLinkStyle, backgroundColor: "#e1eaff" }}>Employee</Link>
-        <Link to="/attendance" style={sidebarLinkStyle}>Attendance</Link>
-        <Link to="/employee_leave" style={sidebarLinkStyle}>Employee Leave</Link>
-        <Link to="/performanse_appraisal" style={sidebarLinkStyle}>Performance Appraisal</Link>
-        <Link to="/finance-provision" style={sidebarLinkStyle}>Finance Provision</Link>
-        <Link to="/employee-termination" style={sidebarLinkStyle}>Employee Termination</Link>
-        <Link to="/letter-send" style={sidebarLinkStyle}>Send Letter</Link>
-        <Link to="/email-logs" style={sidebarLinkStyle}>Email Logs</Link>
-        <Link to="/tad-groups" style={sidebarLinkStyle}>TAD Groups</Link>
+      <div style={{ display: 'flex' }}>
+        <Sidebars />
+        <div style={{ flex: 1, overflow: 'auto' }}>
+          {/* Your page content here */}
+        </div>
       </div>
 
       {/* Main Content */}
@@ -198,7 +201,7 @@ const EmployeeDetails = () => {
         <div style={headerStyle}>
           <h2>Employee Details</h2>
         </div>
-        
+
         <input
           type="text"
           placeholder="Search employees..."
@@ -206,7 +209,7 @@ const EmployeeDetails = () => {
           onChange={(e) => setSearchQuery(e.target.value)}
           style={searchInputStyle}
         />
-        
+
         <div style={buttonContainerStyle}>
           <button style={addButtonStyle} onClick={() => navigate("/add-employee")}>
             + Add Employee
@@ -215,7 +218,7 @@ const EmployeeDetails = () => {
             🖨️ Print All
           </button>
         </div>
-        
+
         <table style={tableStyle}>
           <thead>
             <tr>
@@ -229,7 +232,7 @@ const EmployeeDetails = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredEmployees.map((employee) => (
+            {currentEmployees.map((employee) => (
               <tr
                 key={employee.id}
                 onClick={() => handleRowClick(employee.id)}
@@ -264,6 +267,17 @@ const EmployeeDetails = () => {
             ))}
           </tbody>
         </table>
+        <div style={paginationStyle}>
+          {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNumber) => (
+            <button
+              key={pageNumber}
+              onClick={() => handlePageChange(pageNumber)}
+              style={currentPage === pageNumber ? activePageButtonStyle : pageButtonStyle}
+            >
+              {pageNumber}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );

@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import Sidebars from './sidebars';
 
 const PerformanseAppraisal = () => {
   const [appraisals, setAppraisals] = useState([]);
   const navigate = useNavigate();
+  const [currentPage, setCurrentPage] = useState(1);
+  const appraisalsPerPage = 5;
 
   useEffect(() => {
     fetchAppraisals();
@@ -31,22 +34,23 @@ const PerformanseAppraisal = () => {
     }
   };
 
+  const indexOfLastAppraisal = currentPage * appraisalsPerPage;
+  const indexOfFirstAppraisal = indexOfLastAppraisal - appraisalsPerPage;
+  const currentAppraisals = appraisals.slice(indexOfFirstAppraisal, indexOfLastAppraisal);
+  const totalPages = Math.ceil(appraisals.length / appraisalsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   return (
     <div style={styles.wrapper}>
       {/* Sidebar */}
-      <div style={styles.sidebar}>
-        <div style={styles.sidebarHeader}>HR Work</div>
-        <a href="/cv-add" style={styles.sidebarLink}>Add CV</a>
-        <a href="/interviews" style={styles.sidebarLink}>Interviews</a>
-        <a href="/employee" style={styles.sidebarLink}>Employee</a>
-        <a href="/attendance" style={styles.sidebarLink}>Attendance</a>
-        <a href="/employee_leave" style={styles.sidebarLink}>Employee Leave</a>
-        <a href="/performanse_appraisal" style={{ ...styles.sidebarLink, backgroundColor: "#e1eaff" }}>Performance Appraisal</a>
-        <a href="/finance-provision" style={styles.sidebarLink}>Finance Provision</a>
-        <a href="/employee-termination" style={styles.sidebarLink}>Employee Termination</a>
-        <a href="/letter-send" style={styles.sidebarLink}>Send Letter</a>
-        <a href="/email-logs" style={styles.sidebarLink}>Email Logs</a>
-        <a href="/tad-groups" style={styles.sidebarLink}>TAD Groups</a>
+      <div style={{ display: 'flex' }}>
+        <Sidebars />
+        <div style={{ flex: 1, overflow: 'auto' }}>
+          {/* Your page content here */}
+        </div>
       </div>
 
       {/* Main Content */}
@@ -58,7 +62,7 @@ const PerformanseAppraisal = () => {
         </Link>
 
         <div style={styles.cardsWrapper}>
-          {appraisals.map((appraisal) => (
+          {currentAppraisals.map((appraisal) => (
             <div
               key={appraisal.id}
               style={styles.card}
@@ -96,6 +100,21 @@ const PerformanseAppraisal = () => {
             </div>
           ))}
         </div>
+        {/* Pagination */}
+        <div style={styles.pagination}>
+          {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNumber) => (
+            <button
+              key={pageNumber}
+              onClick={() => handlePageChange(pageNumber)}
+              style={{
+                ...styles.pageButton,
+                ...(currentPage === pageNumber && styles.activePageButton),
+              }}
+            >
+              {pageNumber}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -108,28 +127,7 @@ const styles = {
     background: "#f8f9fb",
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
   },
-  sidebar: {
-    width: "220px",
-    background: "#ffffff",
-    padding: "20px",
-    borderRight: "1px solid #ddd",
-    boxShadow: "2px 0 5px rgba(0,0,0,0.05)",
-  },
-  sidebarHeader: {
-    fontSize: "20px",
-    fontWeight: "bold",
-    marginBottom: "20px",
-    color: "#0078D4",
-  },
-  sidebarLink: {
-    display: "block",
-    padding: "10px",
-    marginBottom: "5px",
-    color: "#333",
-    textDecoration: "none",
-    borderRadius: "4px",
-    transition: "background 0.3s",
-  },
+
   container: {
     flex: 1,
     padding: "40px",
@@ -202,6 +200,46 @@ const styles = {
     fontSize: "14px",
     cursor: "pointer",
   },
+  pagination: {
+    display: "flex",
+    justifyContent: "center",
+    marginTop: "20px",
+  },
+  pageButton: {
+    padding: "8px 12px",
+    margin: "0 5px",
+    border: "1px solid #ddd",
+    borderRadius: "4px",
+    cursor: "pointer",
+    backgroundColor: "white",
+  },
+  activePageButton: {
+    backgroundColor: "#0078D4",
+    color: "white",
+  },
+};
+const sidebarStyle = {
+  width: "235px",
+  backgroundColor: "#f3f6fb",
+  padding: "20px 15px",
+  boxShadow: "2px 0 5px rgba(0, 0, 0, 0.05)",
+  flexShrink: 0
 };
 
+const sidebarHeaderStyle = {
+  fontSize: "20px",
+  fontWeight: "bold",
+  marginBottom: "20px",
+  color: "#0078D4"
+};
+
+const sidebarLinkStyle = {
+  display: "block",
+  padding: "10px",
+  margin: "5px 0",
+  textDecoration: "none",
+  color: "#333",
+  borderRadius: "6px",
+  transition: "0.3s"
+};
 export default PerformanseAppraisal;

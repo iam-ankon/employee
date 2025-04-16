@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { useNavigate,useLocation } from "react-router-dom";
-import axios from "axios"; // Import Axios for API requests
+import { useNavigate, useLocation, Link } from "react-router-dom";
+import axios from "axios";
+import Sidebars from './sidebars';
 
 const LETTER_CHOICES = [
   { value: "offer_letter", label: "Offer Letter" },
@@ -10,8 +11,8 @@ const LETTER_CHOICES = [
 
 const AddLetterPage = () => {
   const navigate = useNavigate();
-  const location = useLocation(); // Get the location state
-  const { name = "", email = "" } = location.state || {}; // Default to empty strings if undefined
+  const location = useLocation();
+  const { name = "", email = "" } = location.state || {};
 
   const [cvData, setCvData] = useState({
     name: name,
@@ -21,7 +22,6 @@ const AddLetterPage = () => {
   });
   const [loading, setLoading] = useState(false);
 
-  // Handles text input fields
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setCvData((prevData) => ({
@@ -30,7 +30,6 @@ const AddLetterPage = () => {
     }));
   };
 
-  // Handles file selection
   const handleFileChange = (e) => {
     if (e.target.files.length > 0) {
       setCvData((prevData) => ({
@@ -40,21 +39,23 @@ const AddLetterPage = () => {
     }
   };
 
-  // API request function
   const addLetterSend = async (formData) => {
     try {
-      const response = await axios.post("http://192.168.4.183:8000/api/employee/details/api/letter_send/", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post(
+        "http://192.168.4.183:8000/api/employee/details/api/letter_send/",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       return response.data;
     } catch (error) {
       throw error;
     }
   };
 
-  // Handles form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -78,174 +79,174 @@ const AddLetterPage = () => {
       formData.append("letter_file", cvData.letterFile);
       formData.append("letter_type", cvData.letterType);
 
-      // Debugging: Console log FormData values
-      for (let [key, value] of formData.entries()) {
-        console.log(`${key}:`, value);
-      }
-
       await addLetterSend(formData);
-      alert("CV added successfully!");
+      alert("Letter sent successfully!");
       navigate("/letter-send");
     } catch (error) {
-      console.error("Error adding CV:", error);
+      console.error("Error sending letter:", error);
 
       if (error.response) {
-        console.error("Response data:", error.response.data);
-        alert(`Error: ${error.response.data.message || error.response.statusText}`);
+        alert(
+          `Error: ${error.response.data.message || error.response.statusText}`
+        );
       } else {
-        alert("Failed to add CV. Please try again.");
+        alert("Failed to send letter. Please try again.");
       }
     } finally {
       setLoading(false);
     }
   };
 
+  const containerStyle = {
+    display: "flex",
+    fontFamily: "Segoe UI, sans-serif",
+    backgroundColor: "#f4f6f9",
+    minHeight: "100vh",
+  };
+
+  const mainContentStyle = {
+    flex: 1,
+    padding: "30px",
+    backgroundColor: "#f4f4f9",
+  };
+
+  const formContainerStyle = {
+    backgroundColor: "#fff",
+    padding: "20px",
+    borderRadius: "8px",
+    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+    maxWidth: "600px",
+    margin: "0 auto",
+  };
+
+  const formHeaderStyle = {
+    textAlign: "center",
+    marginBottom: "20px",
+    color: "#333",
+  };
+
+  const inputGroupStyle = {
+    marginBottom: "20px",
+  };
+
+  const labelStyle = {
+    display: "block",
+    marginBottom: "8px",
+    fontWeight: "600",
+  };
+
+  const inputStyle = {
+    width: "100%",
+    padding: "10px",
+    borderRadius: "4px",
+    border: "1px solid #ccc",
+  };
+
+  const selectStyle = {
+    width: "100%",
+    padding: "10px",
+    borderRadius: "4px",
+    border: "1px solid #ccc",
+  };
+
+  const buttonStyle = {
+    padding: "10px 20px",
+    backgroundColor: "#0078d4",
+    color: "white",
+    border: "none",
+    borderRadius: "4px",
+    cursor: "pointer",
+    marginRight: "10px",
+  };
+
+  const buttonContainerStyle = {
+    display: "flex",
+    justifyContent: "center",
+    marginTop: "20px",
+  };
+
   return (
-    <div className="add-cv-container">
-      <div className="add-cv-form-container">
-        <h2 className="heading">Send Letter</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="input-group">
-            <label className="label">Name *</label>
-            <input
-              type="text"
-              name="name"
-              value={cvData.name}
-              onChange={handleInputChange}
-              required
-              className="input"
-            />
-          </div>
-
-          <div className="input-group">
-            <label className="label">Email *</label>
-            <input
-              type="email"
-              name="email"
-              value={cvData.email}
-              onChange={handleInputChange}
-              required
-              className="input"
-            />
-          </div>
-
-          <div className="input-group">
-            <label className="label">Letter File *</label>
-            <input
-              type="file"
-              name="letterFile"
-              accept=".pdf,.doc,.docx"
-              onChange={handleFileChange}
-              required
-              className="input"
-            />
-          </div>
-
-          <div className="input-group">
-            <label className="label">Letter Type *</label>
-            <select
-              name="letterType"
-              value={cvData.letterType}
-              onChange={handleInputChange}
-              required
-              className="input"
-            >
-              <option value="" disabled>Select Letter Type</option>
-              {LETTER_CHOICES.map((choice) => (
-                <option key={choice.value} value={choice.value}>
-                  {choice.label}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <button
-            type="submit"
-            className="submit-btn"
-            disabled={loading}
-          >
-            {loading ? "Adding..." : "Save"}
-          </button>
-          <button
-            type="button"
-            className="view-btn"
-            onClick={() => navigate("/letter-send")}
-          >
-            View All Letters
-          </button>
-
-        </form>
+    <div style={containerStyle}>
+      <div style={{ display: 'flex' }}>
+        <Sidebars />
+        <div style={{ flex: 1, overflow: 'auto' }}>
+          {/* Your page content here */}
+        </div>
       </div>
+      <div style={mainContentStyle}>
+        <div style={formContainerStyle}>
+          <h2 style={formHeaderStyle}>Send Letter</h2>
+          <form> {/* Remove onSubmit from the form tag */}
+            <div style={inputGroupStyle}>
+              <label style={labelStyle}>Name *</label>
+              <input
+                type="text"
+                name="name"
+                value={cvData.name}
+                onChange={handleInputChange}
+                required
+                style={inputStyle}
+              />
+            </div>
 
-      {/* CSS Styling */}
-      <style jsx>{`
-        .add-cv-container {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          min-height: 100vh;
-          background-color: #f7fafc;
-        }
+            <div style={inputGroupStyle}>
+              <label style={labelStyle}>Email *</label>
+              <input
+                type="email"
+                name="email"
+                value={cvData.email}
+                onChange={handleInputChange}
+                required
+                style={inputStyle}
+              />
+            </div>
 
-        .add-cv-form-container {
-          background-color: white;
-          padding: 30px;
-          border-radius: 8px;
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-          width: 400px;
-          max-width: 100%;
-        }
+            <div style={inputGroupStyle}>
+              <label style={labelStyle}>Letter File *</label>
+              <input
+                type="file"
+                name="letterFile"
+                accept=".pdf,.doc,.docx"
+                onChange={handleFileChange}
+                required
+                style={inputStyle}
+              />
+            </div>
 
-        .heading {
-          font-size: 2rem;
-          margin-bottom: 20px;
-          font-weight: bold;
-          text-align: center;
-        }
-
-        .input-group {
-          margin-bottom: 20px;
-        }
-
-        .label {
-          display: block;
-          font-size: 1rem;
-          margin-bottom: 8px;
-          font-weight: 500;
-          color: #333;
-        }
-
-        .input {
-          width: 100%;
-          padding: 12px;
-          font-size: 1rem;
-          border: 1px solid #ccc;
-          border-radius: 8px;
-          box-sizing: border-box;
-        }
-
-        .input:focus {
-          border-color: #0078d4;
-          outline: none;
-          box-shadow: 0 0 0 3px rgba(0, 120, 212, 0.2);
-        }
-
-        .submit-btn {
-          width: 100%;
-          padding: 12px;
-          background-color: #0078d4;
-          color: white;
-          font-size: 1rem;
-          border: none;
-          border-radius: 8px;
-          cursor: pointer;
-          transition: background-color 0.3s ease;
-        }
-
-        .submit-btn:hover {
-          background-color: #005fa3;
-        }
-      `}</style>
+            <div style={inputGroupStyle}>
+              <label style={labelStyle}>Letter Type *</label>
+              <select
+                name="letterType"
+                value={cvData.letterType}
+                onChange={handleInputChange}
+                required
+                style={selectStyle}
+              >
+                <option value="" disabled>
+                  Select Letter Type
+                </option>
+                {LETTER_CHOICES.map((choice) => (
+                  <option key={choice.value} value={choice.value}>
+                    {choice.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </form>
+          <div style={buttonContainerStyle}>
+            <button type="button" style={buttonStyle} disabled={loading} onClick={handleSubmit}>
+              {loading ? "Adding..." : "Save"}
+            </button>
+            <button
+              type="button"
+              style={buttonStyle}
+              onClick={() => navigate("/letter-send")}
+            >
+              View All Letters
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
