@@ -20,6 +20,7 @@ const EditEmployeePage = () => {
     reference_phone: "",
     job_title: "",
     department: "",
+    customer: [], // Initialize as an empty array for multi-select
     company: "",
     salary: "",
     reporting_leader: "",
@@ -30,6 +31,7 @@ const EditEmployeePage = () => {
   });
 
   const [companies, setCompanies] = useState([]);
+  const [customers, setCustomers] = useState([]); // State for customers
   const [imagePreview, setImagePreview] = useState(null);
 
   useEffect(() => {
@@ -40,6 +42,7 @@ const EditEmployeePage = () => {
         setEmployee({
           ...emp,
           company: emp.company?.id || emp.company,
+          customer: emp.customer.map(c => c.id), // Extract customer IDs
         });
         if (emp.image1) {
           const imageUrl = emp.image1;
@@ -61,8 +64,18 @@ const EditEmployeePage = () => {
       }
     };
 
+    const fetchCustomers = async () => {
+      try {
+        const res = await axios.get("http://192.168.4.183:8000/api/employee/details/api/customers/");
+        setCustomers(res.data);
+      } catch (err) {
+        console.error("Error fetching customers", err);
+      }
+    };
+
     fetchEmployee();
     fetchCompanies();
+    fetchCustomers();
   }, [id]);
 
   const handleChange = (e) => {
@@ -85,12 +98,21 @@ const EditEmployeePage = () => {
     }
   };
 
+  const handleCustomerChange = (e) => {
+    const selectedOptions = Array.from(e.target.selectedOptions).map(option => option.value);
+    setEmployee(prev => ({ ...prev, customer: selectedOptions }));
+  };
+
   const handleSubmit = async () => {
     try {
       const formData = new FormData();
 
       Object.keys(employee).forEach((key) => {
-        if (key !== "image1") {
+        if (key === "customer") {
+          employee[key].forEach(customerId => {
+            formData.append(key, customerId);
+          });
+        } else if (key !== "image1") {
           if (employee[key] !== null && employee[key] !== undefined) {
             formData.append(key, employee[key]);
           }
@@ -116,22 +138,10 @@ const EditEmployeePage = () => {
   const containerStyle = {
     display: "flex",
     fontFamily: "Segoe UI, sans-serif",
-    
     backgroundColor: "#f3f6fb",
   };
-
-  const sidebarStyle = {
-    width: "230px",
-    backgroundColor: "#f3f6fb",
-    height: "100vh",
-    padding: "20px 15px",
-    boxShadow: "2px 0 5px rgba(0, 0, 0, 0.05)",
-  };
-
-
 
   const formContainerStyle = {
-    
     flex: 1,
     padding: "20px",
     backgroundColor: "#fff",
@@ -212,7 +222,6 @@ const EditEmployeePage = () => {
 
   return (
     <div style={containerStyle}>
-
       <div style={{ display: 'flex' }}>
         <Sidebars />
         <div style={{ flex: 1, overflow: 'auto' }}>
@@ -273,6 +282,23 @@ const EditEmployeePage = () => {
               <input type="text" style={inputStyle} id="department" name="department" value={employee.department} onChange={handleChange} />
             </div>
             <div style={formGroupStyle}>
+              <label style={labelStyle} htmlFor="customer">Customer</label>
+              <select
+                style={{ ...selectStyle, height: '80px' }}
+                id="customer"
+                name="customer"
+                multiple
+                value={employee.customer}
+                onChange={handleCustomerChange}
+              >
+                {customers.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.customer_name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div style={formGroupStyle}>
               <label style={labelStyle} htmlFor="salary">Salary</label>
               <input type="number" style={inputStyle} id="salary" name="salary" value={employee.salary} onChange={handleChange} />
             </div>
@@ -314,7 +340,13 @@ const EditEmployeePage = () => {
             </div>
           </div>
         </form>
-        <button type="button" style={submitButtonStyle} onClick={handleSubmit} onMouseEnter={(e) => (e.target.style.backgroundColor = submitButtonHoverStyle.backgroundColor)} onMouseLeave={(e) => (e.target.style.backgroundColor = submitButtonStyle.backgroundColor)}>
+        <button
+          type="button"
+          style={submitButtonStyle}
+          onClick={handleSubmit}
+          onMouseEnter={(e) => (e.target.style.backgroundColor = submitButtonHoverStyle.backgroundColor)}
+          onMouseLeave={(e) => (e.target.style.backgroundColor = submitButtonStyle.backgroundColor)}
+        >
           Update Employee
         </button>
       </div>

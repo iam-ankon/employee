@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getFinanceProvisions, addFinanceProvision, updateFinanceProvision, deleteFinanceProvision } from "../api/employeeApi";
+import { getFinanceProvisions, addFinanceProvision, updateFinanceProvision, deleteFinanceProvision } from "../../api/employeeApi";
 import { useNavigate } from 'react-router-dom';
 import Sidebars from './sidebars';
 const FinanceProvision = () => {

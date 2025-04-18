@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getEmailLogs, deleteAllEmailLogs } from '../api/employeeApi';
+import { getEmailLogs, deleteAllEmailLogs } from '../../api/employeeApi';
 import Sidebars from './sidebars';
 
 const EmailLog = () => {

@@ -21,6 +21,7 @@ const AddEmployee = () => {
         reference_phone: "",
         job_title: "",
         department: "",
+        customer: [], // Initialize as an empty array for multi-select
         company: "",
         salary: "",
         reporting_leader: "",
@@ -31,6 +32,7 @@ const AddEmployee = () => {
     });
 
     const [companies, setCompanies] = useState([]);
+    const [customers, setCustomers] = useState([]); // State for customers
     const [successMessage, setSuccessMessage] = useState("");
     const [showPopup, setShowPopup] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
@@ -44,12 +46,33 @@ const AddEmployee = () => {
                 console.error("Error fetching companies:", error);
             }
         };
+
+        const fetchCustomers = async () => {
+            try {
+                const response = await axios.get("http://192.168.4.183:8000/api/employee/details/api/customers/");
+                setCustomers(response.data);
+                console.log("Customers data:", response.data); // Inspect the data
+            } catch (error) {
+                console.error("Error fetching customers:", error);
+            }
+        };
+
         fetchCompanies();
+        fetchCustomers();
     }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
+    };
+
+    const handleCustomerChange = (e) => {
+        const selectedOptions = Array.from(e.target.selectedOptions).map(option => option.value);
+        console.log("Selected Customer IDs:", selectedOptions); // Add this line
+        setFormData(prevState => ({
+            ...prevState,
+            customer: selectedOptions,
+        }));
     };
 
     const handleFileChange = (e) => {
@@ -62,7 +85,12 @@ const AddEmployee = () => {
         Object.keys(formData).forEach((key) => {
             if (key === "image1" && formData[key]) {
                 employeeFormData.append(key, formData[key], formData[key].name);
-            } else {
+            } else if (key === "customer") {
+                formData[key].forEach(customerId => {
+                    employeeFormData.append(key, customerId);
+                });
+            }
+             else {
                 employeeFormData.append(key, formData[key]);
             }
         });
@@ -85,6 +113,7 @@ const AddEmployee = () => {
                 reference_phone: "",
                 job_title: "",
                 department: "",
+                customer: [],
                 company: "",
                 salary: "",
                 reporting_leader: "",
@@ -152,7 +181,8 @@ const AddEmployee = () => {
             gap: "20px",
         },
         label: { display: "block", marginBottom: "5px" },
-        fileInput: { padding: "10px", border: "1px solid #ddd", marginBottom: "10px" }
+        fileInput: { padding: "10px", border: "1px solid #ddd", marginBottom: "10px" },
+        selectMultiple: { width: "100%", padding: "8px", marginBottom: "10px", border: "1px solid #ddd", borderRadius: "4px", height: '80px' },
     };
 
     const sidebarStyle = {
@@ -193,6 +223,15 @@ const AddEmployee = () => {
                         { name: "job_title", label: "Job Title" },
                         { name: "department", label: "Department" },
                         {
+                            name: "customer",
+                            label: "Customer",
+                            type: "select-multiple",
+                            options: customers.map((c) => ({
+                                label: c.customer_name,
+                                value: c.id, // Keep it as an integer if your Customer model's ID is an integer
+                            })),
+                        },
+                        {
                             name: "company", label: "Company", type: "select", options: companies.map((c) => ({
                                 label: c.company_name,
                                 value: c.id,
@@ -214,12 +253,24 @@ const AddEmployee = () => {
                                     name={name}
                                     onChange={handleChange}
                                     style={styles.input}
-                                    value={formData[name]}
+                                    value={formData[name] || ""}
                                     required={required}
                                 >
                                     <option value="">Select {label}</option>
                                     {options.map((opt, idx) => (
                                         <option key={idx} value={opt.value}>{opt.label}</option>
+                                    ))}
+                                </select>
+                            ) : type === "select-multiple" ? (
+                                <select
+                                    name={name}
+                                    multiple
+                                    onChange={handleCustomerChange}
+                                    style={styles.selectMultiple}
+                                    value={formData[name]}
+                                >
+                                    {options && options.map((opt) => (
+                                        <option key={opt.value} value={opt.value}>{opt.label}</option>
                                     ))}
                                 </select>
                             ) : (

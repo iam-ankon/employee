@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getAttendance, addAttendance, updateAttendance, deleteAttendance, getEmployees } from '../api/employeeApi';
+import { getAttendance, addAttendance, updateAttendance, deleteAttendance, getEmployees } from '../../api/employeeApi';
 import Sidebars from './sidebars';
 
 const Attendance = () => {

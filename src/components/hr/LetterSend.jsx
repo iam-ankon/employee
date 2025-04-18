@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getLetterSend, deleteLetterSend } from "../api/employeeApi";
+import { getLetterSend, deleteLetterSend } from "../../api/employeeApi";
 import Sidebars from './sidebars';
 
 const LetterSend = () => {

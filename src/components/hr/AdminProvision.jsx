@@ -1,30 +1,43 @@
 import React, { useState, useEffect } from "react";
-import { getITProvisions, deleteITProvision, updateITProvision, addITProvision } from "../api/employeeApi"; // Adjust according to your file structure
+import { getAdminProvisions, addAdminProvision, updateAdminProvision, deleteAdminProvision } from "../../api/employeeApi";
+import { Link } from "react-router-dom";
 import Sidebars from './sidebars';
 
-const ITProvision = () => {
+const AdminProvision = () => {
   const [provisions, setProvisions] = useState([]);
+  const [filteredProvisions, setFilteredProvisions] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editProvision, setEditProvision] = useState(null);
   const [newProvision, setNewProvision] = useState({
     employee: "",
-    it_equipment: false,
-    laptop: false,
+    bank_account_paper: false,
+    sim_card: false,
+    visiting_card: false,
+    placement: false,
   });
-  const [searchTerm, setSearchTerm] = useState(""); // State for search term
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchProvisions = async () => {
-      const response = await getITProvisions();
+      const response = await getAdminProvisions();
       setProvisions(response.data);
+      setFilteredProvisions(response.data);
     };
     fetchProvisions();
   }, []);
 
+  useEffect(() => {
+    const filterProvisions = provisions.filter((provision) =>
+      provision.employee.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredProvisions(filterProvisions);
+  }, [searchQuery, provisions]);
+
   const handleDelete = async (id) => {
-    await deleteITProvision(id);
+    await deleteAdminProvision(id);
     setProvisions(provisions.filter((provision) => provision.id !== id));
+    setFilteredProvisions(filteredProvisions.filter((provision) => provision.id !== id));
   };
 
   const handleEdit = (provision) => {
@@ -39,14 +52,19 @@ const ITProvision = () => {
 
   const handleAddModalClose = () => {
     setIsAddModalOpen(false);
-    setNewProvision({ employee: "", it_equipment: false, laptop: false });
+    setNewProvision({ employee: "", bank_account_paper: false, sim_card: false, visiting_card: false, placement: false });
   };
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
-    await updateITProvision(editProvision.id, editProvision);
+    await updateAdminProvision(editProvision.id, editProvision);
     setProvisions(
       provisions.map((item) =>
+        item.id === editProvision.id ? editProvision : item
+      )
+    );
+    setFilteredProvisions(
+      filteredProvisions.map((item) =>
         item.id === editProvision.id ? editProvision : item
       )
     );
@@ -56,10 +74,11 @@ const ITProvision = () => {
 
   const handleAddSubmit = async (e) => {
     e.preventDefault();
-    const response = await addITProvision(newProvision);
+    const response = await addAdminProvision(newProvision);
     setProvisions([...provisions, response.data]);
+    setFilteredProvisions([...filteredProvisions, response.data]);
     setIsAddModalOpen(false);
-    setNewProvision({ employee: "", it_equipment: false, laptop: false });
+    setNewProvision({ employee: "", bank_account_paper: false, sim_card: false, visiting_card: false, placement: false });
   };
 
   const handleInputChange = (e) => {
@@ -76,17 +95,13 @@ const ITProvision = () => {
       });
     }
   };
-
-  // Filter provisions based on search term
-  const filteredProvisions = provisions.filter((provision) =>
-    provision.employee.toLowerCase().includes(searchTerm.toLowerCase())
-  );
   const containerStyle = {
     display: "flex",
     fontFamily: "Segoe UI, sans-serif",
     backgroundColor: "#f4f6f9",
     minHeight: "100vh",
   };
+
 
   return (
     <div style={containerStyle}>
@@ -96,47 +111,34 @@ const ITProvision = () => {
           {/* Your page content here */}
         </div>
       </div>
-      <div className="it-provision-container">
-        <h2 className="heading">IT Provision</h2>
-
-        {/* Search Bar */}
-        <input
-          type="text"
-          placeholder="Search by employee name"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)} // Update search term
-          className="search-bar"
-        />
-
+      <div className="main-content">
+        <h2 className="heading">Admin Provision</h2>
+        <div className="search-bar">
+          <input
+            type="text"
+            placeholder="Search by employee name"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
         <button
           onClick={() => setIsAddModalOpen(true)}
           className="add-button"
         >
           Add New Provision
         </button>
-
         <div className="card-container">
           {filteredProvisions.map((provision) => (
             <div key={provision.id} className="card">
-              <h3 className="employee-name">{provision.employee}</h3>
-              <p className="provision-details">
-                ID Card: {provision.it_equipment ? "Yes" : "No"}
-              </p>
-              <p className="provision-details">
-                Laptop Provided: {provision.laptop ? "Yes" : "No"}
-              </p>
-              <button
-                onClick={() => handleEdit(provision)}
-                className="edit-button"
-              >
-                Edit
-              </button>
-              <button
-                onClick={() => handleDelete(provision.id)}
-                className="delete-button"
-              >
-                Delete
-              </button>
+              <h3>{provision.employee}</h3>
+              <p>Bank Account Paper: {provision.bank_account_paper ? "Yes" : "No"}</p>
+              <p>SIM Card: {provision.sim_card ? "Yes" : "No"}</p>
+              <p>Visiting Card: {provision.visiting_card ? "Yes" : "No"}</p>
+              <p>Placement: {provision.placement ? "Yes" : "No"}</p>
+              <div className="button-container">
+                <button onClick={() => handleEdit(provision)} className="edit-button">Edit</button>
+                <button onClick={() => handleDelete(provision.id)} className="delete-button">Delete</button>
+              </div>
             </div>
           ))}
         </div>
@@ -145,7 +147,7 @@ const ITProvision = () => {
         {isModalOpen && editProvision && (
           <div className="modal">
             <div className="modal-content">
-              <h3>Edit IT Provision</h3>
+              <h3>Edit Admin Provision</h3>
               <form onSubmit={handleEditSubmit}>
                 <label>
                   Employee Name:
@@ -157,37 +159,53 @@ const ITProvision = () => {
                   />
                 </label>
                 <label>
-                  ID Card:
+                  Bank Account Paper:
                   <input
                     type="checkbox"
-                    name="it_equipment"
-                    checked={editProvision.it_equipment || false}
+                    name="bank_account_paper"
+                    checked={editProvision.bank_account_paper || false}
                     onChange={handleInputChange}
                   />
                 </label>
                 <label>
-                  Laptop Provided:
+                  SIM Card:
                   <input
                     type="checkbox"
-                    name="laptop"
-                    checked={editProvision.laptop || false}
+                    name="sim_card"
+                    checked={editProvision.sim_card || false}
+                    onChange={handleInputChange}
+                  />
+                </label>
+                <label>
+                  Visiting Card:
+                  <input
+                    type="checkbox"
+                    name="visiting_card"
+                    checked={editProvision.visiting_card || false}
+                    onChange={handleInputChange}
+                  />
+                </label>
+                <label>
+                  Placement:
+                  <input
+                    type="checkbox"
+                    name="placement"
+                    checked={editProvision.placement || false}
                     onChange={handleInputChange}
                   />
                 </label>
                 <button type="submit">Save Changes</button>
-                <button type="button" onClick={handleModalClose}>
-                  Close
-                </button>
+                <button type="button" onClick={handleModalClose}>Close</button>
               </form>
             </div>
           </div>
         )}
 
-        {/* Add New IT Provision Modal */}
+        {/* Add New Admin Provision Modal */}
         {isAddModalOpen && (
           <div className="modal">
             <div className="modal-content">
-              <h3>Add New IT Provision</h3>
+              <h3>Add New Admin Provision</h3>
               <form onSubmit={handleAddSubmit}>
                 <label>
                   Employee Name:
@@ -199,27 +217,43 @@ const ITProvision = () => {
                   />
                 </label>
                 <label>
-                  ID Card:
+                  Bank Account Paper:
                   <input
                     type="checkbox"
-                    name="it_equipment"
-                    checked={newProvision.it_equipment}
+                    name="bank_account_paper"
+                    checked={newProvision.bank_account_paper}
                     onChange={handleInputChange}
                   />
                 </label>
                 <label>
-                  Laptop Provided:
+                  SIM Card:
                   <input
                     type="checkbox"
-                    name="laptop"
-                    checked={newProvision.laptop}
+                    name="sim_card"
+                    checked={newProvision.sim_card}
+                    onChange={handleInputChange}
+                  />
+                </label>
+                <label>
+                  Visiting Card:
+                  <input
+                    type="checkbox"
+                    name="visiting_card"
+                    checked={newProvision.visiting_card}
+                    onChange={handleInputChange}
+                  />
+                </label>
+                <label>
+                  Placement:
+                  <input
+                    type="checkbox"
+                    name="placement"
+                    checked={newProvision.placement}
                     onChange={handleInputChange}
                   />
                 </label>
                 <button type="submit">Add Provision</button>
-                <button type="button" onClick={handleAddModalClose}>
-                  Close
-                </button>
+                <button type="button" onClick={handleAddModalClose}>Close</button>
               </form>
             </div>
           </div>
@@ -227,48 +261,34 @@ const ITProvision = () => {
 
         {/* CSS Styling */}
         <style jsx>{`
-        .it-provision-container {
+        .main-content {
           display: flex;
           flex-direction: column;
-          align-items: center;
           padding: 40px;
           background-color: #f4f7fc;
-          min-height: 100vh;
           font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          align-items: center;
         }
-
         .heading {
           font-size: 2.5rem;
           margin-bottom: 30px;
           font-weight: bold;
           color: #0078d4;
           text-align: center;
-        }
-
-        .add-button {
-          background-color: #28a745;
-          color: white;
-          padding: 10px 20px;
-          font-size: 1rem;
-          border: none;
-          border-radius: 4px;
-          cursor: pointer;
-          margin-bottom: 30px;
-          transition: background-color 0.3s ease;
-        }
-
-        .add-button:hover {
-          background-color: #218838;
-        }
+        }  
 
         .search-bar {
-          padding: 10px;
           margin-bottom: 20px;
           width: 100%;
           max-width: 500px;
+        }
+
+        .search-bar input {
+          width: 100%;
+          padding: 10px;
+          font-size: 1rem;
           border-radius: 4px;
           border: 1px solid #ccc;
-          font-size: 1rem;
         }
 
         .card-container {
@@ -292,55 +312,61 @@ const ITProvision = () => {
           align-items: center;
           justify-content: space-between;
         }
-
+         
         .card:hover {
           transform: translateY(-10px);
           box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
         }
 
-        .employee-name {
-          font-size: 1.2rem;
-          font-weight: bold;
-          color: #333;
-          margin-bottom: 10px;
-        }
-
-        .provision-details {
-          font-size: 1rem;
-          color: #555;
-          margin: 5px 0;
-        }
-
-        .edit-button,
-        .delete-button {
-          margin-top: 10px;
-          padding: 8px 16px;
+        .add-button {
+          background-color: #28a745;
+          color: white;
+          padding: 10px 20px;
           font-size: 1rem;
           border: none;
           border-radius: 4px;
           cursor: pointer;
-          transition: background-color 0.3s ease;
+          margin-bottom: 20px;
+        }
+
+        .add-button:hover {
+          background-color: #218838;
+        }
+
+        .button-container {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          width: 100%;
+          align-items: center;
         }
 
         .edit-button {
-          background-color: #f0ad4e;
+          background-color: #fbc02d; /* Yellow */
           color: white;
+          padding: 8px 16px;
+          border-radius: 4px;
+          border: none;
+          cursor: pointer;
         }
 
         .edit-button:hover {
-          background-color: #ec971f;
+          background-color: #f9a825; /* Darker Yellow */
         }
 
         .delete-button {
-          background-color: #d9534f;
+          background-color: #e57373; /* Red */
           color: white;
+          padding: 8px 16px;
+          border-radius: 4px;
+          border: none;
+          cursor: pointer;
         }
 
         .delete-button:hover {
-          background-color: #c9302c;
+          background-color: #d32f2f; /* Darker Red */
         }
 
-        /* Modal Styling */
         .modal {
           position: fixed;
           top: 0;
@@ -351,6 +377,7 @@ const ITProvision = () => {
           display: flex;
           justify-content: center;
           align-items: center;
+          overflow-y: auto;
         }
 
         .modal-content {
@@ -358,7 +385,8 @@ const ITProvision = () => {
           padding: 20px;
           border-radius: 8px;
           width: 400px;
-          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+          max-height: 80%;
+          overflow-y: auto;
         }
 
         .modal-content form {
@@ -366,13 +394,8 @@ const ITProvision = () => {
           flex-direction: column;
         }
 
-        .modal-content form label {
-          margin-bottom: 10px;
-          font-weight: bold;
-        }
-
         .modal-content form input {
-          margin-bottom: 15px;
+          margin-bottom: 10px;
           padding: 8px;
           font-size: 1rem;
           border-radius: 4px;
@@ -402,4 +425,4 @@ const ITProvision = () => {
   );
 };
 
-export default ITProvision;
+export default AdminProvision;
