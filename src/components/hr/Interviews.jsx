@@ -1385,7 +1385,7 @@ const Interviews = () => {
             />
           </div>
           <div>
-            <label>Recommendation</label>
+            <label>HR Recommendation</label>
             <input
               type="text"
               name="recommendation"

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiMenu } from "react-icons/fi";
+import { FiUsers, FiCalendar, FiMail, FiFileText, FiDollarSign, FiTerminal, FiSend, FiLogOut, FiPieChart, FiBriefcase, FiClock, FiHome } from 'react-icons/fi';
 
 const Sidebar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Sidebar state (open/close)
@@ -14,11 +15,18 @@ const Sidebar = () => {
     navigate('/hr-work');
   };
 
+  const handleMerchandiserClick = () => {
+    navigate('/hr-work');
+  };
+
   // Navigate to the Dashboard page
   const handleDashboardClick = () => {
     navigate('/dashboard');
   };
 
+  const iconStyle = {
+    marginRight: '0.75rem',
+  };
   // Handle Logout
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -69,7 +77,14 @@ const Sidebar = () => {
           onClick={handleHRWorkClick}
           className="hr-work-btn"
         >
-          🧑‍💼 HR Work
+          <FiUsers style={iconStyle} />
+           Human Resource
+        </button>
+        <button
+          onClick={handleMerchandiserClick}
+          className="hr-work-btn"
+        >
+          Merchandiser
         </button>
       </div>
 
@@ -89,7 +104,8 @@ const Sidebar = () => {
           onClick={handleLogout}
           className="logout-button"
         >
-          🚪 Logout
+          <FiLogOut style={iconStyle} />
+           Logout
         </button>
       </div>
 

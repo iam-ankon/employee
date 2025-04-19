@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useParams, Link } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import Sidebars from './sidebars';
 
@@ -20,7 +20,7 @@ const EditEmployeePage = () => {
     reference_phone: "",
     job_title: "",
     department: "",
-    customer: [], // Initialize as an empty array for multi-select
+    customer: [],
     company: "",
     salary: "",
     reporting_leader: "",
@@ -31,51 +31,39 @@ const EditEmployeePage = () => {
   });
 
   const [companies, setCompanies] = useState([]);
-  const [customers, setCustomers] = useState([]); // State for customers
+  const [customers, setCustomers] = useState([]);
   const [imagePreview, setImagePreview] = useState(null);
 
   useEffect(() => {
-    const fetchEmployee = async () => {
+    const fetchData = async () => {
       try {
-        const res = await axios.get(`http://192.168.4.183:8000/api/employee/details/api/employees/${id}/`);
-        const emp = res.data;
+        const [employeeRes, companiesRes, customersRes] = await Promise.all([
+          axios.get(`http://192.168.4.183:8000/api/employee/details/api/employees/${id}/`),
+          axios.get("http://192.168.4.183:8000/api/employee/details/api/tad_groups/"),
+          axios.get("http://192.168.4.183:8000/api/employee/details/api/customers/")
+        ]);
+
+        const emp = employeeRes.data;
+        const customerIds = emp.customer ? emp.customer.map(c => c.id) : [];
+
         setEmployee({
           ...emp,
           company: emp.company?.id || emp.company,
-          customer: emp.customer.map(c => c.id), // Extract customer IDs
+          customer: customerIds,
         });
+
+        setCompanies(companiesRes.data);
+        setCustomers(customersRes.data);
+
         if (emp.image1) {
-          const imageUrl = emp.image1;
-          setImagePreview(imageUrl);
-        } else {
-          setImagePreview(null);
+          setImagePreview(emp.image1);
         }
       } catch (err) {
-        console.error("Error fetching employee details", err);
+        console.error("Error fetching data:", err);
       }
     };
 
-    const fetchCompanies = async () => {
-      try {
-        const res = await axios.get("http://192.168.4.183:8000/api/employee/details/api/tad_groups/");
-        setCompanies(res.data);
-      } catch (err) {
-        console.error("Error fetching companies", err);
-      }
-    };
-
-    const fetchCustomers = async () => {
-      try {
-        const res = await axios.get("http://192.168.4.183:8000/api/employee/details/api/customers/");
-        setCustomers(res.data);
-      } catch (err) {
-        console.error("Error fetching customers", err);
-      }
-    };
-
-    fetchEmployee();
-    fetchCompanies();
-    fetchCustomers();
+    fetchData();
   }, [id]);
 
   const handleChange = (e) => {
@@ -88,45 +76,49 @@ const EditEmployeePage = () => {
           setImagePreview(reader.result);
         };
         reader.readAsDataURL(files[0]);
-        setEmployee((prev) => ({ ...prev, [name]: files[0] }));
-      } else {
-        setImagePreview(null);
-        setEmployee((prev) => ({ ...prev, [name]: null }));
+        setEmployee(prev => ({ ...prev, [name]: files[0] }));
       }
     } else {
-      setEmployee((prev) => ({ ...prev, [name]: value }));
+      setEmployee(prev => ({ ...prev, [name]: value }));
     }
   };
 
-  const handleCustomerChange = (e) => {
-    const selectedOptions = Array.from(e.target.selectedOptions).map(option => option.value);
-    setEmployee(prev => ({ ...prev, customer: selectedOptions }));
+  const handleCustomerCheckboxChange = (customerId) => {
+    setEmployee(prev => {
+      const newCustomers = prev.customer.includes(customerId)
+        ? prev.customer.filter(id => id !== customerId)
+        : [...prev.customer, customerId];
+      return { ...prev, customer: newCustomers };
+    });
   };
 
   const handleSubmit = async () => {
     try {
       const formData = new FormData();
 
+      // Append all fields except customer and image1
       Object.keys(employee).forEach((key) => {
-        if (key === "customer") {
-          employee[key].forEach(customerId => {
-            formData.append(key, customerId);
-          });
-        } else if (key !== "image1") {
-          if (employee[key] !== null && employee[key] !== undefined) {
-            formData.append(key, employee[key]);
-          }
+        if (key !== 'customer' && key !== 'image1' && employee[key] !== null && employee[key] !== undefined) {
+          formData.append(key, employee[key]);
         }
       });
 
-      if (typeof employee.image1 === "object" && employee.image1 !== null) {
-        formData.append("image1", employee.image1);
+      // Handle image
+      if (employee.image1 && typeof employee.image1 === 'object') {
+        formData.append('image1', employee.image1);
       }
 
+      // First update the employee
       await axios.put(
         `http://192.168.4.183:8000/api/employee/details/api/employees/${id}/`,
         formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
+        { headers: { 'Content-Type': 'multipart/form-data' } }
+      );
+
+      // Then update customers separately
+      await axios.patch(
+        `http://192.168.4.183:8000/api/employee/details/api/employees/${id}/update_customers/`,
+        { customers: employee.customer }
       );
 
       navigate(`/employee/${id}`);
@@ -220,6 +212,78 @@ const EditEmployeePage = () => {
     marginBottom: "10px",
   };
 
+  const checkboxContainerStyle = {
+    display: "flex",
+    flexDirection: "column",
+    gap: "1px",
+    maxHeight: "100px",
+    overflowY: "auto",
+    padding: "12px",
+    border: "1px solid #e2e8f0",
+    borderRadius: "8px",
+    backgroundColor: "#f8fafc",
+  };
+  
+  const checkboxItemStyle = {
+    display: "flex",
+    alignItems: "center",
+    gap: "12px",
+    padding: "8px",
+    borderRadius: "6px",
+    transition: "all 0.2s ease",
+    ":hover": {
+      backgroundColor: "#edf2f7",
+    },
+  };
+  
+  const checkboxInputStyle = {
+    position: "absolute",
+    opacity: 0,
+    height: 0,
+    width: 0,
+  };
+  
+  const customCheckboxStyle = {
+    width: "18px",
+    height: "18px",
+    border: "2px solid #cbd5e0",
+    borderRadius: "4px",
+    backgroundColor: "white",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    transition: "all 0.2s ease",
+    cursor: "pointer",
+  };
+  
+  const checkedStyle = {
+    backgroundColor: "#3182ce",
+    borderColor: "#3182ce",
+  };
+  
+  const checkmarkStyle = {
+    width: "5px",
+    height: "10px",
+    border: "solid white",
+    borderWidth: "0 2px 2px 0",
+    transform: "rotate(45deg)",
+    opacity: 0,
+    transition: "opacity 0.2s ease",
+  };
+  
+  const checkedCheckmarkStyle = {
+    opacity: 1,
+  };
+  
+  const checkboxLabelStyle = {
+    cursor: "pointer",
+    fontSize: "14px",
+    color: "#4a5568",
+    userSelect: "none",
+    marginLeft: "8px",
+  };
+
+
   return (
     <div style={containerStyle}>
       <div style={{ display: 'flex' }}>
@@ -282,21 +346,30 @@ const EditEmployeePage = () => {
               <input type="text" style={inputStyle} id="department" name="department" value={employee.department} onChange={handleChange} />
             </div>
             <div style={formGroupStyle}>
-              <label style={labelStyle} htmlFor="customer">Customer</label>
-              <select
-                style={{ ...selectStyle, height: '80px' }}
-                id="customer"
-                name="customer"
-                multiple
-                value={employee.customer}
-                onChange={handleCustomerChange}
-              >
+              <label style={labelStyle}>Customers</label>
+              <div style={checkboxContainerStyle}>
                 {customers.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.customer_name}
-                  </option>
+                  <label key={c.id} style={checkboxItemStyle}>
+                    <input
+                      type="checkbox"
+                      id={`customer-${c.id}`}
+                      checked={employee.customer.includes(c.id)}
+                      onChange={() => handleCustomerCheckboxChange(c.id)}
+                      style={checkboxInputStyle}
+                    />
+                    <span style={{
+                      ...customCheckboxStyle,
+                      ...(employee.customer.includes(c.id) ? checkedStyle : {})
+                    }}>
+                      <span style={{
+                        ...checkmarkStyle,
+                        ...(employee.customer.includes(c.id) ? checkedCheckmarkStyle : {})
+                      }}></span>
+                    </span>
+                    <span style={checkboxLabelStyle}>{c.customer_name}</span>
+                  </label>
                 ))}
-              </select>
+              </div>
             </div>
             <div style={formGroupStyle}>
               <label style={labelStyle} htmlFor="salary">Salary</label>

@@ -2,26 +2,31 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getEmployees, deleteEmployee } from "../../api/employeeApi";
 import Sidebars from './sidebars';
+import { FaPlus, FaPrint, FaTrash, FaPaperclip, FaSearch } from "react-icons/fa";
 
 const EmployeeDetails = () => {
   const [employees, setEmployees] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
-  const employeesPerPage = 5;
+  const employeesPerPage = 10;
 
   useEffect(() => {
+    const fetchEmployees = async () => {
+      try {
+        setLoading(true);
+        const response = await getEmployees();
+        setEmployees(response.data);
+      } catch (error) {
+        console.error("Error fetching employees", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchEmployees();
   }, []);
-
-  const fetchEmployees = async () => {
-    try {
-      const response = await getEmployees();
-      setEmployees(response.data);
-    } catch (error) {
-      console.error("Error fetching employees", error);
-    }
-  };
 
   const handleRowClick = (id) => {
     navigate(`/employee/${id}`);
@@ -40,15 +45,69 @@ const EmployeeDetails = () => {
   };
 
   const handlePrint = () => {
-    window.print();
+    const printWindow = window.open('', '', 'width=800,height=600');
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Employee List</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            h1 { color: #0078d4; text-align: center; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th { background-color: #0078d4; color: white; padding: 10px; text-align: left; }
+            td { padding: 8px; border-bottom: 1px solid #ddd; }
+            tr:nth-child(even) { background-color: #f2f2f2; }
+            .print-footer { margin-top: 20px; text-align: right; font-size: 12px; }
+          </style>
+        </head>
+        <body>
+          <h1>Employee List</h1>
+          <table>
+            <thead>
+              <tr>
+                <th>Employee ID</th>
+                <th>Name</th>
+                <th>Designation</th>
+                <th>Department</th>
+                <th>Company</th>
+                <th>Salary</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${filteredEmployees.map(employee => `
+                <tr>
+                  <td>${employee.employee_id || ''}</td>
+                  <td>${employee.name || ''}</td>
+                  <td>${employee.designation || ''}</td>
+                  <td>${employee.department || ''}</td>
+                  <td>${employee.company_name || ''}</td>
+                  <td>${employee.salary ? '$' + employee.salary : ''}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+          <div class="print-footer">
+            Printed on ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}
+          </div>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.focus();
+    setTimeout(() => {
+      printWindow.print();
+      printWindow.close();
+    }, 500);
   };
+
 
   const filteredEmployees = employees.filter(
     (employee) =>
-      employee.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      employee.employee_id.toString().includes(searchQuery) ||
-      employee.designation.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      employee.department.toLowerCase().includes(searchQuery.toLowerCase())
+      employee.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      employee.employee_id?.toString().includes(searchQuery) ||
+      employee.designation?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      employee.department?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      employee.company_name?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const indexOfLastEmployee = currentPage * employeesPerPage;
@@ -58,225 +117,407 @@ const EmployeeDetails = () => {
 
   const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
 
-  const containerStyle = {
-    display: "flex",
-    minHeight: "100vh",
-    fontFamily: "Segoe UI, Tahoma, Geneva, Verdana, sans-serif",
-    backgroundColor: "#f3f4f6"
-  };
-
-  const mainContentStyle = {
-    flex: 1,
-    padding: "30px",
-    overflowY: "auto"
-  };
-
-  const headerStyle = {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: "20px"
-  };
-
-  const inputGroupStyle = {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "flex-start",
-    gap: "10px",
-    marginBottom: "20px"
-  };
-
-  const searchInputStyle = {
-    padding: "10px",
-    width: "250px",
-    border: "1px solid #ccc",
-    borderRadius: "6px",
-    fontSize: "14px"
-  };
-
-  const buttonStyle = {
-    padding: "10px 16px",
-    border: "none",
-    borderRadius: "6px",
-    fontWeight: "bold",
-    cursor: "pointer",
-    transition: "0.3s ease"
-  };
-
-  const addButton = {
-    ...buttonStyle,
-    backgroundColor: "#0078d4",
-    color: "#fff"
-  };
-
-  const printButton = {
-    ...buttonStyle,
-    backgroundColor: "#107c10",
-    color: "#fff"
-  };
-
-  const tableStyle = {
-    width: "100%",
-    borderCollapse: "collapse",
-    marginTop: "20px",
-    borderRadius: "10px",
-    overflow: "hidden",
-    boxShadow: "0 0 10px rgba(0,0,0,0.05)",
-    backgroundColor: "#fff"
-  };
-
-  const thStyle = {
-    backgroundColor: "#0078d4",
-    color: "white",
-    padding: "14px",
-    textAlign: "left",
-    position: "sticky",
-    top: 0,
-    zIndex: 1
-  };
-
-  const tdStyle = {
-    padding: "14px",
-    borderBottom: "1px solid #eee",
-    backgroundColor: "#fff"
-  };
-
-  const rowHoverStyle = {
-    cursor: "pointer",
-    transition: "background-color 0.2s ease"
-  };
-
-  const actionBtn = {
-    ...buttonStyle,
-    fontSize: "13px",
-    padding: "6px 12px",
-    marginRight: "6px"
-  };
-
-  const deleteBtn = {
-    ...actionBtn,
-    backgroundColor: "#e53935",
-    color: "#fff"
-  };
-
-  const attachmentBtn = {
-    ...actionBtn,
-    backgroundColor: "#5f6368",
-    color: "#fff"
-  };
-
-  const paginationStyle = {
-    display: "flex",
-    justifyContent: "center",
-    marginTop: "20px"
-  };
-
-  const pageBtn = {
-    ...buttonStyle,
-    backgroundColor: "#fff",
-    border: "1px solid #ccc",
-    color: "#333"
-  };
-
-  const activePageBtn = {
-    ...pageBtn,
-    backgroundColor: "#0078d4",
-    color: "#fff",
-    borderColor: "#0078d4"
-  };
+  if (loading) return <div className="loading-spinner">Loading...</div>;
 
   return (
-    <div style={containerStyle}>
-      <Sidebars />
+    <div className="employee-list-container">
+      <div className="sidebar-wrapper">
+        <Sidebars />
+        <div className="content-wrapper">
+          <div className="employee-list-card">
+            <div className="employee-header">
+              <h2>Employee Directory</h2>
+              <div className="action-buttons">
+                <button 
+                  onClick={() => navigate("/add-employee")} 
+                  className="btn-add"
+                >
+                  <FaPlus /> Add Employee
+                </button>
+                <button 
+                  onClick={handlePrint} 
+                  className="btn-print"
+                >
+                  <FaPrint /> Print
+                </button>
+              </div>
+            </div>
 
-      <div style={mainContentStyle}>
-        <div style={headerStyle}>
-          <h2 style={{ margin: 0 }}>Employee Details</h2>
-        </div>
+            <div className="search-container">
+              <div className="search-input">
+                <FaSearch className="search-icon" />
+                <input
+                  type="text"
+                  placeholder="Search employees..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+            </div>
 
-        <div style={inputGroupStyle}>
-          {/* Search input on top */}
-          <input
-            type="text"
-            placeholder="Search employees..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            style={searchInputStyle}
-          />
+            <div className="table-responsive">
+              <table className="employee-table">
+                <thead>
+                  <tr>
+                    <th>Employee ID</th>
+                    <th>Name</th>
+                    <th>Designation</th>
+                    <th>Department</th>
+                    <th>Company</th>
+                    <th>Salary</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentEmployees.length > 0 ? (
+                    currentEmployees.map((employee) => (
+                      <tr 
+                        key={employee.id} 
+                        onClick={() => handleRowClick(employee.id)}
+                        className="employee-row"
+                      >
+                        <td>{employee.employee_id}</td>
+                        <td>{employee.name}</td>
+                        <td>{employee.designation}</td>
+                        <td>{employee.department}</td>
+                        <td>{employee.company_name}</td>
+                        <td>${employee.salary}</td>
+                        <td className="action-buttons-cell">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(`/employee/${employee.id}/attachments`);
+                            }}
+                            className="btn-attachment"
+                          >
+                            <FaPaperclip /> Attach
+                          </button>
+                          <button
+                            onClick={(e) => handleDelete(employee.id, e)}
+                            className="btn-delete"
+                          >
+                            <FaTrash /> Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="7" className="no-results">
+                        No employees found matching your search criteria
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
 
-          {/* Buttons row below search */}
-          <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-            <button style={addButton} onClick={() => navigate("/add-employee")}>
-              + Add Employee
-            </button>
-            <button style={printButton} onClick={handlePrint}>
-              🖨️ Print All
-            </button>
+            {totalPages > 1 && (
+              <div className="pagination">
+                {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNumber) => (
+                  <button
+                    key={pageNumber}
+                    onClick={() => handlePageChange(pageNumber)}
+                    className={`page-btn ${currentPage === pageNumber ? 'active' : ''}`}
+                  >
+                    {pageNumber}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
-
-
-        <table style={tableStyle}>
-          <thead>
-            <tr>
-              <th style={thStyle}>Employee ID</th>
-              <th style={thStyle}>Name</th>
-              <th style={thStyle}>Designation</th>
-              <th style={thStyle}>Department</th>
-              <th style={thStyle}>Company</th>
-              <th style={thStyle}>Salary</th>
-              <th style={thStyle}>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentEmployees.map((employee) => (
-              <tr
-                key={employee.id}
-                onClick={() => handleRowClick(employee.id)}
-                style={rowHoverStyle}
-                onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#f0f4f8")}
-                onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#fff")}
-              >
-                <td style={tdStyle}>{employee.employee_id}</td>
-                <td style={tdStyle}>{employee.name}</td>
-                <td style={tdStyle}>{employee.designation}</td>
-                <td style={tdStyle}>{employee.department}</td>
-                <td style={tdStyle}>{employee.company_name}</td>
-                <td style={tdStyle}>{employee.salary}</td>
-                <td style={tdStyle}>
-                  <button
-                    style={attachmentBtn}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      navigate(`/employee/${employee.id}/attachments`);
-                    }}
-                  >
-                    Attachment
-                  </button>
-                  <button
-                    style={deleteBtn}
-                    onClick={(e) => handleDelete(employee.id, e)}
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        <div style={paginationStyle}>
-          {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNumber) => (
-            <button
-              key={pageNumber}
-              onClick={() => handlePageChange(pageNumber)}
-              style={currentPage === pageNumber ? activePageBtn : pageBtn}
-            >
-              {pageNumber}
-            </button>
-          ))}
-        </div>
       </div>
+
+      <style jsx>{`
+        .employee-list-container {
+          display: flex;
+          min-height: 100vh;
+          background-color: #f5f7fa;
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .sidebar-wrapper {
+          display: flex;
+          width: 100%;
+        }
+
+        .content-wrapper {
+          flex: 1;
+          padding: 2rem;
+          overflow-y: auto;
+        }
+
+        .employee-list-card {
+          background: white;
+          border-radius: 12px;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          padding: 2rem;
+          max-width: 1200px;
+          margin: 0 auto;
+        }
+
+        .employee-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 1.5rem;
+          border-bottom: 1px solid #eaeaea;
+          padding-bottom: 1rem;
+        }
+
+        .employee-header h2 {
+          color: #2c3e50;
+          margin: 0;
+          font-size: 1.8rem;
+        }
+
+        .action-buttons {
+          display: flex;
+          gap: 0.8rem;
+        }
+
+        .action-buttons button {
+          padding: 0.6rem 1rem;
+          border: none;
+          border-radius: 6px;
+          cursor: pointer;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          transition: all 0.2s;
+          font-size: 0.9rem;
+        }
+
+        .btn-add {
+          background-color: #0078d4;
+          color: white;
+        }
+
+        .btn-add:hover {
+          background-color: #005a9e;
+        }
+
+        .btn-print {
+          background-color: #107c10;
+          color: white;
+        }
+
+        .btn-print:hover {
+          background-color: #0e5e0e;
+        }
+
+        .search-container {
+          margin-bottom: 1.5rem;
+        }
+
+        .search-input {
+          position: relative;
+          width: 100%;
+          max-width: 400px;
+        }
+
+        .search-input input {
+          width: 100%;
+          padding: 0.6rem 1rem 0.6rem 2rem;
+          border: 1px solid #ddd;
+          border-radius: 6px;
+          font-size: 0.95rem;
+          transition: border-color 0.2s;
+        }
+
+        .search-input input:focus {
+          outline: none;
+          border-color: #0078d4;
+        }
+
+        .search-icon {
+          position: absolute;
+          left: 0.8rem;
+          top: 50%;
+          transform: translateY(-50%);
+          color: #777;
+        }
+
+        .table-responsive {
+          overflow-x: auto;
+        }
+
+        .employee-table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 1rem;
+          font-size: 0.95rem;
+        }
+
+        .employee-table th {
+          background-color: #0078d4;
+          color: white;
+          padding: 1rem;
+          text-align: left;
+          font-weight: 600;
+          position: sticky;
+          top: 0;
+        }
+
+        .employee-table td {
+          padding: 1rem;
+          border-bottom: 1px solid #eee;
+          color: #333;
+        }
+
+        .employee-row {
+          transition: background-color 0.2s;
+        }
+
+        .employee-row:hover {
+          background-color: #f0f4f8 !important;
+          cursor: pointer;
+        }
+
+        .employee-row:nth-child(even) {
+          background-color: #f9f9f9;
+        }
+
+        .action-buttons-cell {
+          display: flex;
+          gap: 0.5rem;
+        }
+
+        .action-buttons-cell button {
+          padding: 0.4rem 0.8rem;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          font-weight: 500;
+          display: flex;
+          align-items: center;
+          gap: 0.3rem;
+          transition: all 0.2s;
+          font-size: 0.85rem;
+        }
+
+        .btn-attachment {
+          background-color: #5f6368;
+          color: white;
+        }
+
+        .btn-attachment:hover {
+          background-color: #4a4d51;
+        }
+
+        .btn-delete {
+          background-color: #e53935;
+          color: white;
+        }
+
+        .btn-delete:hover {
+          background-color: #c62828;
+        }
+
+        .no-results {
+          text-align: center;
+          padding: 1.5rem;
+          color: #666;
+        }
+
+        .pagination {
+          display: flex;
+          justify-content: center;
+          margin-top: 1.5rem;
+          gap: 0.5rem;
+        }
+
+        .page-btn {
+          padding: 0.5rem 0.8rem;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          background-color: white;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+
+        .page-btn:hover {
+          background-color: #f0f0f0;
+        }
+
+        .page-btn.active {
+          background-color: #0078d4;
+          color: white;
+          border-color: #0078d4;
+        }
+
+        .loading-spinner {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+          font-size: 1.2rem;
+          color: #0078d4;
+        }
+
+        @media print {
+          body {
+            background: white !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+
+          .sidebar-wrapper {
+            display: none;
+          }
+
+          .action-buttons, .btn-delete, .btn-attachment {
+            display: none !important;
+          }
+
+          .employee-list-card {
+            box-shadow: none;
+            padding: 0;
+            max-width: 100%;
+          }
+
+          .employee-table {
+            font-size: 12px;
+          }
+
+          .employee-table th, .employee-table td {
+            padding: 0.5rem;
+          }
+        }
+
+        @media (max-width: 768px) {
+          .content-wrapper {
+            padding: 1rem;
+          }
+
+          .employee-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+          }
+
+          .action-buttons {
+            width: 100%;
+            flex-direction: column;
+          }
+
+          .action-buttons button {
+            width: 100%;
+            justify-content: center;
+          }
+
+          .search-input {
+            max-width: 100%;
+          }
+
+          .action-buttons-cell {
+            flex-direction: column;
+            gap: 0.3rem;
+          }
+        }
+      `}</style>
     </div>
   );
 };

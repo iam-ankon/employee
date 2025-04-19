@@ -25,11 +25,14 @@ const CVList = () => {
     }, []);
 
     const handleDelete = async (id) => {
-        try {
-            await axios.delete(`http://192.168.4.183:8000/api/employee/details/api/CVAdd/${id}/`);
-            setCvs(cvs.filter((cv) => cv.id !== id));
-        } catch (error) {
-            console.error("Error deleting CV:", error);
+        const confirmDelete = window.confirm("Are you sure you want to delete this CV?");
+        if (confirmDelete) {
+            try {
+                await axios.delete(`http://192.168.4.183:8000/api/employee/details/api/CVAdd/${id}/`);
+                setCvs(cvs.filter((cv) => cv.id !== id));
+            } catch (error) {
+                console.error("Error deleting CV:", error);
+            }
         }
     };
 

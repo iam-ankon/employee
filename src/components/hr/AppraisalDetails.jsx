@@ -766,17 +766,17 @@ const styles = {
     //     marginTop: "20px",
     //     marginBottom: "20px" // Add this margin to create space between the promotion container and the button
     // },
-    goBackButton: {
-        backgroundColor: "#0078D4",
-        color: "white",
-        padding: "12px",
-        fontSize: "16px",
-        border: "none",
-        borderRadius: "4px",
-        cursor: "pointer",
-        marginTop: "20px",
-        alignSelf: "center"
-    },
+    // goBackButton: {
+    //     backgroundColor: "#0078D4",
+    //     color: "white",
+    //     padding: "12px",
+    //     fontSize: "16px",
+    //     border: "none",
+    //     borderRadius: "4px",
+    //     cursor: "pointer",
+    //     marginTop: "20px",
+    //     alignSelf: "center"
+    // },
     numberedList: {
         marginTop: "20px",
     },
