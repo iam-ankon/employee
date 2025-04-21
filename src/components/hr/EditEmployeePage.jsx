@@ -44,12 +44,16 @@ const EditEmployeePage = () => {
         ]);
 
         const emp = employeeRes.data;
-        const customerIds = emp.customer ? emp.customer.map(c => c.id) : [];
+
+        // Ensure customer is always an array of IDs (handle both null/undefined and array cases)
+        const customerIds = Array.isArray(emp.customer)
+          ? emp.customer.map(c => typeof c === 'object' ? c.id : c)
+          : [];
 
         setEmployee({
           ...emp,
           company: emp.company?.id || emp.company,
-          customer: customerIds,
+          customer: customerIds, // This should now be a clean array of IDs
         });
 
         setCompanies(companiesRes.data);
@@ -58,6 +62,10 @@ const EditEmployeePage = () => {
         if (emp.image1) {
           setImagePreview(emp.image1);
         }
+
+        // Debug logs
+        console.log("Fetched employee data:", emp);
+        console.log("Processed customer IDs:", customerIds);
       } catch (err) {
         console.error("Error fetching data:", err);
       }
@@ -223,7 +231,7 @@ const EditEmployeePage = () => {
     borderRadius: "8px",
     backgroundColor: "#f8fafc",
   };
-  
+
   const checkboxItemStyle = {
     display: "flex",
     alignItems: "center",
@@ -235,14 +243,14 @@ const EditEmployeePage = () => {
       backgroundColor: "#edf2f7",
     },
   };
-  
+
   const checkboxInputStyle = {
     position: "absolute",
     opacity: 0,
     height: 0,
     width: 0,
   };
-  
+
   const customCheckboxStyle = {
     width: "18px",
     height: "18px",
@@ -255,12 +263,12 @@ const EditEmployeePage = () => {
     transition: "all 0.2s ease",
     cursor: "pointer",
   };
-  
+
   const checkedStyle = {
     backgroundColor: "#3182ce",
     borderColor: "#3182ce",
   };
-  
+
   const checkmarkStyle = {
     width: "5px",
     height: "10px",
@@ -270,11 +278,11 @@ const EditEmployeePage = () => {
     opacity: 0,
     transition: "opacity 0.2s ease",
   };
-  
+
   const checkedCheckmarkStyle = {
     opacity: 1,
   };
-  
+
   const checkboxLabelStyle = {
     cursor: "pointer",
     fontSize: "14px",
@@ -348,27 +356,37 @@ const EditEmployeePage = () => {
             <div style={formGroupStyle}>
               <label style={labelStyle}>Customers</label>
               <div style={checkboxContainerStyle}>
-                {customers.map((c) => (
-                  <label key={c.id} style={checkboxItemStyle}>
-                    <input
-                      type="checkbox"
-                      id={`customer-${c.id}`}
-                      checked={employee.customer.includes(c.id)}
-                      onChange={() => handleCustomerCheckboxChange(c.id)}
-                      style={checkboxInputStyle}
-                    />
-                    <span style={{
-                      ...customCheckboxStyle,
-                      ...(employee.customer.includes(c.id) ? checkedStyle : {})
-                    }}>
+                {customers.map((c) => {
+                  // Ensure we're comparing numbers with numbers or strings with strings
+                  const customerId = c.id;
+                  const isChecked = employee.customer.some(id =>
+                    id.toString() === customerId.toString()
+                  );
+
+                  console.log(`Customer ${c.id} (${c.customer_name}):`, isChecked); // Debug log
+
+                  return (
+                    <label key={c.id} style={checkboxItemStyle}>
+                      <input
+                        type="checkbox"
+                        id={`customer-${c.id}`}
+                        checked={isChecked}
+                        onChange={() => handleCustomerCheckboxChange(c.id)}
+                        style={checkboxInputStyle}
+                      />
                       <span style={{
-                        ...checkmarkStyle,
-                        ...(employee.customer.includes(c.id) ? checkedCheckmarkStyle : {})
-                      }}></span>
-                    </span>
-                    <span style={checkboxLabelStyle}>{c.customer_name}</span>
-                  </label>
-                ))}
+                        ...customCheckboxStyle,
+                        ...(isChecked ? checkedStyle : {})
+                      }}>
+                        <span style={{
+                          ...checkmarkStyle,
+                          ...(isChecked ? checkedCheckmarkStyle : {})
+                        }}></span>
+                      </span>
+                      <span style={checkboxLabelStyle}>{c.customer_name}</span>
+                    </label>
+                  );
+                })}
               </div>
             </div>
             <div style={formGroupStyle}>

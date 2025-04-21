@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import Sidebars from './sidebars';
+
 const EditLeaveRequest = () => {
     const [loading, setLoading] = useState(false);
     const { id } = useParams();
@@ -15,13 +16,19 @@ const EditLeaveRequest = () => {
         company: '',
         personal_phone: '',
         sub_person: '',
+        from_email: '',
         to: '',
+        to_email: '',
+        cc: '',
         date: '',
         start_date: '',
         end_date: '',
         leave_days: '',
         balance: '',
+        whereabouts: '',
+        teamleader: '',
         comment: '',
+        hrcomment: '',
         leave_type: '',
         date_of_joining_after_leave: '',
         actual_date_of_joining: '',
@@ -71,10 +78,17 @@ const EditLeaveRequest = () => {
         margin: '0 auto',
     };
 
-    const formHeaderStyle = {
-        textAlign: 'center',
+    const sectionContainerStyle = {
         marginBottom: '20px',
-        color: '#333',
+        padding: '15px',
+        border: '1px solid #e0e0e0',
+        borderRadius: '6px',
+    };
+
+    const sectionHeaderStyle = {
+        fontWeight: 'bold',
+        marginBottom: '10px',
+        color: '#555',
     };
 
     const formGridStyle = {
@@ -132,96 +146,128 @@ const EditLeaveRequest = () => {
             </div>
             <div style={mainContentStyle}>
                 <div style={formContainerStyle}>
-                    <h2 style={formHeaderStyle}>Edit Leave Request</h2>
-                    <form>
+                    <h2 style={{ textAlign: 'center', marginBottom: '20px', color: '#333' }}>Edit Leave Request</h2>
+
+                    <div style={sectionContainerStyle}>
+                        <h3 style={sectionHeaderStyle}>Employee Information (Read-only)</h3>
                         <div style={formGridStyle}>
                             <div style={formGroupStyle}>
                                 <label style={formLabelStyle}>Employee</label>
-                                <input type="text" name="employee" value={formData.employee_name || ''} onChange={handleChange} style={formInputStyle} readOnly disabled />
+                                <input type="text" name="employee" value={formData.employee_name || ''} style={formInputStyle} readOnly disabled />
                             </div>
                             <div style={formGroupStyle}>
                                 <label style={formLabelStyle}>Employee ID</label>
-                                <input type="text" name="employee_code" value={formData.employee_code ?? ''} onChange={handleChange} style={formInputStyle} readOnly disabled />
+                                <input type="text" name="employee_code" value={formData.employee_code ?? ''} style={formInputStyle} readOnly disabled />
                             </div>
                             <div style={formGroupStyle}>
                                 <label style={formLabelStyle}>Designation</label>
-                                <input type="text" name="designation" value={formData.designation || ''} onChange={handleChange} style={formInputStyle} readOnly disabled />
+                                <input type="text" name="designation" value={formData.designation || ''} style={formInputStyle} readOnly disabled />
                             </div>
                             <div style={formGroupStyle}>
                                 <label style={formLabelStyle}>Email</label>
-                                <input type="email" name="email" value={formData.email || ''} onChange={handleChange} style={formInputStyle} readOnly disabled />
-                            </div>
-                            <div style={formGroupStyle}>
-                                <label style={formLabelStyle}>Joining Date</label>
-                                <input type="date" name="joining_date" value={formData.joining_date || ''} onChange={handleChange} style={formInputStyle} readOnly disabled />
-                            </div>
-                            <div style={formGroupStyle}>
-                                <label style={formLabelStyle}>Department</label>
-                                <input type="text" name="department" value={formData.department || ''} onChange={handleChange} style={formInputStyle} readOnly disabled />
-                            </div>
-                            <div style={formGroupStyle}>
-                                <label style={formLabelStyle}>Company</label>
-                                <input type="text" name="company" value={formData.company_name || ''} onChange={handleChange} style={formInputStyle} readOnly disabled />
-                            </div>
-                            <div style={formGroupStyle}>
-                                <label style={formLabelStyle}>Personal Phone</label>
-                                <input type="text" name="personal_phone" value={formData.personal_phone || ''} onChange={handleChange} style={formInputStyle} readOnly disabled />
-                            </div>
-                            <div style={formGroupStyle}>
-                                <label style={formLabelStyle}>Substitute Person</label>
-                                <input type="text" name="sub_person" value={formData.sub_person || ''} onChange={handleChange} style={formInputStyle} readOnly disabled />
-                            </div>
-                            <div style={formGroupStyle}>
-                                <label style={formLabelStyle}>Date</label>
-                                <input type="date" name="date" value={formData.date || ''} onChange={handleChange} style={formInputStyle} readOnly disabled />
-                            </div>
-                            <div style={formGroupStyle}>
-                                <label style={formLabelStyle}>Start Date</label>
-                                <input type="date" name="start_date" value={formData.start_date || ''} onChange={handleChange} style={formInputStyle} readOnly disabled />
-                            </div>
-                            <div style={formGroupStyle}>
-                                <label style={formLabelStyle}>End Date</label>
-                                <input type="date" name="end_date" value={formData.end_date || ''} onChange={handleChange} style={formInputStyle} readOnly disabled />
-                            </div>
-                            <div style={formGroupStyle}>
-                                <label style={formLabelStyle}>Leave Days</label>
-                                <input type="number" name="leave_days" value={formData.leave_days || ''} onChange={handleChange} style={formInputStyle} readOnly disabled />
-                            </div>
-                            <div style={formGroupStyle}>
-                                <label style={formLabelStyle}>Balance</label>
-                                <input type="number" name="balance" value={formData.balance || ''} onChange={handleChange} style={formInputStyle} readOnly disabled />
-                            </div>
-                            <div style={formGroupStyle}>
-                                <label style={formLabelStyle}>Date of Joining After Leave</label>
-                                <input type="date" name="date_of_joining_after_leave" value={formData.date_of_joining_after_leave || ''} onChange={handleChange} style={formInputStyle} readOnly disabled />
-                            </div>
-                            <div style={formGroupStyle}>
-                                <label style={formLabelStyle}>Actual Date of Joining</label>
-                                <input type="date" name="actual_date_of_joining" value={formData.actual_date_of_joining || ''} onChange={handleChange} style={formInputStyle} readOnly disabled />
-                            </div>
-                            <div style={formGroupStyle}>
-                                <label style={formLabelStyle}>Reason for Delay</label>
-                                <textarea name="reason_for_delay" value={formData.reason_for_delay || ''} onChange={handleChange} style={formTextAreaStyle} readOnly disabled></textarea>
+                                <input type="email" name="email" value={formData.email || ''} style={formInputStyle} readOnly disabled />
                             </div>
                             <div style={formGroupStyle}>
                                 <label style={formLabelStyle}>To</label>
-                                <input type="text" name="to" value={formData.to || ''} onChange={handleChange} style={formInputStyle} />
+                                <input type="text" name="to" value={formData.to || ''} onChange={handleChange} style={formInputStyle} readOnly disabled />
                             </div>
                             <div style={formGroupStyle}>
-                                <label style={formLabelStyle}>Comment</label>
-                                <textarea name="comment" value={formData.comment || ''} onChange={handleChange} style={formTextAreaStyle}></textarea>
+                                <label style={formLabelStyle}>Joining Date</label>
+                                <input type="date" name="joining_date" value={formData.joining_date || ''} style={formInputStyle} readOnly disabled />
+                            </div>
+                            <div style={formGroupStyle}>
+                                <label style={formLabelStyle}>Department</label>
+                                <input type="text" name="department" value={formData.department || ''} style={formInputStyle} readOnly disabled />
+                            </div>
+                            <div style={formGroupStyle}>
+                                <label style={formLabelStyle}>Company</label>
+                                <input type="text" name="company" value={formData.company_name || ''} style={formInputStyle} readOnly disabled />
+                            </div>
+                            <div style={formGroupStyle}>
+                                <label style={formLabelStyle}>Personal Phone</label>
+                                <input type="text" name="personal_phone" value={formData.personal_phone || ''} style={formInputStyle} readOnly disabled />
+                            </div>
+                            <div style={formGroupStyle}>
+                                <label style={formLabelStyle}>Substitute Person</label>
+                                <input type="text" name="sub_person" value={formData.sub_person || ''} style={formInputStyle} readOnly disabled />
+                            </div>
+                            <div style={formGroupStyle}>
+                                <label style={formLabelStyle}>Date</label>
+                                <input type="date" name="date" value={formData.date || ''} style={formInputStyle} readOnly disabled />
+                            </div>
+                            <div style={formGroupStyle}>
+                                <label style={formLabelStyle}>Start Date</label>
+                                <input type="date" name="start_date" value={formData.start_date || ''} style={formInputStyle} readOnly disabled />
+                            </div>
+                            <div style={formGroupStyle}>
+                                <label style={formLabelStyle}>End Date</label>
+                                <input type="date" name="end_date" value={formData.end_date || ''} style={formInputStyle} readOnly disabled />
+                            </div>
+                            <div style={formGroupStyle}>
+                                <label style={formLabelStyle}>Leave Days</label>
+                                <input type="number" name="leave_days" value={formData.leave_days || ''} style={formInputStyle} readOnly disabled />
+                            </div>
+                            <div style={formGroupStyle}>
+                                <label style={formLabelStyle}>Balance</label>
+                                <input type="number" name="balance" value={formData.balance || ''} style={formInputStyle} readOnly disabled />
+                            </div>
+                            <div style={formGroupStyle}>
+                                <label style={formLabelStyle}>Date of Joining After Leave</label>
+                                <input type="date" name="date_of_joining_after_leave" value={formData.date_of_joining_after_leave || ''} style={formInputStyle} readOnly disabled />
+                            </div>
+                            <div style={formGroupStyle}>
+                                <label style={formLabelStyle}>Actual Date of Joining</label>
+                                <input type="date" name="actual_date_of_joining" value={formData.actual_date_of_joining || ''} style={formInputStyle} readOnly disabled />
+                            </div>
+                            <div style={formGroupStyle}>
+                                <label style={formLabelStyle}>Reason for Delay</label>
+                                <textarea name="reason_for_delay" value={formData.reason_for_delay || ''} style={formTextAreaStyle} readOnly disabled></textarea>
+                            </div>
+                            <div style={formGroupStyle}>
+                                <label style={formLabelStyle}>Where abouts</label>
+                                <textarea name="whereabouts" value={formData.whereabouts || ''} style={formTextAreaStyle} readOnly disabled></textarea>
                             </div>
                             <div style={formGroupStyle}>
                                 <label style={formLabelStyle}>Leave Type</label>
-                                <select name="leave_type" value={formData.leave_type || ''} onChange={handleChange} style={formSelectStyle} readOnly disabled>
+                                <select name="leave_type" value={formData.leave_type || ''} style={formSelectStyle} readOnly disabled>
                                     <option value="public_festival_holiday">Public Festival Holiday</option>
                                     <option value="casual_leave">Casual Leave</option>
                                     <option value="sick_leave">Sick Leave</option>
                                     <option value="earned_leave">Earned Leave</option>
                                 </select>
                             </div>
+                        </div>
+                    </div>
+
+                    <div style={sectionContainerStyle}>
+                        <h3 style={sectionHeaderStyle}>Editable Fields (Only by Authority)</h3>
+                        <div style={formGridStyle}>
                             <div style={formGroupStyle}>
-                                <label style={formLabelStyle}>Status</label>
+                                <label style={formLabelStyle}>From Email</label>
+                                <input type="email" name="from_email" value={formData.from_email || ''} onChange={handleChange} style={formInputStyle} />
+                            </div>
+                            <div style={formGroupStyle}>
+                                <label style={formLabelStyle}>To Email</label>
+                                <input type="email" name="to_email" value={formData.to_email || ''} onChange={handleChange} style={formInputStyle} />
+                            </div>
+                            <div style={formGroupStyle}>
+                                <label style={formLabelStyle}>CC</label>
+                                <input type="email" name="cc" value={formData.cc || ''} onChange={handleChange} style={formInputStyle} />
+                            </div>
+                            <div style={formGroupStyle}>
+                                <label style={formLabelStyle}>MD Sir Comment</label>
+                                <textarea name="comment" value={formData.comment || ''} onChange={handleChange} style={formTextAreaStyle}></textarea>
+                            </div>
+                            <div style={formGroupStyle}>
+                                <label style={formLabelStyle}>Team Leader</label>
+                                <textarea type="text" name="teamleader" value={formData.teamleader || ''} onChange={handleChange} style={formInputStyle} ></textarea>
+                            </div>
+                            <div style={formGroupStyle}>
+                                <label style={formLabelStyle}>HR Comment</label>
+                                <textarea name="hrcomment" value={formData.hrcomment || ''} onChange={handleChange} style={formTextAreaStyle}></textarea>
+                            </div>
+                            <div style={formGroupStyle}>
+                                <label style={formLabelStyle}>Only MD Sir Approval</label>
                                 <select name="status" value={formData.status || ''} onChange={handleChange} style={formSelectStyle}>
                                     <option value="pending">Pending</option>
                                     <option value="approved">Approved</option>
@@ -229,8 +275,9 @@ const EditLeaveRequest = () => {
                                 </select>
                             </div>
                         </div>
-                    </form>
-                    <div style={{ textAlign: 'center' }}>
+                    </div>
+
+                    <div style={{ textAlign: 'center', marginTop: '20px' }}>
                         <button type="button" onClick={handleSubmit} style={submitButtonStyle} disabled={loading}>
                             {loading ? 'Updating...' : 'Update'}
                         </button>

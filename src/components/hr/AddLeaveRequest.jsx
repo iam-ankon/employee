@@ -23,7 +23,7 @@ const AddLeaveRequest = () => {
     date: '',
     leave_days: '',
     leave_balance: 0,
-    comment: '',
+    whereabouts: '',
     leave_type: '',
     start_date: '',
     end_date: '',
@@ -212,7 +212,7 @@ const AddLeaveRequest = () => {
               { label: 'End Date', name: 'end_date', type: 'date' },
               { label: 'Leave Days', name: 'leave_days', type: 'number', readOnly: true, value: newLeave.leave_days },
               { label: 'Balance', name: 'balance', type: 'number', readOnly: true, value: newLeave.balance },
-              { label: 'Comment', name: 'comment' },
+              { label: 'Where abouts', name: 'whereabouts' },
               {
                 label: 'Leave Type',
                 name: 'leave_type',
