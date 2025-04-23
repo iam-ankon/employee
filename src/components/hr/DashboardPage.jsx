@@ -88,7 +88,7 @@
 //     const fetchData = async () => {
 //       try {
 //         const response = await fetch(
-//           "http://127.0.0.1:8000/api/employee/details/api/"
+//           "http://127.0.0.1:8000/api/hrms/api/"
 //         );
 //         const data = await response.json();
 

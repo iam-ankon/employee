@@ -34,7 +34,7 @@ const EmployeeDetailPage = () => {
         const names = [];
         for (const customerId of employee.customer) {
           try {
-            const response = await axios.get(`http://192.168.4.183:8000/api/employee/details/api/customers/${customerId}/`);
+            const response = await axios.get(`http://192.168.4.54:8000/api/employee/details/api/customers/${customerId}/`);
             names.push(response.data.customer_name);
           } catch (error) {
             console.error(`Error fetching customer ${customerId}`, error);

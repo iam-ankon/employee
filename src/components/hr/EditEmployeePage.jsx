@@ -38,9 +38,9 @@ const EditEmployeePage = () => {
     const fetchData = async () => {
       try {
         const [employeeRes, companiesRes, customersRes] = await Promise.all([
-          axios.get(`http://192.168.4.183:8000/api/employee/details/api/employees/${id}/`),
-          axios.get("http://192.168.4.183:8000/api/employee/details/api/tad_groups/"),
-          axios.get("http://192.168.4.183:8000/api/employee/details/api/customers/")
+          axios.get(`http://192.168.4.54:8000/api/employee/details/api/employees/${id}/`),
+          axios.get("http://192.168.4.54:8000/api/employee/details/api/tad_groups/"),
+          axios.get("http://192.168.4.54:8000/api/employee/details/api/customers/")
         ]);
 
         const emp = employeeRes.data;
@@ -118,14 +118,14 @@ const EditEmployeePage = () => {
 
       // First update the employee
       await axios.put(
-        `http://192.168.4.183:8000/api/employee/details/api/employees/${id}/`,
+        `http://192.168.4.54:8000/api/employee/details/api/employees/${id}/`,
         formData,
         { headers: { 'Content-Type': 'multipart/form-data' } }
       );
 
       // Then update customers separately
       await axios.patch(
-        `http://192.168.4.183:8000/api/employee/details/api/employees/${id}/update_customers/`,
+        `http://192.168.4.54:8000/api/employee/details/api/employees/${id}/update_customers/`,
         { customers: employee.customer }
       );
 

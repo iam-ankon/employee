@@ -51,7 +51,7 @@ const NewAppraisal = () => {
     e.preventDefault();
     try {
       await axios.post(
-        "http://192.168.4.183:8000/api/employee/details/api/performanse_appraisals/",
+        "http://192.168.4.54:8000/api/employee/details/api/performanse_appraisals/",
         formData
       );
       alert("Appraisal Added Successfully!");

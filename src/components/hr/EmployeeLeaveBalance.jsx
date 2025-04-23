@@ -10,7 +10,7 @@ const EmployeeLeaveBalance = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://192.168.4.183:8000/api/employee/details/api/employee_leave_balances/');
+        const response = await axios.get('http://192.168.4.54:8000/api/employee/details/api/employee_leave_balances/');
         setBalances(response.data);
         setLoading(false);
       } catch (error) {

@@ -15,7 +15,7 @@ const PerformanseAppraisal = () => {
 
   const fetchAppraisals = async () => {
     try {
-      const response = await axios.get("http://192.168.4.183:8000/api/employee/details/api/performanse_appraisals/");
+      const response = await axios.get("http://192.168.4.54:8000/api/employee/details/api/performanse_appraisals/");
       setAppraisals(response.data);
     } catch (error) {
       console.error("Error fetching appraisals:", error);
@@ -26,7 +26,7 @@ const PerformanseAppraisal = () => {
     event.stopPropagation();
     if (window.confirm("Are you sure you want to delete this appraisal?")) {
       try {
-        await axios.delete(`http://192.168.4.183:8000/api/employee/details/api/performanse_appraisals/${id}/`);
+        await axios.delete(`http://192.168.4.54:8000/api/employee/details/api/performanse_appraisals/${id}/`);
         setAppraisals(appraisals.filter((appraisal) => appraisal.id !== id));
       } catch (error) {
         console.error("Error deleting appraisal:", error);

@@ -25,7 +25,7 @@ const EditCVPage = () => {
     const fetchCV = async () => {
       try {
         const response = await axios.get(
-          `http://192.168.4.183:8000/api/employee/details/api/letter_send/${cvId}/`
+          `http://192.168.4.54:8000/api/employee/details/api/letter_send/${cvId}/`
         );
         setCvData(response.data);
       } catch (error) {
@@ -55,7 +55,7 @@ const EditCVPage = () => {
   const updateCVManagement = async (formData) => {
     try {
       const response = await axios.put(
-        `http://192.168.4.183:8000/api/employee/details/api/letter_send/${cvId}/`,
+        `http://192.168.4.54:8000/api/employee/details/api/letter_send/${cvId}/`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );

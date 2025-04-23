@@ -48,7 +48,7 @@ const EditAppraisal = () => {
 
   useEffect(() => {
     axios
-      .get(`http://192.168.4.183:8000/api/employee/details/api/performanse_appraisals/${id}/`)
+      .get(`http://192.168.4.54:8000/api/employee/details/api/performanse_appraisals/${id}/`)
       .then((res) => setFormData(res.data))
       .catch((err) => console.error("Error fetching data:", err));
   }, [id]);
@@ -65,7 +65,7 @@ const EditAppraisal = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://192.168.4.183:8000/api/employee/details/api/performanse_appraisals/${id}/`, formData);
+      await axios.put(`http://192.168.4.54:8000/api/employee/details/api/performanse_appraisals/${id}/`, formData);
       alert("Appraisal updated successfully!");
       navigate("/performanse_appraisal"); // Ensure the route exists
     } catch (error) {

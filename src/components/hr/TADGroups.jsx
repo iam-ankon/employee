@@ -6,7 +6,7 @@ const TADGroups = () => {
 
   // Fetch TAD groups from the API
   useEffect(() => {
-    fetch('http://192.168.4.183:8000/api/employee/details/api/tad_groups/')
+    fetch('http://192.168.4.54:8000/api/employee/details/api/tad_groups/')
       .then(response => response.json())
       .then(data => setTadGroups(data))
       .catch(error => console.error('Error fetching data:', error));

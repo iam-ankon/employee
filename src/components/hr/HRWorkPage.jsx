@@ -19,7 +19,7 @@ const HRWorkPage = () => {
   useEffect(() => {
     const fetchEmployeeCount = async () => {
       try {
-        const response = await axios.get('http://192.168.4.183:8000/api/employee/details/api/employees/');
+        const response = await axios.get('http://192.168.4.54:8000/api/employee/details/api/employees/');
         setEmployeeCount(response.data.length || 0);
       } catch (err) {
         console.error('Fetch error:', err);
@@ -31,7 +31,7 @@ const HRWorkPage = () => {
 
     const fetchInterviews = async () => {
       try {
-        const response = await axios.get('http://192.168.4.183:8000/api/employee/details/api/interviews/');
+        const response = await axios.get('http://192.168.4.54:8000/api/employee/details/api/interviews/');
         setUpcomingInterviews(response.data);
       } catch (error) {
         console.error('Error fetching interviews:', error);
@@ -40,7 +40,7 @@ const HRWorkPage = () => {
 
     const fetchLeaveRequests = async () => {
       try {
-        const response = await axios.get('http://192.168.4.183:8000/api/employee/details/api/employee_leaves/');
+        const response = await axios.get('http://192.168.4.54:8000/api/employee/details/api/employee_leaves/');
         setLeaveRequests(response.data);
         console.log("Leave Requests:", response.data)
       } catch (error) {
@@ -50,7 +50,7 @@ const HRWorkPage = () => {
 
     const fetchCVCount = async () => {
       try {
-        const response = await axios.get('http://192.168.4.183:8000/api/employee/details/api/CVAdd/');
+        const response = await axios.get('http://192.168.4.54:8000/api/employee/details/api/CVAdd/');
         setCvCount(response.data.length || 0);
       } catch (error) {
         console.error('Error fetching CV count:', error)
