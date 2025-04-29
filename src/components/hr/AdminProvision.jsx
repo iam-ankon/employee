@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { getAdminProvisions, addAdminProvision, updateAdminProvision, deleteAdminProvision } from "../../api/employeeApi";
-import { Link } from "react-router-dom";
 import Sidebars from './sidebars';
 
 const AdminProvision = () => {
@@ -264,7 +263,7 @@ const AdminProvision = () => {
         .main-content {
           display: flex;
           flex-direction: column;
-          padding: 40px;
+          padding: 30px;
           background-color: #f4f7fc;
           font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
           align-items: center;
