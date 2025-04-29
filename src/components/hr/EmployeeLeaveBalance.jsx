@@ -10,7 +10,7 @@ const EmployeeLeaveBalance = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://192.168.4.54:8000/api/employee/details/api/employee_leave_balances/');
+        const response = await axios.get('http://127.0.0.1:8000/api/employee/details/api/employee_leave_balances/');
         setBalances(response.data);
         setLoading(false);
       } catch (error) {
@@ -39,37 +39,6 @@ const EmployeeLeaveBalance = () => {
     minHeight: '100vh',
   };
 
-  const sidebarStyle = {
-    width: '230px',
-    backgroundColor: '#f3f6fb',
-    height: '100vh',
-    padding: '20px 15px',
-    boxShadow: '2px 0 5px rgba(0, 0, 0, 0.05)',
-  };
-
-  const sidebarHeaderStyle = {
-    fontSize: '20px',
-    fontWeight: 'bold',
-    marginBottom: '20px',
-    color: '#0078D4',
-  };
-
-  const sidebarLinkStyle = {
-    display: 'block',
-    padding: '10px',
-    margin: '5px 0',
-    textDecoration: 'none',
-    color: '#333',
-    borderRadius: '6px',
-    transition: '0.3s',
-  };
-
-
-  const activeHoverStyle = {
-    ...sidebarLinkStyle,
-
-    fontWeight: '500',
-  };
 
   const mainContentStyle = {
     flex: 1,

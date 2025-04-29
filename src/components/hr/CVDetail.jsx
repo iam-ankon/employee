@@ -13,7 +13,7 @@ const CVDetail = () => {
     useEffect(() => {
         const fetchCVDetails = async () => {
             try {
-                const response = await axios.get(`http://192.168.4.54:8000/api/employee/details/api/CVAdd/${id}/`);
+                const response = await axios.get(`http://127.0.0.1:8000/api/employee/details/api/CVAdd/${id}/`);
                 setCvDetails(response.data);
             } catch (error) {
                 console.error("Error fetching CV details:", error);
@@ -30,7 +30,7 @@ const CVDetail = () => {
 
             try {
                 const response = await axios.post(
-                    `http://192.168.4.54:8000/api/employee/details/api/CVAdd/${id}/update-cv-with-qr/`,
+                    `http://127.0.0.1:8000/api/employee/details/api/CVAdd/${id}/update-cv-with-qr/`,
                     {
                         qr_code: qrCodeImage,
                     },

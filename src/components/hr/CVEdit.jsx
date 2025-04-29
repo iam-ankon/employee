@@ -20,7 +20,7 @@ const CVEdit = () => {
   useEffect(() => {
     const fetchCV = async () => {
       try {
-        const response = await axios.get(`http://192.168.4.54:8000/api/employee/details/api/CVAdd/${id}/`);
+        const response = await axios.get(`http://127.0.0.1:8000/api/employee/details/api/CVAdd/${id}/`);
         setCv(response.data);
         setFormData({
           name: response.data.name,
@@ -70,7 +70,7 @@ const CVEdit = () => {
     }
 
     try {
-      await axios.put(`http://192.168.4.54:8000/api/employee/details/api/CVAdd/${id}/`, formDataToSubmit, {
+      await axios.put(`http://127.0.0.1:8000/api/employee/details/api/CVAdd/${id}/`, formDataToSubmit, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       alert("CV updated successfully!");

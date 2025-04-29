@@ -9,7 +9,7 @@ const AppraisalDetails = () => {
     const [appraisal, setAppraisal] = useState(null);
 
     useEffect(() => {
-        axios.get(`http://192.168.4.54:8000/api/employee/details/api/performanse_appraisals/${id}/`)
+        axios.get(`http://127.0.0.1:8000/api/employee/details/api/performanse_appraisals/${id}/`)
             .then((res) => setAppraisal(res.data))
             .catch((err) => console.error("Error fetching data:", err));
     }, [id]);

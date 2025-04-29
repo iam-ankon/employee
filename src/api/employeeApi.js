@@ -1,6 +1,6 @@
 // import axios from 'axios';
 
-// const API_URL = 'http://192.168.4.54:8000/api/employee/details/api/';
+// const API_URL = 'http://127.0.0.1:8000/api/employee/details/api/';
 
 // export const api = axios.create({
 //   baseURL: API_URL,
@@ -81,11 +81,11 @@ const getBaseUrl = () => {
   const hostname = window.location.hostname;
 
   if (hostname === '192.168.4.54') {
-    return 'http://192.168.4.54:8000/api/employee/details/api/';
+    return 'http://127.0.0.1:8000/api/employee/details/api/';
   } else if (hostname === '0.0.0.0') {
-    return 'http://0.0.0.0:8000/api/hrms/api/';
+    return 'http://0.0.0.0:8000/api/employee/details/api/';
   } else {
-    return 'http://localhost:8000/api/hrms/api/'; // Fallback for localhost
+    return 'http://localhost:8000/api/employee/details/api/'; // Fallback for localhost
   }
 };
 

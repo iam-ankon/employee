@@ -14,7 +14,7 @@ const EmployeeLeave = () => {
     const [endDate, setEndDate] = useState('');
 
     useEffect(() => {
-        axios.get('http://192.168.4.54:8000/api/employee/details/api/employee_leaves/')
+        axios.get('http://127.0.0.1:8000/api/employee/details/api/employee_leaves/')
             .then((response) => {
                 setLeaves(response.data);
                 setFilteredLeaves(response.data);
@@ -51,7 +51,7 @@ const EmployeeLeave = () => {
     }, [nameSearch, startDate, endDate, leaves]);
 
     const handleDelete = (id) => {
-        axios.delete(`http://192.168.4.54:8000/api/employee/details/api/employee_leaves/${id}/`)
+        axios.delete(`http://127.0.0.1:8000/api/employee/details/api/employee_leaves/${id}/`)
             .then(() => {
                 setLeaves(leaves.filter(leave => leave.id !== id));
             })
@@ -64,7 +64,7 @@ const EmployeeLeave = () => {
         navigate(`/leave-request-details/${id}`);
     };
 
-    if (loading) return <div style={{ padding: '20px' }}>Loading...</div>;
+    
 
     return (
         <div style={styles.container}>

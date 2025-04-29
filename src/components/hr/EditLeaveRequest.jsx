@@ -37,7 +37,7 @@ const EditLeaveRequest = () => {
     });
 
     useEffect(() => {
-        axios.get(`http://192.168.4.54:8000/api/employee/details/api/employee_leaves/${id}/`)
+        axios.get(`http://127.0.0.1:8000/api/employee/details/api/employee_leaves/${id}/`)
             .then(res => setFormData(res.data))
             .catch(err => console.error(err));
     }, [id]);
@@ -48,7 +48,7 @@ const EditLeaveRequest = () => {
 
     const handleSubmit = () => {
         setLoading(true);
-        axios.put(`http://192.168.4.54:8000/api/employee/details/api/employee_leaves/${id}/`, formData)
+        axios.put(`http://127.0.0.1:8000/api/employee/details/api/employee_leaves/${id}/`, formData)
             .then(() => {
                 navigate('/employee_leave');
             })
