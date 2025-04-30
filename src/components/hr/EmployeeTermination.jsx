@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Sidebars from './sidebars';
 
-const API_URL = "http://127.0.0.1:8000/api/employee/details/api/employees/";
+const API_URL = "https://tad-group.onrender.com/api/hrms/api/employees/";
 
 const EmployeeTermination = () => {
   const [employees, setEmployees] = useState([]);
@@ -184,7 +184,6 @@ const EmployeeTermination = () => {
               <th style={styles.th}>Designation</th>
               <th style={styles.th}>Department</th>
               <th style={styles.th}>Company</th>
-              <th style={styles.th}>Salary</th>
               <th style={styles.th}>Actions</th>
             </tr>
           </thead>
@@ -209,7 +208,6 @@ const EmployeeTermination = () => {
                 <td style={styles.td}>{employee.designation}</td>
                 <td style={styles.td}>{employee.department}</td>
                 <td style={styles.td}>{employee.company_name}</td>
-                <td style={styles.td}>{employee.salary}</td>
                 <td style={{ ...styles.td, display: "flex", gap: "5px" }}>
                   <button
                     style={{
