@@ -37,7 +37,7 @@ const EditLeaveRequest = () => {
     });
 
     useEffect(() => {
-        axios.get(`http://127.0.0.1:8000/api/employee/details/api/employee_leaves/${id}/`)
+        axios.get(`http://192.168.4.54:8000/api/employee/details/api/employee_leaves/${id}/`)
             .then(res => setFormData(res.data))
             .catch(err => console.error(err));
     }, [id]);
@@ -48,7 +48,7 @@ const EditLeaveRequest = () => {
 
     const handleSubmit = () => {
         setLoading(true);
-        axios.put(`http://127.0.0.1:8000/api/employee/details/api/employee_leaves/${id}/`, formData)
+        axios.put(`http://192.168.4.54:8000/api/employee/details/api/employee_leaves/${id}/`, formData)
             .then(() => {
                 navigate('/employee_leave');
             })
@@ -58,15 +58,15 @@ const EditLeaveRequest = () => {
 
     const containerStyle = {
         display: 'flex',
-        fontFamily: 'Segoe UI, sans-serif',
-        backgroundColor: '#f4f6f9',
+        fontFamily: "Segoe UI, Tahoma, Geneva, Verdana, sans-serif",
+        backgroundColor: "#DCEEF3",
         minHeight: '100vh',
     };
 
     const mainContentStyle = {
         flex: 1,
         padding: '30px',
-        backgroundColor: '#f4f4f9',
+        backgroundColor: '#A7D5E1',
     };
 
     const formContainerStyle = {
@@ -83,6 +83,7 @@ const EditLeaveRequest = () => {
         padding: '15px',
         border: '1px solid #e0e0e0',
         borderRadius: '6px',
+        backgroundColor: "#DCEEF3",
     };
 
     const sectionHeaderStyle = {

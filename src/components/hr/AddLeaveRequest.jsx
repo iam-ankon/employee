@@ -43,9 +43,9 @@ const AddLeaveRequest = () => {
   useEffect(() => {
     // Fetch employees, companies, and leave balances
     Promise.all([
-      axios.get('http://127.0.0.1:8000/api/employee/details/api/employees/'),
-      axios.get('http://127.0.0.1:8000/api/employee/details/api/tad_groups/'),
-      axios.get('http://127.0.0.1:8000/api/employee/details/api/employee_leave_balances/'),
+      axios.get('http://192.168.4.54:8000/api/employee/details/api/employees/'),
+      axios.get('http://192.168.4.54:8000/api/employee/details/api/tad_groups/'),
+      axios.get('http://192.168.4.54:8000/api/employee/details/api/employee_leave_balances/'),
     ])
       .then(([empRes, compRes, balRes]) => {
         setEmployees(empRes.data);
@@ -113,7 +113,7 @@ const AddLeaveRequest = () => {
       actual_date_of_joining: formatDate(newLeave.actual_date_of_joining),
     };
 
-    axios.post('http://127.0.0.1:8000/api/employee/details/api/employee_leaves/', updatedLeave)
+    axios.post('http://192.168.4.54:8000/api/employee/details/api/employee_leaves/', updatedLeave)
       .then(() => {
         navigate('/employee_leave');
       })
@@ -124,12 +124,13 @@ const AddLeaveRequest = () => {
   const containerStyle = {
     display: 'flex',
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+    
   };
 
   const mainContentStyle = {
     flex: 1,
     padding: '30px',
-    backgroundColor: '#f9fafb',
+    backgroundColor: '#A7D5E1',
   };
 
   const headingStyle = {
@@ -161,6 +162,7 @@ const AddLeaveRequest = () => {
     borderRadius: '6px',
     border: '1px solid #ccc',
     fontSize: '14px',
+    backgroundColor: '#DCEEF3',
   };
 
   const textareaStyle = { ...inputStyle, height: '80px' };

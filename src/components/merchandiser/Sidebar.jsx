@@ -17,16 +17,7 @@ const Sidebar = () => {
     // Make it full height
   };
 
-  const headerStyle = {
-    padding: '1rem',
-    borderBottom: '1px solid #e5e7eb',
-  };
 
-  const headerTextStyle = {
-    fontSize: '1.25rem',
-    fontWeight: 600,
-    color: '#374151',
-  };
 
   const navStyle = {
     padding: '1rem',
@@ -61,45 +52,43 @@ const Sidebar = () => {
 
   return (
     <div style={sidebarStyle}>
-      <div style={headerStyle}>
-        <h2 style={headerTextStyle}>HR Dashboard</h2>
-      </div>
+      
       <nav style={navStyle}>
         <ul style={ulStyle}>
           <li>
-            <Link to="/hr-work" style={linkStyle('/hr-work')} onClick={() => setActiveTab('/hr-work')}>
+            <Link to="/dashboard" style={linkStyle('/dashboard')} onClick={() => setActiveTab('/hr-work')}>
               <FiHome style={iconStyle} />
               Dashboard
             </Link>
           </li>
           <li>
-            <Link to="/cv-list" style={linkStyle('/cv-list')} onClick={() => setActiveTab('/cv-list')}>
+            <Link to="/agents" style={linkStyle('/agents')} onClick={() => setActiveTab('/cv-list')}>
               <FiFileText style={iconStyle} />
-              All CV
+              Agents
             </Link>
           </li>
           <li>
-            <Link to="/interviews" style={linkStyle('/interviews')} onClick={() => setActiveTab('/interviews')}>
+            <Link to="/buyers" style={linkStyle('/buyers')} onClick={() => setActiveTab('/interviews')}>
               <FiBriefcase style={iconStyle} />
-              Recruitment
+              Buyers
             </Link>
           </li>
           <li>
-            <Link to="/employees" style={linkStyle('/employees')} onClick={() => setActiveTab('/employees')}>
+            <Link to="/customers" style={linkStyle('/customers')} onClick={() => setActiveTab('/employees')}>
               <FiUsers style={iconStyle} />
-              Employees
+              Customers
             </Link>
           </li>
           <li>
-            <Link to="/attendance" style={linkStyle('/attendance')} onClick={() => setActiveTab('/attendance')}>
+            <Link to="/suppliers" style={linkStyle('/suppliers')} onClick={() => setActiveTab('/attendance')}>
               <FiClock style={iconStyle} />
-              Attendance
+              Suppliers
             </Link>
           </li>
           <li>
-            <Link to="/employee_leave" style={linkStyle('/employee_leave')} onClick={() => setActiveTab('/employee_leave')}>
+            <Link to="/inquiries" style={linkStyle('/inquiries')} onClick={() => setActiveTab('/employee_leave')}>
               <FiCalendar style={iconStyle} />
-              Leave Management
+              Inquiry
             </Link>
           </li>
           <li>

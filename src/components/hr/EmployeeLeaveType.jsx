@@ -13,7 +13,7 @@ const EmployeeLeaveTypes = () => {
 
     const fetchLeaveTypes = async () => {
         try {
-            const response = await axios.get('http://127.0.0.1:8000/api/employee/details/api/employee_leave_types/');
+            const response = await axios.get('http://192.168.4.54:8000/api/employee/details/api/employee_leave_types/');
             setLeaveTypes(response.data);
         } catch (error) {
             console.error('Error fetching leave types:', error);
@@ -36,7 +36,7 @@ const EmployeeLeaveTypes = () => {
             };
 
             await axios.put(
-                `http://127.0.0.1:8000/api/employee/details/api/employee_leave_types/${editingField.id}/`,
+                `http://192.168.4.54:8000/api/employee/details/api/employee_leave_types/${editingField.id}/`,
                 updatedLeave
             );
 
@@ -74,7 +74,7 @@ const EmployeeLeaveTypes = () => {
     const containerStyle = {
         display: 'flex',
         fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif',
-        backgroundColor: '#f4f6f8',
+        backgroundColor: '#A7D5E1',
         minHeight: '100vh',
     };
 
@@ -84,12 +84,12 @@ const EmployeeLeaveTypes = () => {
     };
 
     const tableContainerStyle = {
-        backgroundColor: '#fff',
         padding: '20px 30px',
         borderRadius: '8px',
         boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
-        maxWidth: '800px',
+        maxWidth: '900px',
         margin: '0 auto',
+        backgroundColor: '#DCEEF3',
     };
 
     const headingStyle = {
@@ -104,6 +104,7 @@ const EmployeeLeaveTypes = () => {
         width: '100%',
         borderCollapse: 'collapse',
         marginBottom: '30px',
+        
     };
 
     const thStyle = {

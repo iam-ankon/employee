@@ -1,15 +1,17 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useParams, useNavigate } from "react-router-dom";
 import Sidebars from './sidebars';
 
-const API_URL = "http://127.0.0.1:8000/api/employee/details/api/interviews/";
+const API_URL = "http://192.168.4.54:8000/api/employee/details/api/interviews/";
 
 const Interviews = () => {
   const location = useLocation();
   const [showPopup, setShowPopup] = useState(false);
   const navigate = useNavigate();
   const containerRef = useRef(null);
+  const { id } = useParams();
+  const [candidateData, setCandidateData] = useState(null);
   const [interviews, setInterviews] = useState([]);
   const [selectedInterview, setSelectedInterview] = useState(null);
   const { name, position_for, age, email, phone, reference } = location.state || {};
@@ -73,6 +75,88 @@ const Interviews = () => {
     }
 
     return { interviewMark, interviewResult };
+  };
+
+  // Check for query parameters in URL first (from QR code scan)
+  useEffect(() => {
+    // Parse URL parameters
+    const queryParams = new URLSearchParams(location.search);
+
+    // Check if we have candidate data in URL params
+    if (queryParams.has('name') || queryParams.has('id')) {
+      const candidateId = queryParams.get('id');
+
+      // Create object from URL params
+      const urlData = {
+        id: candidateId,
+        name: queryParams.get('name') || '',
+        position_for: queryParams.get('position') || '',
+        age: queryParams.get('age') || '',
+        email: queryParams.get('email') || '',
+        phone: queryParams.get('phone') || '',
+        reference: queryParams.get('reference') || ''
+      };
+
+      // Set candidate data from URL
+      setCandidateData(urlData);
+
+      // Update form with URL data
+      setFormData(prevState => ({
+        ...prevState,
+        name: urlData.name,
+        position_for: urlData.position_for,
+        age: urlData.age,
+        email: urlData.email,
+        phone: urlData.phone,
+        reference: urlData.reference
+      }));
+
+      // If we have an ID but not all data, fetch full details
+      if (candidateId &&
+        (!urlData.name || !urlData.position_for || !urlData.email)) {
+        fetchCandidateData(candidateId);
+      }
+
+      // Remove query params to clean up URL but preserve current path
+      // This avoids issues if page is refreshed
+      navigate(location.pathname, { replace: true });
+    }
+    // If no URL params but we have location state, use that
+    else if (location.state) {
+      setCandidateData(location.state);
+      setFormData(prevState => ({
+        ...prevState,
+        name: location.state.name || '',
+        position_for: location.state.position_for || '',
+        age: location.state.age || '',
+        email: location.state.email || '',
+        phone: location.state.phone || '',
+        reference: location.state.reference || ''
+      }));
+    }
+    // If we have an ID from the URL path but nothing else
+    else if (id) {
+      fetchCandidateData(id);
+    }
+  }, [location, id, navigate]);
+
+  // Fetch candidate data from API
+  const fetchCandidateData = async (candidateId) => {
+    try {
+      const response = await axios.get(`http://192.168.4.54:8000/api/employee/details/api/CVAdd/${candidateId}/`);
+      setCandidateData(response.data);
+      setFormData(prevState => ({
+        ...prevState,
+        name: response.data.name || '',
+        position_for: response.data.position_for || '',
+        age: response.data.age || '',
+        email: response.data.email || '',
+        phone: response.data.phone || '',
+        reference: response.data.reference || ''
+      }));
+    } catch (error) {
+      console.error("Error fetching candidate data:", error);
+    }
   };
 
   useEffect(() => {
@@ -279,8 +363,13 @@ const Interviews = () => {
     e.preventDefault();
 
     const formDataToSend = new FormData();
-    Object.keys(formData).forEach((key) => {
-      formDataToSend.append(key, formData[key] ?? ""); // Ensure no null values
+    const formattedData = {
+      ...formData,
+      age: formData.age || null,  // Send as-is (should already be in YYYY-MM-DD format)
+    };
+
+    Object.keys(formattedData).forEach((key) => {
+      formDataToSend.append(key, formattedData[key] ?? "");
     });
 
     try {
@@ -297,15 +386,13 @@ const Interviews = () => {
         showToast("Interview added successfully", "success");
       }
 
-      console.log("Updated Interview Response:", response.data); // 🔍 Debugging
       fetchInterviews();
       resetForm();
-
-      return response.data; // Return the response data for further processing
+      return response.data;
     } catch (error) {
       console.error("Error submitting interview:", error);
       showToast("Error submitting interview", "error");
-      return null; // Return null in case of error
+      return null;
     }
   };
 
@@ -492,7 +579,7 @@ const Interviews = () => {
   
             <div class="details-container">
               <div class="details-item"><span class="label">Position:</span> ${interview.position_for}</div>
-              <div class="details-item"><span class="label">Age:</span> ${interview.age}</div>
+              <div class="details-item"><span class="label">Date of Birth:</span> ${interview.age}</div>
               <div class="details-item"><span class="label">Reference:</span> ${interview.reference}</div>
               <div class="details-item"><span class="label">Email:</span> ${interview.email}</div>
               <div class="details-item"><span class="label">Phone:</span> ${interview.phone}</div>
@@ -677,7 +764,7 @@ const Interviews = () => {
         <h2>${interview.name}'s Interview</h2>
         <div class="details-container">
           <div class="details-item"><span class="label">Position:</span> ${interview.position_for}</div>
-          <div class="details-item"><span class="label">Age:</span> ${interview.age}</div>
+          <div class="details-item"><span class="label">Date of Birth:</span> ${interview.age}</div>
           <div class="details-item"><span class="label">Reference:</span> ${interview.reference}</div>
           <div class="details-item"><span class="label">Email:</span> ${interview.email}</div>
           <div class="details-item"><span class="label">Phone:</span> ${interview.phone}</div>
@@ -761,20 +848,12 @@ const Interviews = () => {
 
   const style = {
     container: {
-      display: "flex",
-      fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-      height: "92vh",
-      overflow: "hidden",
-      backgroundColor: "#f0f0f0",
-      color: "#333",
-      fontSize: "16px",
-      lineHeight: "1.5",
-      
-      boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
-      justifyContent: "space-between",
-      zIndex: 1,
+      backgroundColor: "#DCEEF3",
       overflowY: "auto",
-      overflowX: "hidden",    
+      overflowX: "hidden",
+      display: "flex",
+      height: "100vh",
+      fontFamily: "Segoe UI, Tahoma, Geneva, Verdana, sans-serif",
     },
     sidebar: {
       width: "280px",
@@ -802,7 +881,10 @@ const Interviews = () => {
       backgroundColor: "#28a745",
     },
     interviewItem: {
-      backgroundColor: "#f0f0f0",
+      backgroundColor: "#63B0E3",
+      padding: "10px",
+      marginBottom: "10px",
+      borderRadius: "53px",
       cursor: "pointer",
     },
     interviewItemHover: {
@@ -816,18 +898,7 @@ const Interviews = () => {
     interviewDetails: {
       marginBottom: "20px",
     },
-    interviewForm: {
-      display: 'flex',
-      flexWrap: 'wrap', // Allow fields to wrap to the next line if necessary
-      gap: '20px', // Add space between fields
-      justifyContent: 'space-between', // Distribute the items evenly
-    },
-    input: {
-      marginBottom: "10px",
-      padding: "10px",
-      border: "1px solid #ddd",
-      borderRadius: "5px",
-    },
+
     btnSubmit: {
       padding: "10px",
       backgroundColor: "#0078d4",
@@ -910,10 +981,6 @@ const Interviews = () => {
       marginBottom: "10px",
       fontSize: "14px",
     },
-    label: {
-      fontWeight: "bold",
-      color: "#2a2a2a",
-    },
     containerr: {
       width: "85%",
       margin: "0 auto",
@@ -975,8 +1042,37 @@ const Interviews = () => {
       fontSize: "12px",
       color: "#777",
     },
-
-
+    interviewForm: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '2rem',
+    },
+    card: {
+      border: '1px solid #ccc',
+      borderRadius: '8px',
+      padding: '16px',
+      backgroundColor: '#f9f9f9',
+    },
+    row: {
+      display: 'flex',
+      flexWrap: 'wrap',
+      gap: '16px',
+    },
+    inputGroup: {
+      flex: '1 1 45%',
+      display: 'flex',
+      flexDirection: 'column',
+    },
+    label: {
+      marginBottom: '4px',
+      fontWeight: 'bold',
+    },
+    input: {
+      padding: '8px',
+      fontSize: '14px',
+      borderRadius: '4px',
+      border: '1px solid #ccc',
+    },
 
   };
 
@@ -1012,21 +1108,28 @@ const Interviews = () => {
         <button style={{ ...style.button, ...style.buttonPrint }} onClick={printAllInterviews}>
           🖨️ Print All Interviews
         </button>
-        <ul className="interview-list">
-          {interviews
-            .filter((interview) =>
-              interview.name.toLowerCase().includes(searchQuery.toLowerCase())
-            )
-            .map((interview) => (
-              <li
-                key={interview.id}
-                style={style.interviewItem}
-                onClick={() => handleInterviewClick(interview)}
-              >
-                {interview.name}
-              </li>
-            ))}
-        </ul>
+        <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
+          <ul className="interview-list" style={{ margin: 0, padding: 0 }}>
+            {interviews
+              .filter((interview) =>
+                interview.name.toLowerCase().includes(searchQuery.toLowerCase())
+              )
+              .map((interview) => (
+                <li
+                  key={interview.id}
+                  style={{
+                    ...style.interviewItem,
+                    padding: '10px',
+                    borderBottom: '1px solid #ccc',
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => handleInterviewClick(interview)}
+                >
+                  {interview.name}
+                </li>
+              ))}
+          </ul>
+        </div>
       </div>
 
       <div style={style.content}>
@@ -1050,7 +1153,7 @@ const Interviews = () => {
               <div style={style.section}>
                 <div style={style.detailsContainer}>
                   <div style={style.detailsItem}><span style={style.label}>Position:</span> {selectedInterview.position_for}</div>
-                  <div style={style.detailsItem}><span style={style.label}>Age:</span> {selectedInterview.age}</div>
+                  <div style={style.detailsItem}><span style={style.label}>Date of Birth:</span> {selectedInterview.age}</div>
                   <div style={style.detailsItem}><span style={style.label}>Reference:</span> {selectedInterview.reference}</div>
                   <div style={style.detailsItem}><span style={style.label}>Email:</span> {selectedInterview.email}</div>
                   <div style={style.detailsItem}><span style={style.label}>Phone:</span> {selectedInterview.phone}</div>
@@ -1164,296 +1267,127 @@ const Interviews = () => {
 
 
         <form style={style.interviewForm} onSubmit={handleSubmit}>
-          <div>
-            <label>Name</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              style={style.input}
-            />
-          </div>
-          <div>
-            <label>Position for</label>
-            <input
-              type="text"
-              name="position_for"
-              value={formData.position_for}
-              onChange={handleInputChange}
-              style={style.input}
-            />
-          </div>
-          <div>
-            <label>Age</label>
-            <input
-              type="number"
-              name="age"
-              value={formData.age}
-              onChange={handleInputChange}
-              style={style.input}
-            />
-          </div>
-          <div>
-            <label>Reference</label>
-            <input
-              type="text"
-              name="reference"
-              value={formData.reference}
-              onChange={handleInputChange}
-              style={style.input}
-            />
+          {/* Card 1: First 8 Fields in Two Columns */}
+          <div style={style.card}>
+            <div style={style.row}>
+              {[
+                { label: 'Name', name: 'name', type: 'text' },
+                { label: 'Position for', name: 'position_for', type: 'text' },
+                { label: 'Date of Birth', name: 'age', type: 'date' },
+                { label: 'Reference', name: 'reference', type: 'text' },
+                { label: 'Email', name: 'email', type: 'email' },
+                { label: 'Phone', name: 'phone', type: 'tel' },
+                { label: 'Interview Date', name: 'interview_date', type: 'datetime-local' },
+                { label: 'Place', name: 'place', type: 'text' },
+              ].map((field) => (
+                <div style={style.inputGroup} key={field.name}>
+                  <label style={style.label}>{field.label}</label>
+                  <input
+                    type={field.type}
+                    name={field.name}
+                    value={formData[field.name]}
+                    onChange={handleInputChange}
+                    style={style.input}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
 
-          <div>
-            <label>Email</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              style={style.input}
-            />
-          </div>
-
-          <div>
-            <label>Phone</label>
-            <input
-              type="tel"
-              name="phone"
-              value={formData.phone}
-              onChange={handleInputChange}
-              style={style.input}
-            />
-          </div>
-
-          <div>
-            <label>Interview Date</label>
-            <input
-              type="datetime-local"
-              name="interview_date"
-              value={formData.interview_date}
-              onChange={handleInputChange}
-              style={style.input}
-            />
-          </div>
-
-          <div>
-            <label>Place</label>
-            <input
-              type="text"
-              name="place"
-              value={formData.place}
-              onChange={handleInputChange}
-              style={style.input}
-            />
-          </div>
-          <div>
-            <label>Education (Max 20)</label>
-            <input
-              type="number"
-              name="education"
-              value={formData.education}
-              onChange={handleInputChange}
-              style={style.input}
-              max="20"
-              disabled={selectedInterview === null}
-            />
-          </div>
-
-          <div>
-            <label>Job Knowledge (Max 20)</label>
-            <input
-              type="number"
-              name="job_knowledge"
-              value={formData.job_knowledge}
-              onChange={handleInputChange}
-              style={style.input}
-              max="20"
-              disabled={selectedInterview === null}
-            />
-          </div>
-
-          <div>
-            <label>Work Experience (Max 10)</label>
-            <input
-              type="number"
-              name="work_experience"
-              value={formData.work_experience}
-              onChange={handleInputChange}
-              style={style.input}
-              max="10"
-              disabled={selectedInterview === null}
-            />
-          </div>
-
-          <div>
-            <label>Communication (Max 10)</label>
-            <input
-              type="number"
-              name="communication"
-              value={formData.communication}
-              onChange={handleInputChange}
-              style={style.input}
-              max="10"
-              disabled={selectedInterview === null}
-            />
-          </div>
-          <div>
-            <label>Personality (Max 10)</label>
-            <input
-              type="number"
-              name="personality"
-              value={formData.personality}
-              onChange={handleInputChange}
-              style={style.input}
-              max="10"
-              disabled={selectedInterview === null}
-            />
-          </div>
-
-          <div>
-            <label>Potential (Max 10)</label>
-            <input
-              type="number"
-              name="potential"
-              value={formData.potential}
-              onChange={handleInputChange}
-              style={style.input}
-              max="10"
-              disabled={selectedInterview === null}
-            />
-          </div>
-
-          <div>
-            <label>General Knowledge (Max 10)</label>
-            <input
-              type="number"
-              name="general_knowledge"
-              value={formData.general_knowledge}
-              onChange={handleInputChange}
-              style={style.input}
-              max="10"
-              disabled={selectedInterview === null}
-            />
-          </div>
-          <div>
-            <label>Assertiveness (Max 10)</label>
-            <input
-              type="number"
-              name="assertiveness"
-              value={formData.assertiveness}
-              onChange={handleInputChange}
-              style={style.input}
-              max="10"
-              disabled={selectedInterview === null}
-            />
-          </div>
+          {/* Card 2: Rest of the Fields in Two Columns */}
+          <div style={style.card}>
+            <div style={style.row}>
+              {[
+                { label: 'Education (Max 20)', name: 'education', max: 20 },
+                { label: 'Job Knowledge (Max 20)', name: 'job_knowledge', max: 20 },
+                { label: 'Work Experience (Max 10)', name: 'work_experience', max: 10 },
+                { label: 'Communication (Max 10)', name: 'communication', max: 10 },
+                { label: 'Personality (Max 10)', name: 'personality', max: 10 },
+                { label: 'Potential (Max 10)', name: 'potential', max: 10 },
+                { label: 'General Knowledge (Max 10)', name: 'general_knowledge', max: 10 },
+                { label: 'Assertiveness (Max 10)', name: 'assertiveness', max: 10 },
+                { label: 'Current Remuneration', name: 'current_remuneration' },
+                { label: 'Expected Package', name: 'expected_package' },
+                { label: 'Notice Period Required', name: 'notice_period_required' },
+                { label: 'HR Recommendation', name: 'recommendation' },
+              ].map((field) => (
+                <div style={style.inputGroup} key={field.name}>
+                  <label style={style.label}>{field.label}</label>
+                  <input
+                    type="number"
+                    max={field.max}
+                    name={field.name}
+                    value={formData[field.name]}
+                    onChange={handleInputChange}
+                    style={style.input}
+                    disabled={selectedInterview === null}
+                  />
+                </div>
+              ))}
 
 
-          <div>
-            <label>Current Remuneration</label>
-            <input
-              type="text"
-              name="current_remuneration"
-              value={formData.current_remuneration}
-              onChange={handleInputChange}
-              style={style.input}
-              disabled={selectedInterview === null}
-            />
-          </div>
-          <div>
-            <label>Expected Package</label>
-            <input
-              type="text"
-              name="expected_package"
-              value={formData.expected_package}
-              onChange={handleInputChange}
-              style={style.input}
-              disabled={selectedInterview === null}
-            />
-          </div>
-          <div>
-            <label>Notice Period Required</label>
-            <input
-              type="text"
-              name="notice_period_required"
-              value={formData.notice_period_required}
-              onChange={handleInputChange}
-              style={style.input}
-              disabled={selectedInterview === null}
-            />
-          </div>
-          <div>
-            <label>HR Recommendation</label>
-            <input
-              type="text"
-              name="recommendation"
-              value={formData.recommendation}
-              onChange={handleInputChange}
-              style={style.input}
-              disabled={selectedInterview === null}
-            />
-          </div>
-          <div>
-            <label>Immediate Recruitment</label>
-            <input
-              type="checkbox"
-              name="immediate_recruitment"
-              checked={formData.immediate_recruitment}
-              onChange={(e) => setFormData({ ...formData, immediate_recruitment: e.target.checked })}
-              disabled={selectedInterview === null}
-            />
-          </div>
-          <div>
-            <label>On Hold</label>
-            <input
-              type="checkbox"
-              name="on_hold"
-              checked={formData.on_hold}
-              onChange={(e) => setFormData({ ...formData, on_hold: e.target.checked })}
-              disabled={selectedInterview === null}
-            />
-          </div>
-          <div>
-            <label>No Good</label>
-            <input
-              type="checkbox"
-              name="no_good"
-              checked={formData.no_good}
-              onChange={(e) => setFormData({ ...formData, no_good: e.target.checked })}
-              disabled={selectedInterview === null}
-            />
-          </div>
 
-          <div>
-            <label>MD Sir Notes</label>
-            <textarea
-              type="text"
-              name="interview_notes"
-              value={formData.interview_notes}
-              onChange={handleInputChange}
-              style={style.input}
-              disabled={selectedInterview === null}
-            />
-          </div>
-          <div>
-            <label>Final Selection Remarks</label>
-            <textarea
-              name="final_selection_remarks"
-              value={formData.final_selection_remarks}
-              onChange={handleInputChange}
-              style={style.input}
-              disabled={selectedInterview === null}
-            />
-          </div>
+              {/* Textarea Fields */}
+              <div style={style.inputGroup}>
+                <label style={style.label}>MD Sir Notes</label>
+                <textarea
+                  name="interview_notes"
+                  value={formData.interview_notes}
+                  onChange={handleInputChange}
+                  style={style.input}
+                  disabled={selectedInterview === null}
+                />
+              </div>
+              <div style={style.inputGroup}>
+                <label style={style.label}>Final Selection Remarks</label>
+                <textarea
+                  name="final_selection_remarks"
+                  value={formData.final_selection_remarks}
+                  onChange={handleInputChange}
+                  style={style.input}
+                  disabled={selectedInterview === null}
+                />
+              </div>
+
+            </div>
+            {[
+              { label: 'Immediate Recruitment', name: 'immediate_recruitment' },
+              { label: 'On Hold', name: 'on_hold' },
+              { label: 'No Good', name: 'no_good' },
+            ].map((checkbox) => (
+              <div
+                key={checkbox.name}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  marginRight: '20px',
+                  marginBottom: '10px',
+                  width: '25px', // control line length
+                }}
+              >
+                <input
+                  type="checkbox"
+                  name={checkbox.name}
+                  checked={formData[checkbox.name]}
+                  onChange={(e) =>
+                    setFormData({ ...formData, [checkbox.name]: e.target.checked })
+                  }
+                  disabled={selectedInterview === null}
+                  id={checkbox.name}
+                />
+                <label htmlFor={checkbox.name} style={{ marginLeft: '8px' }}>
+                  {checkbox.label}
+                </label>
+              </div>
+            ))}
 
 
+          </div>
         </form>
         <div>
           <button
             type="submit"
-            style={{ padding: '10px 20px', backgroundColor: 'blue', color: 'white' }}
+            style={{ padding: '10px 20px', backgroundColor: 'blue', color: 'white', marginTop: '20px' }}
             onClick={handleInterviewAction}
           >
             {selectedInterview ? "Update Interview" : "Create Interview"}

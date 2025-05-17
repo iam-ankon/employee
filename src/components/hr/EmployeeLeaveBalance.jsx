@@ -5,12 +5,12 @@ import Sidebars from './sidebars';
 
 const EmployeeLeaveBalance = () => {
   const [balances, setBalances] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/employee/details/api/employee_leave_balances/');
+        const response = await axios.get('http://192.168.4.54:8000/api/employee/details/api/employee_leave_balances/');
         setBalances(response.data);
         setLoading(false);
       } catch (error) {
@@ -22,20 +22,11 @@ const EmployeeLeaveBalance = () => {
     fetchData();
   }, []);
 
-  const loadingStyle = {
-    padding: '20px',
-    textAlign: 'center',
-    fontSize: '16px',
-    color: '#555',
-    fontFamily: 'Segoe UI, sans-serif',
-  };
-
-  if (loading) return <div style={loadingStyle}>Loading...</div>;
 
   const containerStyle = {
     display: 'flex',
-    fontFamily: 'Segoe UI, sans-serif',
-    backgroundColor: '#eef2f7',
+    fontFamily: "Segoe UI, Tahoma, Geneva, Verdana, sans-serif",
+    backgroundColor: '#A7D5E1',
     minHeight: '100vh',
   };
 
@@ -55,7 +46,7 @@ const EmployeeLeaveBalance = () => {
 
   const tableContainerStyle = {
     overflowX: 'auto',
-    backgroundColor: '#fff',
+    backgroundColor: "#DCEEF3",
     padding: '20px',
     borderRadius: '12px',
     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',

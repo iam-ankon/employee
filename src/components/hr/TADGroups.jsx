@@ -6,7 +6,7 @@ const TADGroups = () => {
 
   // Fetch TAD groups from the API
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/api/employee/details/api/tad_groups/')
+    fetch('http://192.168.4.54:8000/api/employee/details/api/tad_groups/')
       .then(response => response.json())
       .then(data => setTadGroups(data))
       .catch(error => console.error('Error fetching data:', error));
@@ -47,9 +47,9 @@ const TADGroups = () => {
 // Inline CSS styles
 const styles = {
   appContainer: {
-    display: 'flex',
-    height: '100vh',
-    fontFamily: 'Segoe UI, sans-serif'
+    display: "flex",
+    height: "100vh",
+    fontFamily: "Segoe UI, Tahoma, Geneva, Verdana, sans-serif",
   },
   sidebar: {
     width: "230px",

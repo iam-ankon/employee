@@ -14,7 +14,7 @@ const CVList = () => {
     useEffect(() => {
         const fetchCVs = async () => {
             try {
-                const response = await axios.get("http://127.0.0.1:8000/api/employee/details/api/CVAdd/");
+                const response = await axios.get("http://192.168.4.54:8000/api/employee/details/api/CVAdd/");
                 setCvs(response.data);
             } catch (error) {
                 console.error("Error fetching CVs:", error);
@@ -28,7 +28,7 @@ const CVList = () => {
         const confirmDelete = window.confirm("Are you sure you want to delete this CV?");
         if (confirmDelete) {
             try {
-                await axios.delete(`http://127.0.0.1:8000/api/employee/details/api/CVAdd/${id}/`);
+                await axios.delete(`http://192.168.4.54:8000/api/employee/details/api/CVAdd/${id}/`);
                 setCvs(cvs.filter((cv) => cv.id !== id));
             } catch (error) {
                 console.error("Error deleting CV:", error);
@@ -44,7 +44,7 @@ const CVList = () => {
         container: {
             display: "flex",
             minHeight: "100vh",
-            backgroundColor: "#f9fafb",
+            backgroundColor: "#DCEEF3",
             fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
         },
         mainContent: {
@@ -76,20 +76,16 @@ const CVList = () => {
             flexGrow: '1',
             padding: '0',
             outline: 'none',
+            backgroundColor: "#DCEEF3",
         },
         addButton: {
             padding: "10px 15px",
-            backgroundColor: "#0078D4",
-            color: "#fff",
+            backgroundColor: "#006DAA",
+            color: "white",
             border: "none",
             cursor: "pointer",
             borderRadius: "4px",
-            fontWeight: "600",
-            boxShadow: "0 2px 3px rgba(0, 0, 0, 0.1)",
-            transition: 'background-color 0.3s',
-            ':hover': {
-                backgroundColor: '#005ea6',
-            }
+            textDecoration: "none", // Added to remove underline
         },
         table: {
             width: "100%",
@@ -101,19 +97,18 @@ const CVList = () => {
             backgroundColor: "white",
         },
         th: {
-            backgroundColor: "#0078D4",
             color: "white",
-            padding: "12px",
+            padding: "10px",
             textAlign: "left",
             fontWeight: "600",
-            borderBottom: '1px solid #005ea6',
+            backgroundColor: "#63B0E3",
         },
         td: {
-            padding: "12px",
-            borderBottom: "1px solid #e0e0e0",
+            padding: "5px",
             cursor: "pointer",
-            backgroundColor: 'inherit',
+            backgroundColor: '#A7D5E1',
             fontSize: '0.9rem',
+            borderBottom: '2px solid #e5e7eb',
         },
         tr: {
             '&:nth-child(even)': {
@@ -128,11 +123,8 @@ const CVList = () => {
             padding: "8px 10px",
             cursor: "pointer",
             border: "none",
-            borderRadius: "4px",
-            display: "flex",
-            alignItems: "center",
-            gap: "3px",
-            fontSize: '0.85rem',
+            borderRadius: "53px",
+            marginBottom: "5px",
         },
         editButton: {
             backgroundColor: "#5bc0de",
@@ -146,11 +138,18 @@ const CVList = () => {
             color: "#0078D4",
             fontWeight: "600",
             fontSize: '0.9rem',
+            textDecoration: "none", // Added to remove underline
         },
         barcodeButton: {
             backgroundColor: "#28a745",
             color: "white",
             fontSize: '0.85rem',
+            textDecoration: "none", // Added to remove underline
+            padding: "8px 10px",
+            borderRadius: "53px",
+            
+            alignItems: "center",
+            gap: "3px",
         },
         pagination: {
             display: "flex",
@@ -202,7 +201,7 @@ const CVList = () => {
                         <Link to="/cv-add" style={styles.addButton}>Add CV</Link>
                     </div>
                 </div>
-                <div style = {styles.searchInput}>
+                <div style={styles.searchInput}>
                     <FaSearch />
                     <input
                         type="text"
@@ -222,13 +221,13 @@ const CVList = () => {
                             <th style={styles.th}>Phone</th>
                             <th style={styles.th}>Reference</th>
                             <th style={styles.th}>CV File</th>
-                            <th style={styles.th}>Barcode</th>
+                            <th style={styles.th}>QRcode</th>
                             <th style={styles.th}>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {currentCvs.map((cv) => (
-                            <tr key={cv.id} style = {styles.tr}>
+                            <tr key={cv.id} style={styles.tr}>
                                 <td style={styles.td}>{cv.name}</td>
                                 <td style={styles.td}>{cv.position_for}</td>
                                 <td style={styles.td}>{cv.age}</td>
@@ -242,15 +241,15 @@ const CVList = () => {
                                 </td>
                                 <td style={styles.td}>
                                     <Link to={`/cv-detail/${cv.id}`} style={styles.barcodeButton}>
-                                        <FaBarcode /> Barcode
+                                        <FaBarcode /> 
                                     </Link>
                                 </td>
                                 <td style={styles.td}>
                                     <button style={{ ...styles.actionButton, ...styles.editButton }} onClick={() => handleEdit(cv.id)}>
-                                        <FaEdit /> Edit
+                                        <FaEdit />
                                     </button>
                                     <button style={{ ...styles.actionButton, ...styles.deleteButton }} onClick={() => handleDelete(cv.id)}>
-                                        <FaTrash /> Delete
+                                        <FaTrash /> 
                                     </button>
                                 </td>
                             </tr>

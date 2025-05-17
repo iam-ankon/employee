@@ -35,7 +35,7 @@ const EmployeeDetailPage = () => {
         const names = [];
         for (const customerId of employee.customer) {
           try {
-            const response = await axios.get(`http://127.0.0.1:8000/api/employee/details/api/customers/${customerId}/`);
+            const response = await axios.get(`http://192.168.4.54:8000/api/employee/details/api/customers/${customerId}/`);
             names.push(response.data.customer_name);
           } catch (error) {
             console.error(`Error fetching customer ${customerId}`, error);
@@ -254,8 +254,9 @@ const EmployeeDetailPage = () => {
     }, 500);
   };
 
+  if (!employee) return  ;
   if (loading) return <div className="loading-spinner">Loading...</div>;
-  if (!employee) return <p>Employee not found</p>;
+ 
 
   return (
     <div className="employee-detail-container">
@@ -386,7 +387,7 @@ const EmployeeDetailPage = () => {
         .employee-detail-container {
           display: flex;
           min-height: 100vh;
-          background-color: #f5f7fa;
+          background-color: #A7D5E1;
           font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
@@ -402,7 +403,7 @@ const EmployeeDetailPage = () => {
         }
 
         .employee-detail-card {
-          background: white;
+          background: #DCEEF3;
           border-radius: 12px;
           box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
           padding: 2rem;
@@ -532,7 +533,7 @@ const EmployeeDetailPage = () => {
         }
 
         .detail-section {
-          background: #f8f9fa;
+          background: #A7D5E1;
           border-radius: 8px;
           padding: 1.2rem;
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);

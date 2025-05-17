@@ -48,7 +48,7 @@ const EditAppraisal = () => {
 
   useEffect(() => {
     axios
-      .get(`http://127.0.0.1:8000/api/employee/details/api/performanse_appraisals/${id}/`)
+      .get(`http://192.168.4.54:8000/api/employee/details/api/performanse_appraisals/${id}/`)
       .then((res) => setFormData(res.data))
       .catch((err) => console.error("Error fetching data:", err));
   }, [id]);
@@ -65,7 +65,7 @@ const EditAppraisal = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://127.0.0.1:8000/api/employee/details/api/performanse_appraisals/${id}/`, formData);
+      await axios.put(`http://192.168.4.54:8000/api/employee/details/api/performanse_appraisals/${id}/`, formData);
       alert("Appraisal updated successfully!");
       navigate("/performanse_appraisal"); // Ensure the route exists
     } catch (error) {
@@ -152,9 +152,9 @@ const styles = {
 };
 const containerStyle = {
   display: "flex",
-  fontFamily: "Segoe UI, sans-serif",
-  backgroundColor: "#f4f6f9",
-  minHeight: "100vh",
+  minheight: "100vh",
+  fontFamily: "Segoe UI, Tahoma, Geneva, Verdana, sans-serif",
+  backgroundColor: "#f7fafc",
 };
 
 const sidebarStyle = {

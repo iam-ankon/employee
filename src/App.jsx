@@ -39,8 +39,23 @@ import EmployeeLeave from "./components/hr/EmployeeLeave";
 import AddLeaveRequest from "./components/hr/AddLeaveRequest";
 import LeaveRequestDetails from "./components/hr/LeaveRequestDetails";
 import EditLeaveRequest from "./components/hr/EditLeaveRequest";
-
-
+import CustomerPage from "./components/merchandiser/CustomerPage";
+import BuyerPage from "./components/merchandiser/BuyerPage";
+import AgentPage from "./components/merchandiser/AgentPage";
+import AddAgents from "./components/merchandiser/AddAgents";
+import EditAgents from "./components/merchandiser/EditAgents";
+import AddBuyer from "./components/merchandiser/AddBuyer";
+import EditBuyer from "./components/merchandiser/EditBuyer";
+import AddCustomer from "./components/merchandiser/AddCustomer";
+import EditCustomer from "./components/merchandiser/EditCustomer";
+import Supplier from './components/merchandiser/Supplier';
+import AddSupplier from './components/merchandiser/AddSupplier';
+import EditSupplier from './components/merchandiser/EditSupplier';
+import DetailSupplier from './components/merchandiser/DetailSupplier.jsx';
+import Inquiry from './components/merchandiser/Inquiry.jsx';
+import EditInquiry from './components/merchandiser/EditInquiry.jsx';
+import AddInquiry from './components/merchandiser/AddInquiry.jsx';
+import DetailsInquiry from './components/merchandiser/DetailsInquiry.jsx';
 
 // Protected Route Component (Prevents Unauthorized Access)
 const ProtectedRoute = ({ children }) => {
@@ -104,6 +119,23 @@ const AppContent = () => {
           <Route path="/cv-detail/:id" element={<CVDetail />} />
           <Route path="/mailmdsir" element={<MailMdSir />} />
           <Route path="/invitemail" element={<InviteMail />} />
+          <Route path="/customers" element={<CustomerPage />} />
+          <Route path="/buyers" element={<BuyerPage />} />
+          <Route path="/agents" element={<AgentPage />} />
+          <Route path="/add-agent" element={<AddAgents />} />
+          <Route path="/edit-agent/:id" element={<EditAgents />} />
+          <Route path="/add-buyer" element={<ProtectedRoute><AddBuyer /></ProtectedRoute>} />
+          <Route path="/edit-buyer/:id" element={<EditBuyer />} />
+          <Route path="/add-customer" element={<ProtectedRoute><AddCustomer /></ProtectedRoute>} />
+          <Route path="/edit-customer/:id" element={<EditCustomer />} />
+          <Route path="/suppliers" element={<Supplier />} />
+          <Route path="/add-supplier" element={<AddSupplier />} />
+          <Route path="/edit/suppliers/:id" element={<EditSupplier />} />
+          <Route path="/suppliers/:id" element={<DetailSupplier />} />
+          <Route path="/inquiries" element={<Inquiry />} />
+          <Route path="/inquiries/add" element={<AddInquiry />} />
+          <Route path="/inquiries/:id" element={<DetailsInquiry />} />
+          <Route path="/inquiries/:id/edit" element={<EditInquiry />} />
         </Routes>
       </div>
     </>

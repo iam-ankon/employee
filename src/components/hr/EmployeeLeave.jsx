@@ -14,7 +14,7 @@ const EmployeeLeave = () => {
     const [endDate, setEndDate] = useState('');
 
     useEffect(() => {
-        axios.get('http://127.0.0.1:8000/api/employee/details/api/employee_leaves/')
+        axios.get('http://192.168.4.54:8000/api/employee/details/api/employee_leaves/')
             .then((response) => {
                 setLeaves(response.data);
                 setFilteredLeaves(response.data);
@@ -51,7 +51,7 @@ const EmployeeLeave = () => {
     }, [nameSearch, startDate, endDate, leaves]);
 
     const handleDelete = (id) => {
-        axios.delete(`http://127.0.0.1:8000/api/employee/details/api/employee_leaves/${id}/`)
+        axios.delete(`http://192.168.4.54:8000/api/employee/details/api/employee_leaves/${id}/`)
             .then(() => {
                 setLeaves(leaves.filter(leave => leave.id !== id));
             })
@@ -79,9 +79,9 @@ const EmployeeLeave = () => {
             {/* Main Content */}
             <div style={{
                 margin: '1px auto',
-                marginLeft: '23px',
-                maxWidth: '90%',
-                backgroundColor: '#f3f6fb',
+                marginLeft: '2px',
+                maxWidth: '100%',
+                backgroundColor: '#A7D5E1',
                 border: '1px solid #d1dbe8',
                 padding: '20px',
                 borderRadius: '8px',
@@ -211,6 +211,7 @@ const cellStyle = {
     border: '1px solid #d1dbe8',
     padding: '10px',
     textAlign: 'center',
+    
     
 };
 

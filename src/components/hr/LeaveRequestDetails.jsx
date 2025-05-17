@@ -26,9 +26,9 @@ const LeaveRequestDetails = () => {
 
                 // Fetch all required data
                 const [leaveRes, balancesRes, typesRes] = await Promise.all([
-                    axios.get(`http://127.0.0.1:8000/api/employee/details/api/employee_leaves/${id}/`),
-                    axios.get('http://127.0.0.1:8000/api/employee/details/api/employee_leave_balances/'),
-                    axios.get('http://127.0.0.1:8000/api/employee/details/api/employee_leave_types/')
+                    axios.get(`http://192.168.4.54:8000/api/employee/details/api/employee_leaves/${id}/`),
+                    axios.get('http://192.168.4.54:8000/api/employee/details/api/employee_leave_balances/'),
+                    axios.get('http://192.168.4.54:8000/api/employee/details/api/employee_leave_types/')
                 ]);
 
                 setLeave(leaveRes.data);
@@ -325,8 +325,9 @@ const LeaveRequestDetails = () => {
     };
     const containerStyle = {
         display: 'flex',
+        fontFamily: "Segoe UI, Tahoma, Geneva, Verdana, sans-serif",
+        backgroundColor: '#f4f6f9',
         minHeight: '100vh',
-        backgroundColor: '#f8fafc'
     };
 
     return (

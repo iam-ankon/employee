@@ -25,7 +25,7 @@ const EditCVPage = () => {
     const fetchCV = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/employee/details/api/letter_send/${cvId}/`
+          `http://192.168.4.54:8000/api/employee/details/api/letter_send/${cvId}/`
         );
         setCvData(response.data);
       } catch (error) {
@@ -55,7 +55,7 @@ const EditCVPage = () => {
   const updateCVManagement = async (formData) => {
     try {
       const response = await axios.put(
-        `http://127.0.0.1:8000/api/employee/details/api/letter_send/${cvId}/`,
+        `http://192.168.4.54:8000/api/employee/details/api/letter_send/${cvId}/`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
@@ -97,21 +97,20 @@ const EditCVPage = () => {
 
   const containerStyle = {
     display: "flex",
-    fontFamily: "Segoe UI, sans-serif",
-    backgroundColor: "#f4f6f9",
-    minHeight: "100vh",
+    height: "100vh",
+    fontFamily: "Segoe UI, Tahoma, Geneva, Verdana, sans-serif",
+    backgroundColor: "#DCEEF3",
   };
-
-
 
   const mainContentStyle = {
     flex: 1,
     padding: "30px",
-    backgroundColor: "#f4f4f9",
+    backgroundColor: "#A7D5E1",
+    
   };
 
   const formContainerStyle = {
-    backgroundColor: "#fff",
+    backgroundColor: "#DCEEF3",
     padding: "20px",
     borderRadius: "8px",
     boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
@@ -127,12 +126,14 @@ const EditCVPage = () => {
 
   const inputGroupStyle = {
     marginBottom: "20px",
+    
   };
 
   const labelStyle = {
     display: "block",
     marginBottom: "8px",
     fontWeight: "600",
+    
   };
 
   const inputStyle = {
@@ -140,6 +141,7 @@ const EditCVPage = () => {
     padding: "10px",
     borderRadius: "4px",
     border: "1px solid #ccc",
+    backgroundColor: "#A7D5E1",
   };
 
   const selectStyle = {
@@ -147,6 +149,7 @@ const EditCVPage = () => {
     padding: "10px",
     borderRadius: "4px",
     border: "1px solid #ccc",
+    backgroundColor: "#A7D5E1",
   };
 
   const buttonStyle = {

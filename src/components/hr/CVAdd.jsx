@@ -13,6 +13,7 @@ const CVAdd = () => {
     phone: "",
     cvFile: null,
   });
+  const [isLoading, setIsLoading] = useState(false); // Add loading state
 
   const navigate = useNavigate();
 
@@ -33,13 +34,15 @@ const CVAdd = () => {
       return;
     }
 
+    setIsLoading(true); // Set loading to true when submitting
+
     const uploadData = new FormData();
     for (const key in formData) {
       uploadData.append(key === "cvFile" ? "cv_file" : key, formData[key]);
     }
 
     try {
-      await axios.post("http://127.0.0.1:8000/api/employee/details/api/CVAdd/", uploadData, {
+      await axios.post("http://localhost:8000/api/employee/details/api/CVAdd/", uploadData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -56,6 +59,8 @@ const CVAdd = () => {
     } catch (error) {
       console.error("Error uploading CV:", error);
       alert("Failed to upload CV");
+    } finally {
+      setIsLoading(false); // Set loading to false when done
     }
   };
 
@@ -63,21 +68,22 @@ const CVAdd = () => {
     appContainer: {
       display: "flex",
       height: "100vh",
-      fontFamily: "Segoe UI, sans-serif",
-      backgroundColor: "#f7fafc",
+      fontFamily: "Segoe UI, Tahoma, Geneva, Verdana, sans-serif",
+      backgroundColor: "#DCEEF3",
     },
     formContainer: {
-      backgroundColor: "#fff",
-      padding: "20px",
+     
+      padding: "100px",
       borderRadius: "10px",
       boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-      width: "700px",
+      width: "800px",
       margin: "40px auto",
+      backgroundColor: '#A7D5E1',
     },
     heading: {
       fontSize: "1.4rem",
       marginBottom: "20px",
-      fontWeight: "600",
+      fontWeight: "300",
       textAlign: "center",
       color: "#333",
     },
@@ -102,21 +108,38 @@ const CVAdd = () => {
       fontSize: "0.95rem",
       border: "1px solid #ccc",
       borderRadius: "6px",
+      backgroundColor: "#DCEEF3",
     },
     submitBtn: {
-      width: "150px", // Adjusted width for side-by-side
+      width: "150px",
       padding: "10px",
-      backgroundColor: "#0078d4",
+      backgroundColor: "#006DAA",
       color: "#fff",
       fontSize: "1rem",
       border: "none",
       borderRadius: "6px",
       cursor: "pointer",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    submitBtnDisabled: {
+      width: "150px",
+      padding: "10px",
+      backgroundColor: "#0078d499", // Semi-transparent version
+      color: "#fff",
+      fontSize: "1rem",
+      border: "none",
+      borderRadius: "6px",
+      cursor: "not-allowed",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
     },
     viewBtn: {
-      width: "150px", // Adjusted width for side-by-side
+      width: "150px",
       padding: "10px",
-      backgroundColor: "#1a73e8",
+      backgroundColor: "#006DAA",
       color: "#fff",
       fontSize: "1rem",
       border: "none",
@@ -125,19 +148,38 @@ const CVAdd = () => {
     },
     buttonContainer: {
       display: "flex",
-      gap: "10px",
+      gap: "100px",
       marginTop: "20px",
+      justifyContent: "center",
+      
+    },
+    spinner: {
+      width: "20px",
+      height: "20px",
+      border: "3px solid rgba(255,255,255,0.3)",
+      borderRadius: "50%",
+      borderTopColor: "#fff",
+      animation: "spin 1s ease-in-out infinite",
+      marginRight: "8px",
     },
   };
 
+  // Add CSS for the spinner animation
+  const spinnerStyles = `
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  `;
+
   return (
     <div style={styles.appContainer}>
+      <style>{spinnerStyles}</style> {/* Add the spinner animation */}
       <div style={{ display: 'flex' }}>
-                <Sidebars />
-                <div style={{ flex: 1, overflow: 'auto' }}>
-                    {/* Your page content here */}
-                </div>
-            </div>
+        <Sidebars />
+        <div style={{ flex: 1, overflow: 'auto' }}>
+          {/* Your page content here */}
+        </div>
+      </div>
 
       <div style={styles.formContainer}>
         <h2 style={styles.heading}>Add CV</h2>
@@ -155,8 +197,8 @@ const CVAdd = () => {
           </div>
           <div style={styles.formRow}>
             <div style={styles.formGroup}>
-              <label style={styles.label}>Age:</label>
-              <input type="number" name="age" value={formData.age} onChange={handleChange} required style={styles.inputField} />
+              <label style={styles.label}>Date of Birth:</label>
+              <input type="date" name="age" value={formData.age} onChange={handleChange} required style={styles.inputField} />
             </div>
             <div style={styles.formGroup}>
               <label style={styles.label}>Reference:</label>
@@ -179,7 +221,19 @@ const CVAdd = () => {
           </div>
         </form>
         <div style={styles.buttonContainer}>
-          <button type="submit" onClick={handleSubmit} style={styles.submitBtn}>Submit</button>
+          <button 
+            type="submit" 
+            onClick={handleSubmit} 
+            style={isLoading ? styles.submitBtnDisabled : styles.submitBtn}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <>
+                <div style={styles.spinner}></div>
+                Processing...
+              </>
+            ) : "Submit"}
+          </button>
           <button onClick={() => navigate("/cv-list")} style={styles.viewBtn}>View All CVs</button>
         </div>
       </div>

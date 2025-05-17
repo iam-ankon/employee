@@ -1,3 +1,5 @@
+
+
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
@@ -7,13 +9,14 @@ import Sidebars from './sidebars';
 const CVDetail = () => {
     const { id } = useParams();
     const [cvDetails, setCvDetails] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
     const qrCodeRef = useRef(null);
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchCVDetails = async () => {
             try {
-                const response = await axios.get(`http://127.0.0.1:8000/api/employee/details/api/CVAdd/${id}/`);
+                const response = await axios.get(`http://localhost:8000/api/employee/details/api/CVAdd/${id}/`);
                 setCvDetails(response.data);
             } catch (error) {
                 console.error("Error fetching CV details:", error);
@@ -23,27 +26,108 @@ const CVDetail = () => {
         fetchCVDetails();
     }, [id]);
 
+    // Create QR code URL with data parameters
+    const getQRCodeData = () => {
+        if (!cvDetails) return "";
+        
+        // Create URL with query parameters containing CV details
+        const baseUrl = "http://localhost:5173/interviews";
+        
+        const params = new URLSearchParams({
+            id: cvDetails.id || id,
+            name: cvDetails.name || "",
+            position_for: cvDetails.position_for || "",
+            age: cvDetails.age || "",
+            email: cvDetails.email || "",
+            phone: cvDetails.phone || "",
+            reference: cvDetails.reference || ""
+        });
+        
+        return `${baseUrl}?${params.toString()}`;
+    };
+
     const generateQRCode = async () => {
-        if (qrCodeRef.current && cvDetails) {
+        if (!qrCodeRef.current || !cvDetails) {
+            alert("QR code or CV details not available");
+            return;
+        }
+    
+        try {
+            setIsLoading(true);
+            
+            // 1. Get QR code as base64
             const qrCanvas = qrCodeRef.current;
             const qrCodeImage = qrCanvas.toDataURL("image/png");
-
-            try {
-                const response = await axios.post(
-                    `http://127.0.0.1:8000/api/employee/details/api/CVAdd/${id}/update-cv-with-qr/`,
-                    {
-                        qr_code: qrCodeImage,
+            
+            // 2. Create FormData
+            const formData = new FormData();
+            formData.append('qr_code', qrCodeImage);
+            
+            // 3. Make API request
+            const response = await axios.post(
+                `http://localhost:8000/api/employee/details/api/CVAdd/${id}/update-cv-with-qr/`,
+                formData,
+                {
+                    responseType: 'blob',
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
                     },
-                    { responseType: "arraybuffer" }
-                );
-
-                const pdfBlob = new Blob([response.data], { type: "application/pdf" });
-                const pdfUrl = URL.createObjectURL(pdfBlob);
-                const pdfWindow = window.open(pdfUrl, "_blank");
-                pdfWindow.print();
-            } catch (error) {
-                console.error("Error updating CV with QR code:", error);
+                    timeout: 30000
+                }
+            );
+    
+            // 4. Verify response type
+            if (!response.headers['content-type'].includes('pdf')) {
+                const errorText = await response.data.text();
+                throw new Error(errorText || "Server returned non-PDF response");
             }
+    
+            // 5. Handle successful response
+            const blob = new Blob([response.data], { type: 'application/pdf' });
+            const url = window.URL.createObjectURL(blob);
+            
+            // 6. Open PDF in new window
+            const newWindow = window.open(url, '_blank');
+            if (newWindow) {
+                newWindow.onload = () => {
+                    try {
+                        newWindow.print();
+                    } catch (e) {
+                        console.error("Print error:", e);
+                        alert('Failed to auto-print. Please print manually.');
+                    }
+                };
+            } else {
+                alert('Please allow popups for this site to view the PDF');
+            }
+            
+        } catch (error) {
+            console.error("Error updating CV with QR code:", error);
+            let errorMessage = "An error occurred while processing your request";
+            
+            if (error.response) {
+                try {
+                    const errorText = await error.response.data.text();
+                    try {
+                        const errorData = JSON.parse(errorText);
+                        errorMessage = errorData.error || errorData.details || errorText;
+                    } catch {
+                        errorMessage = errorText;
+                    }
+                } catch (e) {
+                    errorMessage = `Server error (${error.response.status})`;
+                }
+            } else if (error.code === 'ERR_NETWORK') {
+                errorMessage = "Network error. Please check your connection.";
+            } else if (error.code === 'ECONNABORTED') {
+                errorMessage = "Request timed out. Please try again.";
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+            
+            alert(`Error: ${errorMessage}`);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -60,21 +144,21 @@ const CVDetail = () => {
     const styles = {
         container: {
             display: "flex",
-            fontFamily: "Segoe UI, sans-serif",
-            backgroundColor: "#f4f6f9",
-            minHeight: "100vh",
+            height: "100vh",
+            fontFamily: "Segoe UI, Tahoma, Geneva, Verdana, sans-serif",
+            backgroundColor: "#DCEEF3",
         },
-     
         contentContainer: {
             flex: 1,
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
+            
         },
         card: {
             width: "100%",
             maxWidth: "600px",
-            backgroundColor: "white",
+            backgroundColor: "#A7D5E1",
             padding: "30px",
             borderRadius: "12px",
             boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
@@ -101,8 +185,16 @@ const CVDetail = () => {
         },
         qrContainer: {
             display: "flex",
-            justifyContent: "center",
+            flexDirection: "column",
+            alignItems: "center",
             marginTop: "30px",
+        },
+        qrDescription: {
+            fontSize: "14px",
+            color: "#666",
+            marginTop: "10px",
+            maxWidth: "300px",
+            textAlign: "center",
         },
         buttonContainer: {
             marginTop: "30px",
@@ -112,7 +204,7 @@ const CVDetail = () => {
         },
         button: {
             padding: "12px 25px",
-            backgroundColor: "#0078D4",
+            backgroundColor: "#006DAA",
             color: "white",
             border: "none",
             borderRadius: "8px",
@@ -126,6 +218,10 @@ const CVDetail = () => {
             backgroundColor: "#005ea6",
             transform: "scale(1.05)",
         },
+        buttonDisabled: {
+            backgroundColor: "#cccccc",
+            cursor: "not-allowed",
+        }
     };
 
     return (
@@ -143,7 +239,7 @@ const CVDetail = () => {
                         <div style={styles.details}>
                             <p style={styles.detailItem}><strong>Name:</strong> {cvDetails.name}</p>
                             <p style={styles.detailItem}><strong>Position:</strong> {cvDetails.position_for}</p>
-                            <p style={styles.detailItem}><strong>Age:</strong> {cvDetails.age}</p>
+                            <p style={styles.detailItem}><strong>Date of Birth:</strong> {cvDetails.age}</p>
                             <p style={styles.detailItem}><strong>Email:</strong> {cvDetails.email}</p>
                             <p style={styles.detailItem}><strong>Phone:</strong> {cvDetails.phone}</p>
                             <p style={styles.detailItem}><strong>Reference:</strong> {cvDetails.reference}</p>
@@ -157,26 +253,39 @@ const CVDetail = () => {
                         <div style={styles.qrContainer}>
                             <QRCodeCanvas
                                 ref={qrCodeRef}
-                                value={`http://192.168.4.54:5173/interviews/${id}`}
+                                value={getQRCodeData()}
                                 size={200}
+                                level={"H"}
+                                includeMargin={true}
                             />
+                            <p style={styles.qrDescription}>
+                                Scan this QR code with your mobile device to instantly transfer candidate details to the interview scheduling page
+                            </p>
                         </div>
 
                         <div style={styles.buttonContainer}>
                             <button
-                                style={styles.button}
-                                onMouseEnter={(e) => (e.target.style.backgroundColor = styles.buttonHover.backgroundColor)}
-                                onMouseLeave={(e) => (e.target.style.backgroundColor = styles.button.backgroundColor)}
+                                style={{
+                                    ...styles.button,
+                                    ...(isLoading ? styles.buttonDisabled : {}),
+                                }}
+                                onMouseEnter={(e) => !isLoading && (e.target.style.backgroundColor = styles.buttonHover.backgroundColor)}
+                                onMouseLeave={(e) => !isLoading && (e.target.style.backgroundColor = styles.button.backgroundColor)}
                                 onClick={generateQRCode}
+                                disabled={isLoading}
                             >
-                                Attach to CV
+                                {isLoading ? "Processing..." : "Attach to CV"}
                             </button>
 
                             <button
-                                style={styles.button}
-                                onMouseEnter={(e) => (e.target.style.backgroundColor = styles.buttonHover.backgroundColor)}
-                                onMouseLeave={(e) => (e.target.style.backgroundColor = styles.button.backgroundColor)}
+                                style={{
+                                    ...styles.button,
+                                    ...(isLoading ? styles.buttonDisabled : {}),
+                                }}
+                                onMouseEnter={(e) => !isLoading && (e.target.style.backgroundColor = styles.buttonHover.backgroundColor)}
+                                onMouseLeave={(e) => !isLoading && (e.target.style.backgroundColor = styles.button.backgroundColor)}
                                 onClick={handleSelectForInterview}
+                                disabled={isLoading}
                             >
                                 Selected for Interview
                             </button>

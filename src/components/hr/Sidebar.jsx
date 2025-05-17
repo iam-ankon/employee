@@ -16,7 +16,7 @@ const Sidebar = () => {
   };
 
   const handleMerchandiserClick = () => {
-    navigate('/hr-work');
+    navigate('/dashboard');
   };
 
   // Navigate to the Dashboard page
@@ -75,14 +75,14 @@ const Sidebar = () => {
         {/* HR Work Button */}
         <button
           onClick={handleHRWorkClick}
-          className="hr-work-btn"
+          className="sidebar-title"
         >
           <FiUsers style={iconStyle} />
            Human Resource
         </button>
         <button
           onClick={handleMerchandiserClick}
-          className="hr-work-btn"
+          className="sidebar-title"
         >
           Merchandiser
         </button>
@@ -120,7 +120,7 @@ const Sidebar = () => {
           top: 0;
           height: 100vh;
           width: 250px;
-          background: linear-gradient(135deg, #2b6cb0, #3182ce);
+          background: linear-gradient(135deg,rgb(127, 137, 147),rgb(46, 116, 181));
           color: white;
           transition: 0.3s ease-in-out;
           display: flex;
@@ -163,7 +163,7 @@ const Sidebar = () => {
           position: fixed;
           top: 15px;
           left: 15px;
-          background: #2b6cb0;
+          background:rgb(95, 111, 129);
           color: white;
           border: none;
           padding: 10px 12px;
@@ -181,7 +181,7 @@ const Sidebar = () => {
           left: 0;
           width: 100%;  /* Full screen width */
           height: 70px;  /* Adjust to the height that fits the buttons */
-          background-color: #3182ce;
+          background-color:rgb(55, 72, 89);
           z-index: 5;  /* Ensure it's below the sidebar */
         }
 
@@ -235,7 +235,7 @@ const Sidebar = () => {
           left: 0;
           width: 100%;  /* Full screen width */
           height: 70px;  /* Adjust to the height that fits the buttons */
-          background-color: #3182ce;
+          background-color:rgb(89, 130, 168);
           z-index: 10;  /* Ensure it's below the buttons */
         }
 
@@ -277,8 +277,6 @@ const Sidebar = () => {
         .sidebar-title:hover {
           background-color: rgba(255, 255, 255, 0.2);
         }
-
-
       `}</style>
     </div>
   );

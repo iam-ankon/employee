@@ -94,10 +94,9 @@ const EmailLog = () => {
 
 const styles = {
   container: {
-    display: 'flex',
-    fontFamily: 'Arial, sans-serif',
-    minHeight: '100vh',
-    backgroundColor: '#f4f4f4',
+    display: "flex",
+    height: "100vh",
+    fontFamily: "Segoe UI, Tahoma, Geneva, Verdana, sans-serif",
   },
   sidebar: {
     width: '230px',

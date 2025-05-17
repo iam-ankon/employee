@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Sidebars from './sidebars';
 
-const API_URL = "http://127.0.0.1:8000/api/employee/details/api/employees/";
+const API_URL = "http://192.168.4.54:8000/api/employee/details/api/employees/";
 
 const EmployeeTermination = () => {
   const [employees, setEmployees] = useState([]);

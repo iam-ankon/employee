@@ -9,7 +9,7 @@ const AppraisalDetails = () => {
     const [appraisal, setAppraisal] = useState(null);
 
     useEffect(() => {
-        axios.get(`http://127.0.0.1:8000/api/employee/details/api/performanse_appraisals/${id}/`)
+        axios.get(`http://192.168.4.54:8000/api/employee/details/api/performanse_appraisals/${id}/`)
             .then((res) => setAppraisal(res.data))
             .catch((err) => console.error("Error fetching data:", err));
     }, [id]);
@@ -667,7 +667,7 @@ const AppraisalDetails = () => {
 };
 const containerStyle = {
     display: "flex",
-    fontFamily: "Segoe UI, sans-serif",
+    fontFamily: "Segoe UI, Tahoma, Geneva, Verdana, sans-serif",
     backgroundColor: "#f4f6f9",
     minHeight: "100vh",
 };
@@ -757,26 +757,6 @@ const styles = {
         fontStyle: "italic",
         marginTop: "5px"
     },
-    // promotionContainer: {
-    //     flex: 1,
-    //     padding: "0 15px",
-    //     backgroundColor: "#f4f4f4",
-    //     padding: "15px",
-    //     borderRadius: "8px",
-    //     marginTop: "20px",
-    //     marginBottom: "20px" // Add this margin to create space between the promotion container and the button
-    // },
-    // goBackButton: {
-    //     backgroundColor: "#0078D4",
-    //     color: "white",
-    //     padding: "12px",
-    //     fontSize: "16px",
-    //     border: "none",
-    //     borderRadius: "4px",
-    //     cursor: "pointer",
-    //     marginTop: "20px",
-    //     alignSelf: "center"
-    // },
     numberedList: {
         marginTop: "20px",
     },
