@@ -15,8 +15,8 @@ export default function CustomerPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
-  const API_URL = "http://192.168.4.54:8000/api/merchandiser/api/customer/";
-  const BUYER_URL = "http://192.168.4.54:8000/api/merchandiser/api/buyer/";
+  const API_URL = "http://127.0.0.1:8000/api/merchandiser/api/customer/";
+  const BUYER_URL = "http://127.0.0.1:8000/api/merchandiser/api/buyer/";
 
   useEffect(() => {
     fetchCustomers();
@@ -207,7 +207,7 @@ export default function CustomerPage() {
           display: flex;
           min-height: 100vh;
           background-color: #A7D5E1;
-          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+          
         }
         
         .content-container {

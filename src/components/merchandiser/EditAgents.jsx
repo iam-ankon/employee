@@ -23,7 +23,7 @@ export default function EditAgents() {
     const fetchAgent = async () => {
       try {
         const response = await axios.get(
-          `http://192.168.4.54:8000/api/merchandiser/api/agent/${id}/`
+          `http://127.0.0.1:8000/api/merchandiser/api/agent/${id}/`
         );
         setFormData(response.data);
       } catch (err) {
@@ -47,7 +47,7 @@ export default function EditAgents() {
 
     try {
       const response = await axios.put(
-        `http://192.168.4.54:8000/api/merchandiser/api/agent/${id}/`,
+        `http://127.0.0.1:8000/api/merchandiser/api/agent/${id}/`,
         formData
       );
       setSuccess("Agent updated successfully!");
@@ -72,7 +72,7 @@ export default function EditAgents() {
     setIsDeleting(true);
     try {
       await axios.delete(
-        `http://192.168.4.54:8000/api/merchandiser/api/agent/${id}/`
+        `http://127.0.0.1:8000/api/merchandiser/api/agent/${id}/`
       );
       setSuccess("Agent deleted successfully!");
       

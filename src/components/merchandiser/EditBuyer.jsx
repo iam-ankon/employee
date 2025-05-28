@@ -38,7 +38,7 @@
 //     setError(null);
 
 //     try {
-//       await axios.put(`http://192.168.4.54:8000/api/merchandiser/api/buyer/${buyer.id}/`, form);
+//       await axios.put(`http://127.0.0.1:8000/api/merchandiser/api/buyer/${buyer.id}/`, form);
 //       navigate("/buyers");
 //     } catch (err) {
 //       console.error("Error updating buyer:", err);
@@ -221,7 +221,7 @@ export default function EditBuyer() {
     const fetchBuyer = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`http://192.168.4.54:8000/api/merchandiser/api/buyer/${id}/`);
+        const response = await axios.get(`http://127.0.0.1:8000/api/merchandiser/api/buyer/${id}/`);
         setForm(response.data);
       } catch (err) {
         console.error("Error fetching buyer:", err);
@@ -244,7 +244,7 @@ export default function EditBuyer() {
     setError(null);
 
     try {
-      await axios.put(`http://192.168.4.54:8000/api/merchandiser/api/buyer/${id}/`, form);
+      await axios.put(`http://127.0.0.1:8000/api/merchandiser/api/buyer/${id}/`, form);
       navigate("/buyers");
     } catch (err) {
       console.error("Error updating buyer:", err);

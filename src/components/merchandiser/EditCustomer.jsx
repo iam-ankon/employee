@@ -21,8 +21,8 @@ export default function EditCustomer() {
   const [message, setMessage] = useState(null);
   const [errors, setErrors] = useState({});
 
-  const CUSTOMER_API = `http://192.168.4.54:8000/api/merchandiser/api/customer/${id}/`;
-  const BUYER_API = "http://192.168.4.54:8000/api/merchandiser/api/buyer/";
+  const CUSTOMER_API = `http://127.0.0.1:8000/api/merchandiser/api/customer/${id}/`;
+  const BUYER_API = "http://127.0.0.1:8000/api/merchandiser/api/buyer/";
 
   useEffect(() => {
     fetchCustomer();

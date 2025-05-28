@@ -16,7 +16,7 @@ const Supplier = () => {
         const fetchSuppliers = async () => {
             setLoading(true);
             try {
-                const response = await axios.get('http://192.168.4.54:8000/api/merchandiser/api/supplier/');
+                const response = await axios.get('http://127.0.0.1:8000/api/merchandiser/api/supplier/');
                 setSuppliers(response.data);
             } catch (error) {
                 toast.error('Failed to fetch suppliers');
@@ -30,7 +30,7 @@ const Supplier = () => {
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this supplier?')) {
             try {
-                await axios.delete(`http://192.168.4.54:8000/api/merchandiser/api/supplier/${id}/`);
+                await axios.delete(`http://127.0.0.1:8000/api/merchandiser/api/supplier/${id}/`);
                 setSuppliers(suppliers.filter(supplier => supplier.id !== id));
                 toast.success('Supplier deleted successfully');
             } catch (error) {
@@ -46,10 +46,10 @@ const Supplier = () => {
     );
 
     return (
-        <div style={{ display: 'flex', minHeight: '100vh', fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif", }}>
+        <div style={{ display: 'flex', minHeight: '100vh'}}>
             <Sidebar />
 
-            <div style={{ flexGrow: 1, padding: '2rem', backgroundColor: '#f3f4f6', fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif", }}>
+            <div style={{ flexGrow: 1, padding: '2rem', backgroundColor: '#f3f4f6' }}>
                 <h1 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '1.5rem' }}>Supplier Management</h1>
 
                 {/* Search + Add */}

@@ -42,7 +42,7 @@ const AddLetterPage = () => {
   const addLetterSend = async (formData) => {
     try {
       const response = await axios.post(
-        "http://192.168.4.54:8000/api/employee/details/api/letter_send/",
+        "http://127.0.0.1:8000/api/employee/details/api/letter_send/",
         formData,
         {
           headers: {

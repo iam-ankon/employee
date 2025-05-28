@@ -23,7 +23,7 @@ const CVEdit = () => {
     const fetchCV = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get(`http://192.168.4.54:8000/api/employee/details/api/CVAdd/${id}/`);
+        const response = await axios.get(`http://127.0.0.1:8000/api/employee/details/api/CVAdd/${id}/`);
         setFormData({
           name: response.data.name,
           position_for: response.data.position_for || "",
@@ -71,7 +71,7 @@ const CVEdit = () => {
 
     try {
       await axios.put(
-        `http://192.168.4.54:8000/api/employee/details/api/CVAdd/${id}/`,
+        `http://127.0.0.1:8000/api/employee/details/api/CVAdd/${id}/`,
         formDataToSubmit,
         {
           headers: { "Content-Type": "multipart/form-data" },

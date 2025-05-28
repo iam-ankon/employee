@@ -41,7 +41,7 @@ const AddEmployee = () => {
     useEffect(() => {
         const fetchCompanies = async () => {
             try {
-                const response = await axios.get("http://192.168.4.54:8000/api/employee/details/api/tad_groups/");
+                const response = await axios.get("http://127.0.0.1:8000/api/employee/details/api/tad_groups/");
                 setCompanies(response.data);
             } catch (error) {
                 console.error("Error fetching companies:", error);
@@ -50,7 +50,7 @@ const AddEmployee = () => {
 
         const fetchCustomers = async () => {
             try {
-                const response = await axios.get("http://192.168.4.54:8000/api/employee/details/api/customers/");
+                const response = await axios.get("http://127.0.0.1:8000/api/employee/details/api/customers/");
                 setCustomers(response.data);
                 console.log("Customers data:", response.data);
             } catch (error) {
@@ -109,7 +109,7 @@ const AddEmployee = () => {
         });
 
         try {
-            const response = await axios.post("http://192.168.4.54:8000/api/employee/details/api/employees/", employeeFormData, {
+            const response = await axios.post("http://127.0.0.1:8000/api/employee/details/api/employees/", employeeFormData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
             setSuccessMessage("Employee saved successfully!");

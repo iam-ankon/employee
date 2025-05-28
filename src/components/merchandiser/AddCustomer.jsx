@@ -18,8 +18,8 @@ export default function AddCustomer() {
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
-  const CUSTOMER_API = "http://192.168.4.54:8000/api/merchandiser/api/customer/";
-  const BUYER_API = "http://192.168.4.54:8000/api/merchandiser/api/buyer/";
+  const CUSTOMER_API = "http://127.0.0.1:8000/api/merchandiser/api/customer/";
+  const BUYER_API = "http://127.0.0.1:8000/api/merchandiser/api/buyer/";
 
   useEffect(() => {
     axios.get(BUYER_API)

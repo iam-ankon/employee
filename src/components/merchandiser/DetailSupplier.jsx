@@ -18,7 +18,7 @@ const DetailSupplier = () => {
     useEffect(() => {
         const fetchSupplier = async () => {
             try {
-                const response = await axios.get(`http://192.168.4.54:8000/api/merchandiser/api/supplier/${id}/`);
+                const response = await axios.get(`http://127.0.0.1:8000/api/merchandiser/api/supplier/${id}/`);
                 setSupplier(response.data);
             } catch (error) {
                 console.error("Failed to fetch supplier details", error);
@@ -69,7 +69,7 @@ const DetailSupplier = () => {
             <div className="supplier-detail-content">
                 {/* Header with back button and actions */}
                 <div className="supplier-header-actions">
-                    <button 
+                    <button
                         onClick={() => navigate(-1)}
                         className="back-button"
                     >
@@ -101,7 +101,7 @@ const DetailSupplier = () => {
                                     <p className="supplier-type">{supplier.vendor_type}</p>
                                 </div>
                                 <div className="supplier-actions">
-                                    <button 
+                                    <button
                                         onClick={toggleFavorite}
                                         className="favorite-button"
                                     >
@@ -162,12 +162,12 @@ const DetailSupplier = () => {
                 
                 .supplier-detail-content {
                     flex: 1;
-                    padding: 24px;
-                    max-width: 1400px;
-                    margin: 0 auto;
-                    width: 100%;
+                    padding: 1rem;
+                    margin-left: 0;
+                    overflow-y: auto;
+                    max-height: 100vh;
                 }
-                
+
                 /* Loading state */
                 .supplier-loading-container {
                     display: flex;
@@ -454,35 +454,35 @@ const OverviewTab = ({ supplier }) => (
     <div className="tab-content">
         {/* Quick Stats */}
         <div className="stats-grid">
-            <StatCard 
-                title="Avg. Lead Time" 
-                value={`${supplier.avg_lead_time_days || '—'} days`} 
-                icon={<FaFileContract />} 
+            <StatCard
+                title="Avg. Lead Time"
+                value={`${supplier.avg_lead_time_days || '—'} days`}
+                icon={<FaFileContract />}
                 color="#3b82f6"
             />
-            <StatCard 
-                title="Payment Terms" 
-                value={supplier.payment_term || '—'} 
-                icon={<FaMoneyBillWave />} 
+            <StatCard
+                title="Payment Terms"
+                value={supplier.payment_term || '—'}
+                icon={<FaMoneyBillWave />}
                 color="#10b981"
             />
-            <StatCard 
-                title="Incoterm" 
-                value={supplier.incoterm || '—'} 
-                icon={<FaIndustry />} 
+            <StatCard
+                title="Incoterm"
+                value={supplier.incoterm || '—'}
+                icon={<FaIndustry />}
                 color="#8b5cf6"
             />
-            <StatCard 
-                title="Currency" 
-                value={supplier.currency || '—'} 
-                icon={<RiBankLine />} 
+            <StatCard
+                title="Currency"
+                value={supplier.currency || '—'}
+                icon={<RiBankLine />}
                 color="#f59e0b"
             />
         </div>
 
         {/* Company Information */}
-        <SectionCard 
-            title="Company Information" 
+        <SectionCard
+            title="Company Information"
             icon={<FaBuilding />}
         >
             <div className="info-grid">
@@ -498,8 +498,8 @@ const OverviewTab = ({ supplier }) => (
         </SectionCard>
 
         {/* Contact Details */}
-        <SectionCard 
-            title="Contact Details" 
+        <SectionCard
+            title="Contact Details"
             icon={<BsPersonLinesFill />}
         >
             <div className="info-grid">
@@ -513,8 +513,8 @@ const OverviewTab = ({ supplier }) => (
         </SectionCard>
 
         {/* Address */}
-        <SectionCard 
-            title="Address" 
+        <SectionCard
+            title="Address"
             icon={<FaMapMarkerAlt />}
         >
             <div className="info-grid">
@@ -523,8 +523,8 @@ const OverviewTab = ({ supplier }) => (
                 <InfoField label="Postal Code" value={supplier.postal_code} />
                 <InfoField label="Country/Region" value={supplier.country_region} />
                 <InfoField label="GPS Coordinates" value={
-                    supplier.gps_lat && supplier.gps_lng ? 
-                    `${supplier.gps_lat}, ${supplier.gps_lng}` : '—'
+                    supplier.gps_lat && supplier.gps_lng ?
+                        `${supplier.gps_lat}, ${supplier.gps_lng}` : '—'
                 } />
                 <InfoField label="EU Country" value={supplier.eu_country ? 'Yes' : 'No'} />
             </div>
@@ -614,21 +614,21 @@ const FinancialTab = ({ supplier }) => (
 
         <SectionCard title="Financial Details" icon={<FaMoneyBillWave />}>
             <div className="info-grid">
-                <InfoField 
-                    label="Annual Turnover" 
-                    value={supplier.total_annual_turnover ? `$${supplier.total_annual_turnover.toLocaleString()}` : '—'} 
+                <InfoField
+                    label="Annual Turnover"
+                    value={supplier.total_annual_turnover ? `$${supplier.total_annual_turnover.toLocaleString()}` : '—'}
                 />
-                <InfoField 
-                    label="Export Turnover" 
-                    value={supplier.export_annual_turnover ? `$${supplier.export_annual_turnover.toLocaleString()}` : '—'} 
+                <InfoField
+                    label="Export Turnover"
+                    value={supplier.export_annual_turnover ? `$${supplier.export_annual_turnover.toLocaleString()}` : '—'}
                 />
-                <InfoField 
-                    label="Credit Limit" 
-                    value={supplier.credit_limit ? `$${supplier.credit_limit.toLocaleString()}` : '—'} 
+                <InfoField
+                    label="Credit Limit"
+                    value={supplier.credit_limit ? `$${supplier.credit_limit.toLocaleString()}` : '—'}
                 />
-                <InfoField 
-                    label="Credit Report" 
-                    value={supplier.credit_report ? `$${supplier.credit_report.toLocaleString()}` : '—'} 
+                <InfoField
+                    label="Credit Report"
+                    value={supplier.credit_report ? `$${supplier.credit_report.toLocaleString()}` : '—'}
                 />
             </div>
         </SectionCard>
@@ -641,7 +641,7 @@ const FinancialTab = ({ supplier }) => (
                 <InfoField label="Cash Discount" value={supplier.cash_discount} />
             </div>
         </SectionCard>
-                <style jsx>{`
+        <style jsx>{`
             .tab-content {
                 display: flex;
                 flex-direction: column;
@@ -859,8 +859,8 @@ const DocumentsTab = ({ supplier }) => (
                     <InfoField label="Expiry Date" value={supplier.agreement_expiry_date} />
                     <InfoField label="Accepted On" value={supplier.agreement_accepted_on} />
                     <InfoField label="Document Status" value={supplier.agreement_doc_status} />
-                    <InfoField label="Vendor Action Required" 
-                        value={supplier.agreement_vendor_action_required ? 'Yes' : 'No'} 
+                    <InfoField label="Vendor Action Required"
+                        value={supplier.agreement_vendor_action_required ? 'Yes' : 'No'}
                     />
                     <InfoField label="Instructions to Vendor" value={supplier.agreement_instruction_to_vendor} fullWidth />
                 </div>
@@ -983,45 +983,45 @@ const PerformanceTab = ({ supplier }) => (
 
         <SectionCard title="Audit History">
             <div className="audit-history">
-                <AuditItem 
-                    title="Social Audit" 
-                    completed={supplier.audit_social} 
-                    date={supplier.latest_audit_date} 
+                <AuditItem
+                    title="Social Audit"
+                    completed={supplier.audit_social}
+                    date={supplier.latest_audit_date}
                     result={supplier.latest_audit_result}
                 />
-                <AuditItem 
-                    title="1st Enlistment Audit" 
-                    completed={supplier.audit_1st_enlistment} 
+                <AuditItem
+                    title="1st Enlistment Audit"
+                    completed={supplier.audit_1st_enlistment}
                     date={null}
                     result={null}
                 />
-                <AuditItem 
-                    title="2nd Enlistment Audit" 
-                    completed={supplier.audit_2nd_enlistment} 
+                <AuditItem
+                    title="2nd Enlistment Audit"
+                    completed={supplier.audit_2nd_enlistment}
                     date={null}
                     result={null}
                 />
-                <AuditItem 
-                    title="Qualification Visit" 
-                    completed={supplier.audit_qualification_visit} 
+                <AuditItem
+                    title="Qualification Visit"
+                    completed={supplier.audit_qualification_visit}
                     date={null}
                     result={null}
                 />
-                <AuditItem 
-                    title="KIK CSR Audit" 
-                    completed={supplier.audit_kik_csr} 
+                <AuditItem
+                    title="KIK CSR Audit"
+                    completed={supplier.audit_kik_csr}
                     date={null}
                     result={null}
                 />
-                <AuditItem 
-                    title="Environmental Audit" 
-                    completed={supplier.audit_environmental} 
+                <AuditItem
+                    title="Environmental Audit"
+                    completed={supplier.audit_environmental}
                     date={null}
                     result={null}
                 />
-                <AuditItem 
-                    title="QC Visit" 
-                    completed={supplier.audit_qc_visit} 
+                <AuditItem
+                    title="QC Visit"
+                    completed={supplier.audit_qc_visit}
                     date={null}
                     result={null}
                 />
@@ -1211,9 +1211,9 @@ const InfoField = ({ label, value, fullWidth = false, link = false }) => (
     <div className={`info-field ${fullWidth ? 'full-width' : ''}`}>
         <p className="info-label">{label}</p>
         {link && value ? (
-            <a 
-                href={value.startsWith('http') ? value : `https://${value}`} 
-                target="_blank" 
+            <a
+                href={value.startsWith('http') ? value : `https://${value}`}
+                target="_blank"
                 rel="noopener noreferrer"
                 className="info-link"
             >

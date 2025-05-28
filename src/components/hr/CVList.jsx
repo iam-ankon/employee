@@ -14,7 +14,7 @@ const CVList = () => {
     useEffect(() => {
         const fetchCVs = async () => {
             try {
-                const response = await axios.get("http://192.168.4.54:8000/api/employee/details/api/CVAdd/");
+                const response = await axios.get("http://127.0.0.1:8000/api/employee/details/api/CVAdd/");
                 setCvs(response.data);
             } catch (error) {
                 console.error("Error fetching CVs:", error);
@@ -28,7 +28,7 @@ const CVList = () => {
         const confirmDelete = window.confirm("Are you sure you want to delete this CV?");
         if (confirmDelete) {
             try {
-                await axios.delete(`http://192.168.4.54:8000/api/employee/details/api/CVAdd/${id}/`);
+                await axios.delete(`http://127.0.0.1:8000/api/employee/details/api/CVAdd/${id}/`);
                 setCvs(cvs.filter((cv) => cv.id !== id));
             } catch (error) {
                 console.error("Error deleting CV:", error);

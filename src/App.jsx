@@ -56,6 +56,7 @@ import Inquiry from './components/merchandiser/Inquiry.jsx';
 import EditInquiry from './components/merchandiser/EditInquiry.jsx';
 import AddInquiry from './components/merchandiser/AddInquiry.jsx';
 import DetailsInquiry from './components/merchandiser/DetailsInquiry.jsx';
+import AddAttachmentInquiry from './components/merchandiser/AddAttachmentInquiry.jsx';
 
 // Protected Route Component (Prevents Unauthorized Access)
 const ProtectedRoute = ({ children }) => {
@@ -136,6 +137,7 @@ const AppContent = () => {
           <Route path="/inquiries/add" element={<AddInquiry />} />
           <Route path="/inquiries/:id" element={<DetailsInquiry />} />
           <Route path="/inquiries/:id/edit" element={<EditInquiry />} />
+          <Route path="/inquiries/attachments" element={<AddAttachmentInquiry />} />
         </Routes>
       </div>
     </>

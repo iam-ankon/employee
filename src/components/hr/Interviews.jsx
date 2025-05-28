@@ -3,7 +3,7 @@ import axios from "axios";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
 import Sidebars from './sidebars';
 
-const API_URL = "http://192.168.4.54:8000/api/employee/details/api/interviews/";
+const API_URL = "http://127.0.0.1:8000/api/employee/details/api/interviews/";
 
 const Interviews = () => {
   const location = useLocation();
@@ -143,7 +143,7 @@ const Interviews = () => {
   // Fetch candidate data from API
   const fetchCandidateData = async (candidateId) => {
     try {
-      const response = await axios.get(`http://192.168.4.54:8000/api/employee/details/api/CVAdd/${candidateId}/`);
+      const response = await axios.get(`http://127.0.0.1:8000/api/employee/details/api/CVAdd/${candidateId}/`);
       setCandidateData(response.data);
       setFormData(prevState => ({
         ...prevState,

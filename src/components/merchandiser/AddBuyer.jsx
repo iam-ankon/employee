@@ -29,7 +29,7 @@ export default function AddBuyer() {
     setError(null);
 
     try {
-      await axios.post("http://192.168.4.54:8000/api/merchandiser/api/buyer/", form);
+      await axios.post("http://127.0.0.1:8000/api/merchandiser/api/buyer/", form);
       navigate("/buyers");
     } catch (err) {
       console.error("Error adding buyer:", err);

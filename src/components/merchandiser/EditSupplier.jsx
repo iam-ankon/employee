@@ -30,8 +30,10 @@ const EditSupplier = () => {
         },
         contentContainer: {
             flex: 1,
-            padding: '2rem',
-            maxWidth: 'calc(100% - 16rem)' // Adjust based on sidebar width
+            padding: '1rem',
+            marginLeft: '0',
+            overflowY: 'auto',
+            maxHeight: '100vh'// Adjust based on sidebar width
         },
         header: {
             fontSize: '1.875rem',
@@ -244,7 +246,7 @@ const EditSupplier = () => {
             try {
                 setLoading(true);
                 const response = await axios.get(
-                    `http://192.168.4.54:8000/api/merchandiser/api/supplier/${id}/`
+                    `http://127.0.0.1:8000/api/merchandiser/api/supplier/${id}/`
                 );
                 const data = response.data;
 
@@ -349,7 +351,7 @@ const EditSupplier = () => {
 
         try {
             await axios.put(
-                `http://192.168.4.54:8000/api/merchandiser/api/supplier/${id}/`,
+                `http://127.0.0.1:8000/api/merchandiser/api/supplier/${id}/`,
                 formData,
                 {
                     headers: {

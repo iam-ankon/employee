@@ -14,6 +14,7 @@ import {
   Filter,
   User,
   Loader2,
+  Trash2,
 } from "lucide-react";
 
 export default function BuyerPage() {
@@ -29,7 +30,7 @@ export default function BuyerPage() {
     const fetchBuyers = async () => {
       try {
         setLoading(true);
-        const response = await axios.get("http://192.168.4.54:8000/api/merchandiser/api/buyer/");
+        const response = await axios.get("http://127.0.0.1:8000/api/merchandiser/api/buyer/");
         setBuyers(response.data);
       } catch (err) {
         console.error("Error fetching buyers:", err);
@@ -41,6 +42,19 @@ export default function BuyerPage() {
 
     fetchBuyers();
   }, []);
+
+  const handleDeleteBuyer = async (buyerId, e) => {
+    e.stopPropagation(); // Prevent the row click event from triggering
+    if (window.confirm("Are you sure you want to delete this buyer?")) {
+      try {
+        await axios.delete(`http://127.0.0.1:8000/api/merchandiser/api/buyer/${buyerId}/`);
+        setBuyers(buyers.filter(buyer => buyer.id !== buyerId));
+      } catch (err) {
+        console.error("Error deleting buyer:", err);
+        setError("Failed to delete buyer. Please try again.");
+      }
+    }
+  };
 
   const departments = buyers.length > 0 ? ["All", ...new Set(buyers.map(b => b.department))] : ["All"];
 
@@ -83,7 +97,7 @@ export default function BuyerPage() {
   };
 
   return (
-    <div style={{ display: 'flex', height: '100vh', backgroundColor: '#A7D5E1', fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif", }}>
+    <div style={{ display: 'flex', height: '100vh', backgroundColor: '#A7D5E1' }}>
       <Sidebar />
       <div style={{ flex: 1, padding: '16px', overflow: 'auto' }}>
         <div style={{ backgroundColor: '#DCEEF3', borderRadius: 8, border: '1px solid #e5e7eb', overflow: 'hidden' }}>
@@ -150,8 +164,6 @@ export default function BuyerPage() {
               </div>
             </div>
           </div>
-
-          {/* ... Rest of your table and content (unchanged) */}
 
           {/* Content */}
           <div style={{ padding: '24px' }}>
@@ -227,6 +239,9 @@ export default function BuyerPage() {
                         <th style={{ padding: '12px 24px', textAlign: 'left', fontSize: 12, fontWeight: 600, color: '#6b7280', borderBottom: '1px solid #e5e7eb' }}>
                           Details
                         </th>
+                        <th style={{ padding: '12px 24px', textAlign: 'left', fontSize: 12, fontWeight: 600, color: '#6b7280', borderBottom: '1px solid #e5e7eb' }}>
+                          Actions
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
@@ -286,6 +301,27 @@ export default function BuyerPage() {
                                 </div>
                               )}
                             </div>
+                          </td>
+                          <td style={{ padding: '12px 24px' }}>
+                            <button
+                              onClick={(e) => handleDeleteBuyer(buyer.id, e)}
+                              style={{
+                                padding: '6px 12px',
+                                backgroundColor: '#fef2f2',
+                                color: '#b91c1c',
+                                borderRadius: 4,
+                                border: '1px solid #fecaca',
+                                fontSize: 14,
+                                fontWeight: 500,
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 4,
+                              }}
+                            >
+                              <Trash2 size={16} />
+                              Delete
+                            </button>
                           </td>
                         </tr>
                       ))}

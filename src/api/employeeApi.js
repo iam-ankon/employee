@@ -7,11 +7,11 @@ const getBaseUrl = () => {
   const hostname = window.location.hostname;
 
   if (hostname === '192.168.4.54') {
-    return 'http://192.168.4.54:8000/api/employee/details/api/';
+    return 'http://127.0.0.1:8000/api/employee/details/api/';
   } else if (hostname === '0.0.0.0') {
-    return 'http://192.168.4.54:8000/api/employee/details/api/';
+    return 'http://127.0.0.1:8000/api/employee/details/api/';
   } else {
-    return 'http://192.168.4.54:8000/api/employee/details/api/'; // Fallback for localhost
+    return 'http://127.0.0.1:8000/api/employee/details/api/'; // Fallback for localhost
   }
 };
 

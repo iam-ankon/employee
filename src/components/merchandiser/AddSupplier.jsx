@@ -1,5 +1,5 @@
 // AddSupplier.jsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -21,8 +21,10 @@ const AddSupplier = () => {
     },
     contentContainer: {
       flex: 1,
-      padding: '2rem',
-      maxWidth: 'calc(100% - 16rem)' // Adjust based on sidebar width
+      padding: '1rem',
+      marginLeft: '0',
+      overflowY: 'auto',
+      maxHeight: '100vh' // Adjust based on sidebar width
     },
     header: {
       fontSize: '1.875rem',
@@ -241,16 +243,24 @@ const AddSupplier = () => {
 
     try {
       await axios.post(
-        `http://192.168.4.54:8000/api/merchandiser/api/supplier/`,
+        `http://127.0.0.1:8000/api/merchandiser/api/supplier/`,
         formData,
         { headers: { 'Content-Type': 'multipart/form-data' } }
       );
       toast.success("Supplier added successfully");
       setTimeout(() => navigate("/suppliers"), 1500);
     } catch (error) {
-      console.error("Create error:", error.response?.data || error.message);
-      toast.error("Failed to add supplier. Check input data and try again.");
+      const serverErrors = error.response?.data;
+      if (serverErrors) {
+        for (const key in serverErrors) {
+          toast.error(`${key}: ${serverErrors[key][0]}`);
+        }
+      } else {
+        toast.error("Failed to add supplier. Check input data and try again.");
+      }
+      console.error("Create error:", serverErrors || error.message);
     }
+
   };
 
   const tabs = [
@@ -266,6 +276,20 @@ const AddSupplier = () => {
     { key: 'latest_audit_report', label: 'Audit Report' },
     { key: 'images_attachments', label: 'Images & Attachments' }
   ];
+
+
+
+  useEffect(() => {
+    if (Object.keys(errors).length > 0) {
+      const firstErrorField = Object.keys(errors)[0];
+      const element = document.querySelector(`[name="${firstErrorField}"]`);
+      if (element && element.scrollIntoView) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        element.focus();
+      }
+    }
+  }, [errors]);
+
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -1006,16 +1030,18 @@ const AddSupplier = () => {
               <div style={styles.inputGroup}>
                 <label style={styles.label}>Credit Limit</label>
                 <input
-                  type="text"
-                  {...register('credit_limit')}
+                  type="number"
+                  step="any"
+                  {...register('credit_limit', { valueAsNumber: true })}
                   style={styles.input}
                 />
               </div>
               <div style={styles.inputGroup}>
                 <label style={styles.label}>Agent Payment</label>
                 <input
-                  type="text"
-                  {...register('agent_payment')}
+                  type="number"
+                  step="any"
+                  {...register('agent_payment', { valueAsNumber: true })}
                   style={styles.input}
                 />
               </div>

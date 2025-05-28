@@ -15,7 +15,7 @@ const TerminationAttachment = () => {
   const fetchAttachments = async () => {
     try {
       const response = await axios.get(
-        `http://192.168.4.54:8000/api/employee/details/api/termination_attachment/?employee_id=${id}`
+        `http://127.0.0.1:8000/api/employee/details/api/termination_attachment/?employee_id=${id}`
       );
       setAttachments(response.data);
     } catch (error) {
@@ -52,7 +52,7 @@ const TerminationAttachment = () => {
 
     try {
       await axios.post(
-        "http://192.168.4.54:8000/api/employee/details/api/termination_attachment/",
+        "http://127.0.0.1:8000/api/employee/details/api/termination_attachment/",
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -74,7 +74,7 @@ const TerminationAttachment = () => {
 
     try {
       await axios.delete(
-        `http://192.168.4.54:8000/api/employee/details/api/termination_attachment/${attachmentId}/`
+        `http://127.0.0.1:8000/api/employee/details/api/termination_attachment/${attachmentId}/`
       );
       setAttachments(attachments.filter((attachment) => attachment.id !== attachmentId));
       alert("Termination file deleted successfully!");
@@ -88,7 +88,7 @@ const TerminationAttachment = () => {
     if (newDescription === null) return; // User cancelled
     
     axios.patch(
-      `http://192.168.4.54:8000/api/employee/details/api/termination_attachment/${attachmentId}/`,
+      `http://127.0.0.1:8000/api/employee/details/api/termination_attachment/${attachmentId}/`,
       { description: newDescription }
     )
       .then(() => {
